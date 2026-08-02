@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alan & Rose - Servizi Digitali e Creativi</title>
+<style>
+  :root{
+    --crema: #F5F1E8;
+    --marrone: #4A3B2A;
+    --oro: #C9A961;
+    --bianco: #FFFFFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family: Georgia, serif;}
+  body{background:var(--crema);color:var(--marrone);line-height:1.6;}
+  header{background:var(--bianco);text-align:center;padding:30px 20px;border-bottom:3px solid var(--oro);}
+  .logo{max-width:320px;margin:0 auto 15px;}
+  nav a{margin:0 12px;color:var(--marrone);text-decoration:none;font-weight:bold;}
+  nav a:hover{color:var(--oro);}
+  section{max-width:1000px;margin:40px auto;padding:0 20px;}
+  h1,h2{color:var(--marrone);margin-bottom:15px;text-align:center;}
+  h2{border-bottom:2px solid var(--oro);padding-bottom:8px;}
+  .card{background:var(--bianco);padding:20px;border-radius:12px;margin:20px 0;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+  .portfolio img{width:100%;border-radius:8px;border:2px solid var(--oro);}
+  .btn{display:inline-block;background:var(--oro);color:var(--bianco);padding:10px 20px;border-radius:8px;text-decoration:none;margin-top:10px;}
+  .btn:hover{opacity:0.9;}
+  .social img{width:32px;margin:0 8px;vertical-align:middle;}
+  footer{background:var(--marrone);color:var(--crema);text-align:center;padding:30px 20px;margin-top:40px;}
+  footer a{color:var(--oro);}
+  #privacy{display:none;}
+  #privacy:target{display:block;}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png" alt="Alan & Rose Logo" class="logo">
+  <h1>Alan & Rose</h1>
+  <p>"Il nostro nome nasce dopo la nostra unione di coppia. Offriamo servizi per velocizzare i sistemi di lavoro nel digitale."</p>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#servizi">Servizi</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#shop">Shop</a>
+    <a href="#privacy">Privacy</a>
+  </nav>
+</header>
+
+<main id="home">
+  <section class="card">
+    <h2>Chi Siamo</h2>
+    <p>Dopo molti anni di esperienza, Alan & Rose uniscono competenze digitali, creative e musicali per aiutare aziende, privati e ministeri a crescere online.</p>
+  </section>
+
+  <section id="servizi">
+    <h2>I NOSTRI SERVIZI</h2>
+    <div class="grid">
+      <div class="card">🎨 <b>Grafica</b><br>Loghi, Banner, Locandine in Raster e Vettoriale</div>
+      <div class="card">💻 <b>Web</b><br>Siti Vetrina ed E-Commerce in Dropshipping</div>
+      <div class="card">📱 <b>Social</b><br>Gestione Pagine e Canali per amplificare i follower</div>
+      <div class="card">🎵 <b>Musica</b><br>Produzione, Recording, Mixing/Mastering Gospel</div>
+      <div class="card">🎬 <b>Video</b><br>Foto e Video Editing 3D con Hitfilm e Photoshop</div>
+      <div class="card">🛠 <b>IT</b><br>Assistenza PC/Tablet, SPID, INPS, Google My Business</div>
+    </div>
+    
+    <div class="card">
+      <h3>Modulo Richiesta Servizi</h3>
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" width="100%" height="600" frameborder="0">Caricamento…</iframe>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <h2>Portfolio</h2>
+    <div class="grid portfolio">
+      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png" alt="Dj Marcello Morf"><p>Dj Marcello Morf - Radio Web H24</p></div>
+      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png" alt="Donna Proverbiale"><p>Donna Proverbiale - Blog Cristiano</p></div>
+      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" alt="Detercoop"><p>Detercoop - Prodotti Igienico Sanitari</p></div>
+      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png" alt="3Fase"><p>3Fase - Gruppo Musicale</p></div>
+      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png" alt="Colorlab"><p>Colorlab - Laboratorio Fotografico</p></div>
+      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto"><p>A Viso Scoperto - Canale YouTube</p></div>
+    </div>
+  </section>
+
+  <section id="shop">
+    <h2>Shop</h2>
+    <div class="grid">
+      <div class="card">
+        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/j4you.png" alt="J4You Shop" style="width:100%;border-radius:8px;">
+        <h3>J4You Shop</h3><p>E-commerce Cristiano</p>
+        <a href="https://www.redbubble.com/people/alan-rose/shop" class="btn">Visita Shop</a>
+      </div>
+      <div class="card">
+        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/sicil%20street.png" alt="Sicil Street" style="width:100%;border-radius:8px;">
+        <h3>Sicil Street</h3><p>Streetwear ispirato alla Sicilia</p>
+        <a href="https://www.redbubble.com/people/alan-rose/shop" class="btn">Visita Shop</a>
+      </div>
+      <div class="card">
+        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Dona%20ora%20PAypal.png" alt="Donazione" style="width:100%;border-radius:8px;">
+        <h3>Sostienici</h3><p>Una donazione ci aiuta a crescere</p>
+        <a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" class="btn">Dona Ora</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy" class="card">
+    <h2>Privacy Policy</h2>
+    <p><b>Ultimo aggiornamento:</b> 02/08/2026</p>
+    <h3>1. Titolare</h3><p>Alan & Rose - Email: alanrose.13@yahoo.com</p>
+    <h3>2. Dati Raccolti</h3><p>Tramite i Moduli Google per Servizi, Recensioni e Upload File raccogliamo nome, email e dati inseriti volontariamente.</p>
+    <h3>3. Newsletter</h3><p>Iscrizione: <a href="https://alan-e-rose-13.voxmail.it/user/register">alan-e-rose-13.voxmail.it</a></p>
+    <h3>4. Cookie</h3><p>Utilizziamo cookie tecnici e di terze parti. Puoi gestire le preferenze.</p>
+    <h3>5. I tuoi diritti</h3><p>Accesso, rettifica, cancellazione: scrivici via email.</p>
+    <a href="#home" class="btn">← Torna alla Home</a>
+  </section>
+</main>
+
+<footer>
+  <p><b>Contatti:</b> <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
+  <div class="social">
+    <a href="https://www.facebook.com/alanroseworship"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png"></a>
+    <a href="https://www.instagram.com/alanrose.13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png"></a>
+    <a href="https://www.tiktok.com/@alan.rose13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png"></a>
+    <a href="https://youtube.com/@Alan_e_Rose"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png"></a>
+    <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png"></a>
+    <a href="https://soundcloud.com/alanrose-13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png"></a>
+    <a href="https://linktr.ee/alan.rose"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png"></a>
+    <a href="https://www.threads.com/@alanrose.13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png"></a>
+  </div>
+  <p style="margin-top:15px;">© 2026 Alan & Rose - Tutti i diritti riservati</p>
+</footer>
+
+</body>
+</html>
