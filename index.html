@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alan & Rose - Servizi Digitali e Creativi</title>
+<!-- AOS per animazioni scroll -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
 <style>
   :root{
     --crema: #F5F1E8;
@@ -12,20 +15,23 @@
     --bianco: #FFFFFF;
   }
   *{margin:0;padding:0;box-sizing:border-box;font-family: Georgia, serif;}
-  body{background:var(--crema);color:var(--marrone);line-height:1.6;}
-  header{background:var(--bianco);text-align:center;padding:30px 20px;border-bottom:3px solid var(--oro);}
-  .logo{max-width:320px;margin:0 auto 15px;}
-  nav a{margin:0 12px;color:var(--marrone);text-decoration:none;font-weight:bold;}
+  html{scroll-behavior: smooth;} /* scorrimento fluido */
+  body{background:var(--crema);color:var(--marrone);line-height:1.6; overflow-x:hidden;}
+  header{background:var(--bianco);text-align:center;padding:40px 20px;border-bottom:3px solid var(--oro);}
+  .logo{max-width:350px;width:90%;margin:0 auto 20px; display:block;}
+  nav a{margin:0 12px;color:var(--marrone);text-decoration:none;font-weight:bold;transition:0.3s;}
   nav a:hover{color:var(--oro);}
-  section{max-width:1000px;margin:40px auto;padding:0 20px;}
+  section{max-width:1000px;margin:60px auto;padding:0 20px;}
   h1,h2{color:var(--marrone);margin-bottom:15px;text-align:center;}
   h2{border-bottom:2px solid var(--oro);padding-bottom:8px;}
-  .card{background:var(--bianco);padding:20px;border-radius:12px;margin:20px 0;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+  .card{background:var(--bianco);padding:20px;border-radius:12px;margin:20px 0;box-shadow:0 4px 12px rgba(0,0,0,0.06);transition: transform 0.3s;}
+  .card:hover{transform: translateY(-5px);}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
   .portfolio img{width:100%;border-radius:8px;border:2px solid var(--oro);}
-  .btn{display:inline-block;background:var(--oro);color:var(--bianco);padding:10px 20px;border-radius:8px;text-decoration:none;margin-top:10px;}
-  .btn:hover{opacity:0.9;}
-  .social img{width:32px;margin:0 8px;vertical-align:middle;}
+  .btn{display:inline-block;background:var(--oro);color:var(--bianco);padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:10px;transition:0.3s;}
+  .btn:hover{background:var(--marrone);transform: scale(1.05);}
+  .social img{width:32px;margin:0 8px;vertical-align:middle;transition:0.3s;}
+  .social img:hover{transform: scale(1.2);}
   footer{background:var(--marrone);color:var(--crema);text-align:center;padding:30px 20px;margin-top:40px;}
   footer a{color:var(--oro);}
   #privacy{display:none;}
@@ -34,11 +40,12 @@
 </head>
 <body>
 
-<header>
-  <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png" alt="Alan & Rose Logo" class="logo">
-  <h1>Alan & Rose</h1>
-  <p>"Il nostro nome nasce dopo la nostra unione di coppia. Offriamo servizi per velocizzare i sistemi di lavoro nel digitale."</p>
-  <nav>
+<header data-aos="fade-down" data-aos-duration="1000">
+  <!-- LOGO -->
+  <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/logo-ar.png" alt="Alan & Rose Logo" class="logo" data-aos="zoom-in" data-aos-delay="300">
+  <h1 data-aos="fade-up" data-aos-delay="500">Alan & Rose</h1>
+  <p data-aos="fade-up" data-aos-delay="700">"Il nostro nome nasce dopo la nostra unione di coppia. Offriamo servizi per velocizzare i sistemi di lavoro nel digitale."</p>
+  <nav data-aos="fade-up" data-aos-delay="900">
     <a href="#home">Home</a>
     <a href="#servizi">Servizi</a>
     <a href="#portfolio">Portfolio</a>
@@ -48,54 +55,54 @@
 </header>
 
 <main id="home">
-  <section class="card">
+  <section class="card" data-aos="fade-up">
     <h2>Chi Siamo</h2>
     <p>Dopo molti anni di esperienza, Alan & Rose uniscono competenze digitali, creative e musicali per aiutare aziende, privati e ministeri a crescere online.</p>
   </section>
 
   <section id="servizi">
-    <h2>I NOSTRI SERVIZI</h2>
+    <h2 data-aos="fade-up">I NOSTRI SERVIZI</h2>
     <div class="grid">
-      <div class="card">🎨 <b>Grafica</b><br>Loghi, Banner, Locandine in Raster e Vettoriale</div>
-      <div class="card">💻 <b>Web</b><br>Siti Vetrina ed E-Commerce in Dropshipping</div>
-      <div class="card">📱 <b>Social</b><br>Gestione Pagine e Canali per amplificare i follower</div>
-      <div class="card">🎵 <b>Musica</b><br>Produzione, Recording, Mixing/Mastering Gospel</div>
-      <div class="card">🎬 <b>Video</b><br>Foto e Video Editing 3D con Hitfilm e Photoshop</div>
-      <div class="card">🛠 <b>IT</b><br>Assistenza PC/Tablet, SPID, INPS, Google My Business</div>
+      <div class="card" data-aos="fade-up" data-aos-delay="100">🎨 <b>Grafica</b><br>Loghi, Banner, Locandine in Raster e Vettoriale</div>
+      <div class="card" data-aos="fade-up" data-aos-delay="200">💻 <b>Web</b><br>Siti Vetrina ed E-Commerce in Dropshipping</div>
+      <div class="card" data-aos="fade-up" data-aos-delay="300">📱 <b>Social</b><br>Gestione Pagine e Canali per amplificare i follower</div>
+      <div class="card" data-aos="fade-up" data-aos-delay="400">🎵 <b>Musica</b><br>Produzione, Recording, Mixing/Mastering Gospel</div>
+      <div class="card" data-aos="fade-up" data-aos-delay="500">🎬 <b>Video</b><br>Foto e Video Editing 3D con Hitfilm e Photoshop</div>
+      <div class="card" data-aos="fade-up" data-aos-delay="600">🛠 <b>IT</b><br>Assistenza PC/Tablet, SPID, INPS, Google My Business</div>
     </div>
     
-    <div class="card">
+    <div class="card" data-aos="zoom-in">
       <h3>Modulo Richiesta Servizi</h3>
       <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" width="100%" height="600" frameborder="0">Caricamento…</iframe>
     </div>
   </section>
 
   <section id="portfolio">
-    <h2>Portfolio</h2>
+    <h2 data-aos="fade-up">Portfolio</h2>
     <div class="grid portfolio">
-      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png" alt="Dj Marcello Morf"><p>Dj Marcello Morf - Radio Web H24</p></div>
-      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png" alt="Donna Proverbiale"><p>Donna Proverbiale - Blog Cristiano</p></div>
-      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" alt="Detercoop"><p>Detercoop - Prodotti Igienico Sanitari</p></div>
-      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png" alt="3Fase"><p>3Fase - Gruppo Musicale</p></div>
-      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png" alt="Colorlab"><p>Colorlab - Laboratorio Fotografico</p></div>
-      <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto"><p>A Viso Scoperto - Canale YouTube</p></div>
+      <div class="card" data-aos="flip-left"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png" alt="Dj Marcello Morf"><p>Dj Marcello Morf - Radio Web H24</p></div>
+      <div class="card" data-aos="flip-left" data-aos-delay="100"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png" alt="Donna Proverbiale"><p>Donna Proverbiale - Blog Cristiano</p></div>
+      <div class="card" data-aos="flip-left" data-aos-delay="200"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" alt="Detercoop"><p>Detercoop - Prodotti Igienico Sanitari</p></div>
+      <div class="card" data-aos="flip-left" data-aos-delay="300"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png" alt="3Fase"><p>3Fase - Gruppo Musicale</p></div>
+      <div class="card" data-aos="flip-left" data-aos-delay="400"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png" alt="Colorlab"><p>Colorlab - Laboratorio Fotografico</p></div>
+      <div class="card" data-aos="flip-left" data-aos-delay="500"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto"><p>A Viso Scoperto - Canale YouTube</p></div>
     </div>
   </section>
 
   <section id="shop">
-    <h2>Shop</h2>
+    <h2 data-aos="fade-up">Shop</h2>
     <div class="grid">
-      <div class="card">
+      <div class="card" data-aos="zoom-in-up">
         <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/j4you.png" alt="J4You Shop" style="width:100%;border-radius:8px;">
         <h3>J4You Shop</h3><p>E-commerce Cristiano</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop" class="btn">Visita Shop</a>
       </div>
-      <div class="card">
+      <div class="card" data-aos="zoom-in-up" data-aos-delay="200">
         <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/sicil%20street.png" alt="Sicil Street" style="width:100%;border-radius:8px;">
         <h3>Sicil Street</h3><p>Streetwear ispirato alla Sicilia</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop" class="btn">Visita Shop</a>
       </div>
-      <div class="card">
+      <div class="card" data-aos="zoom-in-up" data-aos-delay="400">
         <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Dona%20ora%20PAypal.png" alt="Donazione" style="width:100%;border-radius:8px;">
         <h3>Sostienici</h3><p>Una donazione ci aiuta a crescere</p>
         <a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" class="btn">Dona Ora</a>
@@ -103,7 +110,7 @@
     </div>
   </section>
 
-  <section id="privacy" class="card">
+  <section id="privacy" class="card" data-aos="fade-up">
     <h2>Privacy Policy</h2>
     <p><b>Ultimo aggiornamento:</b> 02/08/2026</p>
     <h3>1. Titolare</h3><p>Alan & Rose - Email: alanrose.13@yahoo.com</p>
@@ -115,7 +122,7 @@
   </section>
 </main>
 
-<footer>
+<footer data-aos="fade-up">
   <p><b>Contatti:</b> <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
   <div class="social">
     <a href="https://www.facebook.com/alanroseworship"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png"></a>
@@ -129,6 +136,16 @@
   </div>
   <p style="margin-top:15px;">© 2026 Alan & Rose - Tutti i diritti riservati</p>
 </footer>
+
+<!-- SCRIPT AOS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800, // durata animazione
+    once: true, // anima solo la prima volta
+    offset: 100 // parte 100px prima
+  });
+</script>
 
 </body>
 </html>
