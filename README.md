@@ -41,7 +41,7 @@ Creiamo siti web eleganti, produzioni musicali e strategie digitali per far cres
 | Crema | `#F5F1E8` |
 
 ### 📬 Contatti
-- **Email**: info@alanerose.com
+- **Email**: alanrose.13@yahoo.com
 - **Sito**: https://alanrose13.github.io/
 
 ---
