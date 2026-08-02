@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alan & Rose - Servizi Digitali e Creativi</title>
-<!-- AOS per animazioni scroll -->
+
+<!-- 1. COOKIE SCRIPT - DEVE STARE PER PRIMO -->
+<script type="text/javascript" charset="UTF-8" src="//cdn.cookie-script.com/s/4232f347cecd559d868ed8703d8175e7.js"></script>
+
+<!-- 2. AOS per animazioni scroll -->
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 <style>
@@ -15,7 +19,7 @@
     --bianco: #FFFFFF;
   }
   *{margin:0;padding:0;box-sizing:border-box;font-family: Georgia, serif;}
-  html{scroll-behavior: smooth;} /* scorrimento fluido */
+  html{scroll-behavior: smooth;}
   body{background:var(--crema);color:var(--marrone);line-height:1.6; overflow-x:hidden;}
   header{background:var(--bianco);text-align:center;padding:40px 20px;border-bottom:3px solid var(--oro);}
   .logo{max-width:350px;width:90%;margin:0 auto 20px; display:block;}
@@ -36,12 +40,12 @@
   footer a{color:var(--oro);}
   #privacy{display:none;}
   #privacy:target{display:block;}
+  ul{margin-left:20px;}
 </style>
 </head>
 <body>
 
 <header data-aos="fade-down" data-aos-duration="1000">
-  <!-- LOGO -->
   <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/logo-ar.png" alt="Alan & Rose Logo" class="logo" data-aos="zoom-in" data-aos-delay="300">
   <h1 data-aos="fade-up" data-aos-delay="500">Alan & Rose</h1>
   <p data-aos="fade-up" data-aos-delay="700">"Il nostro nome nasce dopo la nostra unione di coppia. Offriamo servizi per velocizzare i sistemi di lavoro nel digitale."</p>
@@ -73,7 +77,8 @@
     
     <div class="card" data-aos="zoom-in">
       <h3>Modulo Richiesta Servizi</h3>
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" width="100%" height="600" frameborder="0">Caricamento…</iframe>
+      <!-- CookieScript bloccherà questo form finché non accettano -->
+      <iframe data-cookiecategory="marketing" src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" width="100%" height="600" frameborder="0">Caricamento…</iframe>
     </div>
   </section>
 
@@ -113,11 +118,12 @@
   <section id="privacy" class="card" data-aos="fade-up">
     <h2>Privacy Policy</h2>
     <p><b>Ultimo aggiornamento:</b> 02/08/2026</p>
-    <h3>1. Titolare</h3><p>Alan & Rose - Email: alanrose.13@yahoo.com</p>
-    <h3>2. Dati Raccolti</h3><p>Tramite i Moduli Google per Servizi, Recensioni e Upload File raccogliamo nome, email e dati inseriti volontariamente.</p>
-    <h3>3. Newsletter</h3><p>Iscrizione: <a href="https://alan-e-rose-13.voxmail.it/user/register">alan-e-rose-13.voxmail.it</a></p>
-    <h3>4. Cookie</h3><p>Utilizziamo cookie tecnici e di terze parti. Puoi gestire le preferenze.</p>
-    <h3>5. I tuoi diritti</h3><p>Accesso, rettifica, cancellazione: scrivici via email.</p>
+    <h3>1. Titolare del Trattamento</h3><p>Alan & Rose - Email: alanrose.13@yahoo.com</p>
+    <h3>2. Dati Personali Raccolti</h3>
+    <ul><li>Moduli Google: nome, email, telefono, messaggio</li><li>Newsletter Voxmail: email</li><li>Dati di navigazione: raccolti solo con consenso</li></ul>
+    <h3>3. Finalità</h3><p>Rispondere alle richieste, erogare servizi, inviare newsletter, migliorare il sito.</p>
+    <h3>4. Cookie</h3><p>Utilizziamo cookie tecnici e di terze parti. La gestione avviene tramite banner CookieScript. Puoi accettare o rifiutare.</p>
+    <h3>5. I Tuoi Diritti - GDPR</h3><p>Accesso, rettifica, cancellazione. Scrivici a alanrose.13@yahoo.com</p>
     <a href="#home" class="btn">← Torna alla Home</a>
   </section>
 </main>
@@ -125,14 +131,14 @@
 <footer data-aos="fade-up">
   <p><b>Contatti:</b> <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
   <div class="social">
-    <a href="https://www.facebook.com/alanroseworship"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png"></a>
-    <a href="https://www.instagram.com/alanrose.13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png"></a>
-    <a href="https://www.tiktok.com/@alan.rose13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png"></a>
-    <a href="https://youtube.com/@Alan_e_Rose"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png"></a>
-    <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png"></a>
-    <a href="https://soundcloud.com/alanrose-13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png"></a>
-    <a href="https://linktr.ee/alan.rose"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png"></a>
-    <a href="https://www.threads.com/@alanrose.13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png"></a>
+    <a href="https://www.facebook.com/alanroseworship"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png" alt="Facebook"></a>
+    <a href="https://www.instagram.com/alanrose.13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png" alt="Instagram"></a>
+    <a href="https://www.tiktok.com/@alan.rose13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
+    <a href="https://youtube.com/@Alan_e_Rose"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png" alt="YouTube"></a>
+    <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png" alt="Spotify"></a>
+    <a href="https://soundcloud.com/alanrose-13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png" alt="SoundCloud"></a>
+    <a href="https://linktr.ee/alan.rose"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png" alt="Linktree"></a>
+    <a href="https://www.threads.com/@alanrose.13"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png" alt="Threads"></a>
   </div>
   <p style="margin-top:15px;">© 2026 Alan & Rose - Tutti i diritti riservati</p>
 </footer>
@@ -140,11 +146,7 @@
 <!-- SCRIPT AOS -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  AOS.init({
-    duration: 800, // durata animazione
-    once: true, // anima solo la prima volta
-    offset: 100 // parte 100px prima
-  });
+  AOS.init({ duration: 800, once: true, offset: 100 });
 </script>
 
 </body>
