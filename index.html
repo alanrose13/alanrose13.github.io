@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alan & Rose - Servizi Digitali e Creativi</title>
-<meta name="description" content="Alan & Rose - Servizi digitali, creativi e musicali. Scopri i nostri progetti.">
+<title>Alan & Rose - Servizi Digitali, Creativi e Musicali</title>
+<meta name="description" content="Alan & Rose - Creazione siti, grafica, musica gospel, consulenza e shop. Un duo creativo con 10+ anni di esperienza.">
 
-<!-- 1. COOKIE SCRIPT - DEVE ESSERE PRIMO -->
+<!-- 1. COOKIE SCRIPT -->
 <script type="text/javascript" charset="UTF-8" src="//cdn.cookie-script.com/s/4232f347cecd559d868ed8703d8175e7.js"></script>
 
 <!-- 2. FAVICON -->
@@ -29,67 +29,150 @@ h2{color:#4A3B2A;text-align:center;margin-bottom:30px;}
 .card{background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-top:4px solid #C9A961;}
 .btn{display:inline-block;background:#C9A961;color:#4A3B2A;padding:12px 25px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:10px;}
 .btn:hover{background:#4A3B2A;color:#F5F1E8;}
+.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.portfolio-item{background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+.socials a{margin:0 10px;color:#4A3B2A;text-decoration:none;font-weight:bold;}
 footer{background:#4A3B2A;color:#F5F1E8;text-align:center;padding:30px 20px;margin-top:40px;}
+iframe{max-width:100%;border:none;border-radius:8px;}
 </style>
 </head>
 <body>
 
 <header data-aos="fade-down" data-aos-duration="1000">
-  <!-- BANNER VIDEO -->
   <video autoplay muted loop playsinline class="logo" data-aos="zoom-in" data-aos-delay="300">
     <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
     <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Banner%20Gif.gif" alt="Alan & Rose Banner">
   </video>
 
   <h1 data-aos="fade-up" data-aos-delay="500">Alan & Rose</h1>
-  <p data-aos="fade-up" data-aos-delay="700">Servizi Digitali e Creativi</p>
+  <p data-aos="fade-up" data-aos-delay="700">Servizi Digitali, Creativi e Musicali</p>
   <nav data-aos="fade-up" data-aos-delay="900">
-    <a href="#servizi">Servizi</a>
     <a href="#chi-siamo">Chi Siamo</a>
+    <a href="#servizi">Servizi</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#shop">Shop</a>
     <a href="#contatti">Contatti</a>
   </nav>
 </header>
+
+<section id="chi-siamo" data-aos="fade-up">
+  <h2>Chi Siamo</h2>
+  <p style="text-align:center;max-width:800px;margin:auto;">Il nostro nome "Alan&Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale, per chi vuole ampliare il proprio settore e per chi vuole apparire professionalmente ai clienti.</p>
+</section>
 
 <section id="servizi" data-aos="fade-up">
   <h2>I Nostri Servizi</h2>
   <div class="cards">
     <div class="card" data-aos="fade-up" data-aos-delay="100">
-      <h3>Web & Design</h3>
-      <p>Siti web eleganti e veloci per far crescere il tuo brand.</p>
-      <a href="#" class="btn">Scopri</a>
+      <h3>Grafica & Web</h3>
+      <p>Creazione Loghi, Banner, Locandine in Raster e Vettoriale con Photoshop e Illustrator. Siti Web Vetrina ed E-Commerce in Dropshipping.</p>
     </div>
     <div class="card" data-aos="fade-up" data-aos-delay="200">
       <h3>Musica & Produzione</h3>
-      <p>Produzioni musicali e contenuti creativi su misura.</p>
-      <a href="#" class="btn">Ascolta</a>
+      <p>Produzione Musicale, Testi, Recording, Mixing/Mastering Gospel. Editore per pubblicazione digital store, copyright e gestione royalties.</p>
     </div>
     <div class="card" data-aos="fade-up" data-aos-delay="300">
-      <h3>Consulenza</h3>
-      <p>Strategie digitali per far crescere il tuo progetto.</p>
-      <a href="#" class="btn">Contattaci</a>
+      <h3>Social & Consulenza</h3>
+      <p>Gestione Pagine e Canali Social per amplificazione follower. Gestione Google My Business/Maps. Assistenza PC/Tablet/Smartphone.</p>
+    </div>
+    <div class="card" data-aos="fade-up" data-aos-delay="400">
+      <h3>Video & Altri Servizi</h3>
+      <p>Foto e Video Editing 3D con Hitfilm e Photoshop. Creazione SPID, pratiche INPS, punti patente. Speaker e creatore web radio.</p>
     </div>
   </div>
 </section>
 
-<section id="chi-siamo" data-aos="fade-up">
-  <h2>Chi Siamo</h2>
-  <p>Siamo Alan & Rose. Un duo creativo che unisce tecnologia, arte e passione per creare progetti unici.</p>
+<section id="portfolio" data-aos="fade-up">
+  <h2>Portfolio & Progetti</h2>
+  <div class="portfolio-grid">
+    <div class="portfolio-item">
+      <h3>Dj Marcello Morf</h3>
+      <p>Sito per DJ con portfolio, radio web h24 e stanze chat. Servizi in Campania.</p>
+      <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
+    </div>
+    <div class="portfolio-item">
+      <h3>Donna Proverbiale</h3>
+      <p>Blog per donne che ricercano la loro identità in Cristo. Con store online.</p>
+      <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
+    </div>
+    <div class="portfolio-item">
+      <h3>Detercoop</h3>
+      <p>Sito per professionisti igiene/sanitario e ambientale. Prodotti professionali.</p>
+      <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
+    </div>
+    <div class="portfolio-item">
+      <h3>3Fase</h3>
+      <p>Sito vetrina per gruppo musicale con repertorio e playlist artisti.</p>
+      <a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a>
+    </div>
+    <div class="portfolio-item">
+      <h3>Colorlab</h3>
+      <p>Laboratorio fotografico stampa professionale e realizzazione album.</p>
+      <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
+    </div>
+    <div class="portfolio-item">
+      <h3>SicilStreet</h3>
+      <p>E-commerce dropshipping che celebra la Sicilia con grafiche originali streetwear.</p>
+      <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Visita</a>
+    </div>
+  </div>
+</section>
+
+<section id="shop" data-aos="fade-up">
+  <h2>Shop</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>A&R Shop</h3>
+      <p>Abbigliamento, articoli per la casa e oggettistica varia.</p>
+      <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra nello Shop</a>
+    </div>
+    <div class="card">
+      <h3>J4You Shop</h3>
+      <p>E-commerce Cristiano con abbigliamento e articoli vari.</p>
+      <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra nello Shop</a>
+    </div>
+  </div>
+</section>
+
+<section id="musica" data-aos="fade-up">
+  <h2>Ascoltaci</h2>
+  <div class="socials" style="text-align:center;">
+    <a href="https://soundcloud.com/alanrose-13" target="_blank">Soundcloud</a>
+    <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank">Spotify</a>
+    <a href="https://www.youtube.com/@Alan_e_Rose" target="_blank">YouTube</a>
+    <a href="https://www.youtube.com/@avisoscoperto332" target="_blank">A Viso Scoperto</a>
+  </div>
 </section>
 
 <section id="contatti" data-aos="fade-up">
-  <h2>Contatti</h2>
-  <p>Scrivici per iniziare il tuo progetto: <a href="mailto:info@alanerose.com">info@alanerose.com</a></p>
+  <h2>Contatti & Moduli</h2>
+  <p style="text-align:center;">Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
+  
+  <h3 style="text-align:center;margin-top:30px;">Richiedi un Servizio</h3>
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" width="100%" height="1400">Caricamento…</iframe>
+  
+  <h3 style="text-align:center;margin-top:30px;">Lascia una Recensione</h3>
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvKffFt_9kk0oiSA/viewform?embedded=true" width="100%" height="998">Caricamento…</iframe>
+
+  <h3 style="text-align:center;margin-top:30px;">Newsletter</h3>
+  <p style="text-align:center;"><a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Iscriviti</a></p>
+
+  <h3 style="text-align:center;margin-top:30px;">Supportaci</h3>
+  <p style="text-align:center;"><a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank" class="btn">Dona con PayPal</a></p>
 </section>
 
 <footer>
+  <p>Seguici: 
+    <a href="https://www.facebook.com/alanroseworship" style="color:#C9A961;">Facebook</a> | 
+    <a href="https://www.instagram.com/alanrose.13" style="color:#C9A961;">Instagram</a> | 
+    <a href="https://www.tiktok.com/@alan.rose13" style="color:#C9A961;">TikTok</a> | 
+    <a href="https://www.threads.com/@alanrose.13" style="color:#C9A961;">Threads</a>
+  </p>
   <p>© 2026 Alan & Rose. Tutti i diritti riservati.</p>
 </footer>
 
-<!-- AOS SCRIPT -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-  AOS.init();
-</script>
+<script>AOS.init();</script>
 
 </body>
 </html>
