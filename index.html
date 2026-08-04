@@ -40,18 +40,14 @@ h2{text-align:center;margin-bottom:30px;border-bottom:2px solid var(--o);padding
 .soc{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
 .soc img{width:40px;transition:.3s}
 .soc img:hover{transform:scale(1.15)}
-
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
-.gallery-item{border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:.8s ease}
-.gallery-item:hover{transform:translateY(-5px)}
-.gallery-item img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.social-title{text-align:center;font-size:1.2rem;margin-bottom:15px;font-weight:600;color:var(--o)}
 
 /* FORM E COMMENTI TRASPARENTI */
 .transparent-box{background:var(--bg);padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);backdrop-filter:blur(8px)}
-.transparent-box iframe{width:100%;border:0;border-radius:8px;overflow:hidden}
+.transparent-box iframe{width:100%;border:0;border-radius:8px;overflow:hidden;height:1200px}
 .transparent-box *{font-family:'Segoe UI',sans-serif!important}
 
-/* NASCONDI SCROLLBAR */
+/* NASCONDI SCROLLBAR DA TUTTI GLI IFRAME */
 iframe{scrollbar-width:none}
 iframe::-webkit-scrollbar{display:none}
 
@@ -65,10 +61,11 @@ footer a:hover{text-decoration:underline}
 @keyframes pop{from{transform:scale(.9);opacity:0} to{transform:scale(1);opacity:1}}
 
 @media(max-width:768px){
- .bv{height:40vh}
- .lo{width:55px;height:55px}
+.bv{height:40vh}
+.lo{width:55px;height:55px}
   section{padding:40px 15px}
   h2{font-size:1.5rem}
+ .transparent-box iframe{height:1400px}
 }
 </style>
 </head>
@@ -82,7 +79,7 @@ footer a:hover{text-decoration:underline}
 </video>
 <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
   <a href="#chi">Chi Siamo</a><a href="#serv">Servizi</a><a href="#port">Portfolio</a>
-  <a href="#mus">Musica</a><a href="#gallery">Galleria</a><a href="#shop">Shop</a>
+  <a href="#mus">Musica</a><a href="#shop">Shop</a>
   <a href="#cont">Contatti</a><a onclick="openPopup()">Privacy</a>
 </nav>
 </header>
@@ -129,20 +126,13 @@ footer a:hover{text-decoration:underline}
 <section id="mus" data-aos="fade-up" data-aos-duration="1500" data-aos-easing="ease-in-out">
   <h2>Ascoltaci</h2>
   <div class="embed"><iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="352" allow="autoplay; encrypted-media"></iframe></div>
+  <div class="social-title">SOCIAL</div>
   <div class="soc">
     <a href="https://soundcloud.com/alanrose-13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png"></a>
     <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png"></a>
     <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png"></a>
     <a href="https://linktr.ee/alan.rose" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png"></a>
     <a href="https://www.threads.com/@alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png"></a>
-  </div>
-</section>
-
-<section id="gallery" data-aos="fade-up" data-aos-duration="1500" data-aos-easing="ease-in-out">
-  <h2>Galleria</h2>
-  <div class="gallery-grid">
-    <div class="gallery-item" data-aos="fade-right" data-aos-delay="100"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto"></div>
-    <div class="gallery-item" data-aos="fade-left" data-aos-delay="200"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png" alt="Linktree Alan Rose"></div>
   </div>
 </section>
 
@@ -160,7 +150,7 @@ footer a:hover{text-decoration:underline}
   <p style="text-align:center;margin-bottom:20px">Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
 
   <h3 style="text-align:center;margin-bottom:15px">Modulo Servizi</h3>
-  <div class="transparent-box"><iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" height="1200"></iframe></div>
+  <div class="transparent-box"><iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe></div>
 
   <h3 style="text-align:center;margin:30px 0 15px 0">Modulo Recensioni</h3>
   <div class="transparent-box">
@@ -175,6 +165,7 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <footer data-aos="fade" data-aos-duration="1500">
+  <div class="social-title">SOCIAL</div>
   <div class="soc">
     <a href="https://www.facebook.com/alanroseworship" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png"></a>
     <a href="https://www.instagram.com/alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png"></a>
