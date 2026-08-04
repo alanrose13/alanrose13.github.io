@@ -1,15 +1,14 @@
 <!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Alan & Rose - Servizi Digitali, Creativi e Musicali</title><meta name="description" content="Alan & Rose - Creazione siti, grafica, musica gospel, consulenza e shop.">
+<title>Alan & Rose - Servizi Digitali, Creativi e Musicali</title><meta name="description" content="Alan & Rose - Creazione siti, grafica, musica gospel, consulenza e shop. Servizi a prestazione occasionale.">
 <script src="//cdn.cookie-script.com/s/4232f347cecd559d868ed8703d8175e7.js" charset="UTF-8"></script>
 <link rel="icon" href="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Favicon%20Circular%20no%20Bord.png">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <style>
 :root{--o:#C9A961;--m:#4A3B2A;--c:#F5F1E8}
 *{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--c);color:var(--m);scroll-behavior:smooth}
-header{position:relative;text-align:center;color:#fff}.bv{width:100%;height:55vh;object-fit:cover;display:block}
-.lo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:280px;width:75%;animation:f 6s ease-in-out infinite}
-@keyframes f{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-50%) translateY(-6px)}}
-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:12px;background:rgba(0,0,0,.2)}
+header{position:relative}.bv{width:100%;height:55vh;object-fit:cover;display:block}
+.lo{position:absolute;top:15px;left:15px;width:70px;height:70px;object-fit:cover;border-radius:8px;z-index:10;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:12px;background:rgba(0,0,0,.6)}
 nav a{color:#fff;text-decoration:none;font-weight:700;padding:6px 10px;border-radius:5px;font-size:.9rem;cursor:pointer}
 section{padding:45px 18px;max-width:1000px;margin:auto}h2{text-align:center;margin-bottom:20px;border-bottom:2px solid var(--o);padding-bottom:8px;font-size:1.6rem}
 .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
@@ -19,92 +18,91 @@ section{padding:45px 18px;max-width:1000px;margin:auto}h2{text-align:center;marg
 .p-item{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:.6s ease}
 .p-item:hover{transform:scale(1.01)}.p-item img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}.p-c{padding:15px}
 .embed{margin:20px 0;border-radius:10px;overflow:hidden}.soc{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.soc img{width:36px}
-.comments{background:#fff;padding:18px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-footer{background:var(--m);color:var(--c);text-align:center;padding:20px 15px;font-size:.9rem}footer a{color:var(--o);cursor:pointer}
+.comments{background:#fff;padding:18px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);min-height:200px}
+footer{background:var(--m);color:var(--c);text-align:center;padding:25px 15px;font-size:.85rem}footer a{color:var(--o);cursor:pointer;text-decoration:none;margin:0 5px}
 iframe{width:100%;border:0;border-radius:8px}
-
-/* POPUP PRIVACY */
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;display:none;justify-content:center;align-items:center;animation:fad 0.4s ease}
-.popup-box{background:#fff;max-width:900px;width:90%;max-height:85vh;overflow-y:auto;border-radius:12px;padding:30px;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.popup-close{position:absolute;top:12px;right:18px;font-size:28px;color:var(--m);cursor:pointer;font-weight:bold}
-.popup-box h2{border-bottom:2px solid var(--o)}.popup-box ul{padding-left:20px}
-@keyframes fad{from{opacity:0}to{opacity:1}}
-@media(max-width:768px){.bv{height:40vh}section{padding:30px 12px}}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:9999;display:none;justify-content:center;align-items:center}
+.popup-box{background:#fff;max-width:800px;width:90%;max-height:80vh;overflow-y:auto;border-radius:8px;padding:30px 25px;position:relative;animation:pop.3s ease}
+.popup-close{position:absolute;top:10px;right:15px;font-size:30px;color:#555;cursor:pointer;font-weight:300;line-height:1}
+@keyframes pop{from{transform:scale(.9);opacity:0} to{transform:scale(1);opacity:1}}
+@media(max-width:768px){.bv{height:40vh}.lo{width:55px;height:55px}}
 </style></head><body>
 
 <header data-aos="fade" data-aos-duration="1200">
+<img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" class="lo" alt="Alan & Rose">
 <video autoplay muted loop playsinline class="bv"><source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
 <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Banner%20Gif.gif" alt="Banner"></video>
-<img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" class="lo" alt="Alan & Rose" data-aos="zoom-in" data-aos-delay="400" data-aos-duration="1200">
-<nav data-aos="fade-up" data-aos-delay="600" data-aos-duration="1200">
+<nav data-aos="fade-up" data-aos-delay="400" data-aos-duration="1200">
 <a href="#chi">Chi Siamo</a><a href="#serv">Servizi</a><a href="#port">Portfolio</a><a href="#mus">Musica</a><a href="#shop">Shop</a><a href="#cont">Contatti</a><a onclick="openPopup()">Privacy</a></nav>
 </header>
 
-<section id="chi" data-aos="fade-up" data-aos-duration="1200"><h2>Chi Siamo</h2><p style="text-align:center;max-width:750px;margin:auto;">Il nostro nome "Alan&Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi.</p></section>
+<section id="chi" data-aos="fade-up" data-aos-duration="1200"><h2>Chi Siamo</h2><p style="text-align:center;max-width:750px;margin:auto;">Il nostro nome "Alan&Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale.</p></section>
 
-<section id="serv" data-aos="fade-up" data-aos-duration="1200"><h2>I Nostri Servizi</h2><div class="g">
-<div class="card"><h3>Grafica & Web</h3><p>Creazione Loghi, Banner, Locandine. Siti Web Vetrina ed E-Commerce Dropshipping.</p></div>
-<div class="card"><h3>Musica & Editoria</h3><p>Produzione Musicale Gospel. Editore digital store e gestione royalties.</p></div>
-<div class="card"><h3>Social & Consulenza</h3><p>Gestione Social, Google My Business. Assistenza PC. SPID, INPS.</p></div>
-<div class="card"><h3>Video & Web Radio</h3><p>Foto e Video Editing 3D. Speaker e creatore Web Radio.</p></div></div>
-<p style="text-align:center;margin-top:20px"><a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Newsletter</a> <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a></p></section>
+<section id="serv" data-aos="fade-up" data-aos-duration="1200"><h2>I NOSTRI SERVIZI</h2><div class="g">
+<div class="card"><h3>Grafica & Web</h3><p>Creazione Loghi, Banner, Locandine ecc. in Raster e Vettoriale (Photoshop e Illustrator);<br>Creazione Siti Web Vetrina ed E-Commerce in Dropshipping ;<br>Gestione / Cura Pagine e Canali Social per amplificazione dei follower ;<br>Editore (pubblicazione digital store,copyright e gestione royalties) ;</p></div>
+<div class="card"><h3>Musica & Produzione</h3><p>Produzione Musicale, Testi, Recording, Ingegneri Mixing / Mastering (Solo generi Gospel) ;<br>Foto e Video Editing 3D ( Hitfilm, Photoshop) ;<br>Informatico assistenza software Pc / Tablet e Smartphone ;<br>Gestione Scheda Attività Google My Business / Maps ;</p></div>
+<div class="card"><h3>Consulenza & Altro</h3><p>Receptionist e creazioni fogli di calcolo, word, o pdf da compilazione utilizzo pacchetti Office e Adobe ;<br>Creazione SPID o recupero credenziali + info su punti patente e pratiche INPS ;<br>Speaker e creatore web radio e dj edit audio.</p></div>
+</div>
+<p style="text-align:center;margin-top:20px"><a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Iscriviti alla Newsletter</a> <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Modulo Upload File</a></p></section>
 
 <section id="port" data-aos="fade-up" data-aos-duration="1200"><h2>Portfolio</h2><div class="p-grid">
-<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png"><div class="p-c"><h3>Dj Marcello Morf</h3><a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a></div></div>
-<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png"><div class="p-c"><h3>Donna Proverbiale</h3><a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a></div></div>
-<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png"><div class="p-c"><h3>Detercoop</h3><a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a></div></div>
-<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png"><div class="p-c"><h3>3Fase</h3><a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a></div></div>
-<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png"><div class="p-c"><h3>Colorlab</h3><a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a></div></div>
+<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png"><div class="p-c"><h3>Dj Marcello Morf (Sito Web)</h3><p>Un sito realizzato per un deejay che offre principalmente i suoi servizi in Campania tra le zone marittime di Portici (NA) ma che a volte và in trasferta per i suoi clienti. All' interno oltre il suo portfolio troverete una radio web attiva h24 con stanze di chat pubbliche e private, ma non solo! Tanto intrattenimento ti attende, cosa aspetti?</p><a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a></div></div>
+<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png"><div class="p-c"><h3>Donna Proverbiale (Sito Web)</h3><p>Questo Blog è stato realizzato per le donne che ricercano il volto di Dio e la loro identità in Cristo Gesù. Quì troverete articoli che parlano dell'essere Donna e soprattutto dell'essere Figlia di DIO. Potete trovare nello store online tanti articoli e oggettistica legati al blog. Shalom e Benedizioni ✞</p><a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a></div></div>
+<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png"><div class="p-c"><h3>Detercoop (Sito Web)</h3><p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale, dedito ad attività, aziende e privati. Accedi al sito per trovare un alternativa ai prodotti che usi quotidianamente risparmiando ed ottenendo materiali professionali.</p><a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a></div></div>
+<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png"><div class="p-c"><h3>3Fase (Sito Web Vetrina)</h3><p>Un sito realizzato per questo gruppo musicale dove si trovano canzoni molto carine e orecchiabili. Dentro troverete il repertorio di ogni artista quasi come fosse una playlist</p><a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a></div></div>
+<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png"><div class="p-c"><h3>Colorlab (Sito Web)</h3><p>Un sito realizzato per un laboratorio fotografico di stampa professionale e realizzazione di album. Troverete molte illustrazioni demo con modelli e la chat operatori per i professionisti del settore della fotografia.</p><a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a></div></div>
+<div class="p-item"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/avisoscoperto.png"><div class="p-c"><h3>A Viso Scoperto (Canale YouTube)</h3><p>Un Canale YouTube della Chiesa dove Alan guidato dalla forza dello Spirito Santo realizzò l'arrangiamento di questi cantici e nè partecipò in uno anche vocalmente (Via Verità e Vita) per innalzare il nome di Dio.</p><a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a></div></div>
 </div></section>
 
 <section id="mus" data-aos="fade-up" data-aos-duration="1200"><h2>Ascoltaci</h2>
-<div class="embed"><iframe src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="352"></iframe></div>
-<div class="embed"><iframe height="315" src="https://www.youtube.com/embed/P_iVknuC9po" allowfullscreen></iframe></div>
+<div class="embed"><iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="352" allow="autoplay; encrypted-media"></iframe></div>
 <div class="soc"><a href="https://soundcloud.com/alanrose-13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png"></a>
 <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png"></a>
-<a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png"></a></div></section>
+<a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png"></a>
+<a href="https://linktr.ee/alan.rose" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png"></a>
+<a href="https://www.threads.com/@alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png"></a></div></section>
 
 <section id="shop" data-aos="fade-up" data-aos-duration="1200"><h2>Shop</h2><div class="g">
-<div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>A&R Shop</h3><a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a></div>
-<div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>J4You Shop</h3><a href="https://www.redbubble.com/people/alan-rose/shop" target="_blank" class="btn">Entra</a></div>
-<div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>SicilStreet</h3><a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a></div>
+<div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>A&R Shop (E-commerce)</h3><p>Il nostro e-commerce con abbigliamento, articoli per la casa e oggettistica varia!</p><a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a></div>
+<div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>J4You Shop (E-commerce)</h3><p>Il nostro e-commerce Cristiano con abbigliamento, articoli per la casa e oggettistica varia!</p>
+<div class="embed"><iframe height="250" src="https://www.youtube.com/embed/P_iVknuC9po" title="Video Demo" allowfullscreen></iframe></div>
+<a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a></div>
+<div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>SicilStreet (E-commerce)</h3><p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell’isola. Uno stile urban e contemporaneo che unisce l’amore per la terra siciliana con la libertà della moda streetwear.</p><a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a></div>
 </div></section>
 
 <section id="cont" data-aos="fade-up" data-aos-duration="1200"><h2>Contatti & Commenti</h2>
 <p style="text-align:center">Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
-<h3 style="text-align:center">Richiedi Servizio</h3><iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" height="1200"></iframe>
-
-<h3 style="text-align:center">Lascia un Commento</h3>
+<h3 style="text-align:center">Modulo Servizi</h3><iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" height="1200"></iframe>
+<h3 style="text-align:center">Modulo Recensioni</h3>
 <div class="comments">
-<!-- begin www.htmlcommentbox.com -->
- <div id="HCB_comment_box"><a href="http://www.htmlcommentbox.com">Widget</a> is loading comments...</div>
- <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
- <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24e55sMVGqH3nUfdST8kzoB%2F"+"&opts=16798&num=10&ts=1785846593436");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
-<!-- end www.htmlcommentbox.com -->
+<div id="HCB_comment_box"></div>
+<script type="text/javascript">hcb_user = {};hcb_user.PAGE = window.location.href;(function(){var s=document.createElement("script");s.setAttribute("type","text/javascript");s.setAttribute("src", "https://www.htmlcommentbox.com/jread?page="+encodeURIComponent(hcb_user.PAGE)+"&mod=%241%24wq1rdBcg%24e55sMVGqH3nUfdST8kzoB%2F"+"&opts=16798&num=10");document.getElementsByTagName("head")[0].appendChild(s);})();</script>
+<link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
 </div>
-
-<h3 style="text-align:center">Supportaci</h3><p style="text-align:center"><a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Dona%20ora%20PAypal.png" style="max-width:160px"></a></p></section>
+<h3 style="text-align:center">Donazione Paypal</h3><p style="text-align:center">Grazie per aver visitato il nostro sito web! Se vuoi, puoi lasciare una donazione, ci aiuterà a gestire i costi di spese,tempistiche e investimenti per un servizio sempre più professionale. Te nè saremo ugualmente grati indifferentemente</p>
+<p style="text-align:center"><a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Dona%20ora%20PAypal.png" style="max-width:160px"></a></p></section>
 
 <footer>
 <div class="soc"><a href="https://www.facebook.com/alanroseworship" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png"></a>
 <a href="https://www.instagram.com/alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png"></a>
 <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png"></a></div>
-<p><a onclick="openPopup()">Privacy Policy</a> | <a onclick="openPopup()">Cookie</a> | <a onclick="openPopup()">Diritti GDPR</a></p>
-<p>© 2026 Alan & Rose</p></footer>
+<p><a onclick="openPopup()">Privacy Policy</a> | <a onclick="openPopup()">Cookie Policy</a> | <a onclick="openPopup()">Termini di Servizio</a></p>
+<p><strong>Alan & Rose</strong> | Servizi forniti a Prestazione Occasionale ai sensi art.2222 c.c.<br>© 2026 Tutti i diritti riservati</p>
+</footer>
 
-<!-- POPUP PRIVACY BOX -->
 <div id="privacyPopup" class="popup-overlay" onclick="closePopup()">
 <div class="popup-box" onclick="event.stopPropagation()">
 <span class="popup-close" onclick="closePopup()">×</span>
-<h2>Privacy Policy</h2>
+<h2>Privacy Policy e Cookie Policy - GDPR UE 2016/679</h2>
 <p><strong>Ultimo aggiornamento: 04 Agosto 2026</strong></p>
-<h3>1. Titolare del Trattamento</h3><p><strong>Alan & Rose</strong><br>Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
-<h3>2. Dati Raccolti e Finalità - Art.6 GDPR</h3><ul>
-<li><strong>Dati di contatto:</strong> Nome, Email da Form e Newsletter. Finalità: rispondere, preventivi. Base: Consenso.</li>
-<li><strong>Dati di navigazione:</strong> IP, browser anonimi. Finalità: statistiche. Base: Legittimo Interesse.</li>
-<li><strong>Dati Pagamento:</strong> Gestiti da PayPal. Noi non li salviamo.</li></ul>
-<h3>3. Cookie Policy</h3><p>Usiamo <strong>Cookie-Script</strong> per il consenso. Cookie Tecnici e di Terze Parti: Google, YouTube, Spotify, PayPal, Redbubble.</p>
-<h3>4. Diritti dell'Interessato</h3><p>Diritto di Accesso, Rettifica, Cancellazione. Scrivi a: alanrose.13@yahoo.com. Reclamo: www.garanteprivacy.it</p>
+<h3>1. Titolare del Trattamento</h3><p><strong>Titolare:</strong> Alan & Rose<br><strong>Email di contatto:</strong> <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a><br><em>I servizi sono forniti in regime di prestazione occasionale ai sensi dell'art.2222 c.c. Nessuna sede fisica.</em></p>
+<h3>2. Dati Raccolti, Finalità e Base Giuridica Art.6 GDPR</h3><ul>
+<li><strong>Dati di contatto:</strong> Nome, Email da Form Google e Newsletter Voxmail. Finalità: Rispondere a richieste, preventivi, invio newsletter. Base: Consenso Art.6.1.a</li>
+<li><strong>Dati di navigazione:</strong> IP anonimizzato, cookie tecnici tramite Cookie-Script. Finalità: Statistiche anonime, sicurezza. Base: Legittimo Interesse Art.6.1.f</li>
+<li><strong>Dati di pagamento:</strong> Gestiti esclusivamente da PayPal e Redbubble. Noi non trattiamo e non salviamo dati di carte.</li></ul>
+<h3>3. Cookie Policy</h3><p>Questo sito utilizza <strong>Cookie-Script</strong> per la gestione del consenso. Tipologie: Cookie Tecnici, Analitici, di Profilazione di Terze Parti: Google, YouTube, Spotify, PayPal, Redbubble, HTMLCommentBox. Puoi revocare il consenso in qualsiasi momento dal banner in basso.</p>
+<h3>4. Conservazione e Trasferimento Dati</h3><p>I dati da form sono conservati fino alla revoca del consenso. Dati anonimi di navigazione max 26 mesi. Alcuni servizi di terze parti possono trasferire dati negli USA in base alle Clausole Contrattuali Standard approvate dalla Commissione UE.</p>
+<h3>5. Diritti dell'Interessato Art.15-22 GDPR</h3><p>Hai diritto di Accesso, Rettifica, Cancellazione, Limitazione, Portabilità, Opposizione, Revoca consenso. Per esercitarli scrivi a: alanrose.13@yahoo.com. Hai diritto di reclamo al Garante: www.garanteprivacy.it</p>
 </div></div>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
