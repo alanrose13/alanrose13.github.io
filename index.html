@@ -29,7 +29,7 @@ h2{text-align:center;margin-bottom:30px;border-bottom:2px solid var(--o);padding
 .card{background:var(--bg);padding:22px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);transition:.8s ease;backdrop-filter:blur(8px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box}
 .card:hover{transform:translateY(-5px);box-shadow:0 6px 16px rgba(201,169,97,.2)}
 
-.btn{display:inline-block;background:var(--o);color:var(--m);padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:.95rem;transition:.3s}
+.btn{display:inline-block;background:var(--o);color:var(--m);padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:.95rem;transition:.3s;margin:5px}
 .btn:hover{background:var(--m);color:#fff}
 
 .p-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
@@ -47,7 +47,7 @@ h2{text-align:center;margin-bottom:30px;border-bottom:2px solid var(--o);padding
 .soc img:hover{transform:scale(1.15)}
 .social-title{text-align:center;font-size:1.2rem;margin-bottom:15px;font-weight:600;color:var(--o)}
 
-.cta-box{text-align:center;margin-top:40px;padding:25px;background:var(--bg);border-radius:12px;backdrop-filter:blur(8px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box}
+.cta-box{text-align:center;margin-top:40px;padding:25px;background:var(--bg);border-radius:12px;backdrop-filter:blur(8px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 
 /* FORM E COMMENTI TRASPARENTI */
 .transparent-box{background:var(--bg);padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);backdrop-filter:blur(8px);overflow:hidden;border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box}
@@ -68,7 +68,7 @@ footer a:hover{text-decoration:underline}
 @keyframes pop{from{transform:scale(.9);opacity:0} to{transform:scale(1);opacity:1}}
 
 @media(max-width:768px){
-.bv{height:40vh}
+.bv{height:auto;aspect-ratio:16/9} /* FIX TAGLIO BANNER MOBILE */
 .lo{width:55px;height:55px}
   section{padding:40px 15px}
   h2{font-size:1.5rem}
@@ -113,9 +113,11 @@ footer a:hover{text-decoration:underline}
     </div>
   </div>
 
+  <!-- 3 PULSANTI INSIEME CON GAP -->
   <div class="cta-box" data-aos="fade-up" data-aos-delay="400">
     <a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Iscriviti alla Newsletter</a>
     <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Modulo Upload File</a>
+    <a href="https://htmlcommentbox.com" target="_blank" class="btn">Modulo Recensioni</a> <!-- LINK DAL PDF -->
   </div>
 </section>
 
@@ -125,8 +127,8 @@ footer a:hover{text-decoration:underline}
     <div class="p-item" data-aos="zoom-in" data-aos-delay="100"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png"><div class="p-c"><h3>Dj Marcello Morf</h3><p>Un sito realizzato per un deejay che offre principalmente i suoi servizi in Campania tra le zone marittime di Portici (NA)...</p><a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a></div></div>
     <div class="p-item" data-aos="zoom-in" data-aos-delay="200"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png"><div class="p-c"><h3>Donna Proverbiale</h3><p>Questo Blog è stato realizzato per le donne che ricercano il volto di Dio e la loro identità in Cristo Gesù...</p><a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a></div></div>
 
-    <!-- IMMAGINE DETERCOOP SISTEMATA CON CONTAIN -->
-    <div class="p-item" data-aos="zoom-in" data-aos-delay="300"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" style="object-fit:contain;background:#fff;padding:10px"><div class="p-c"><h3>Detercoop</h3><p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale...</p><a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a></div></div>
+    <!-- LOGO DETERCOOP IN TRASPARENZA -->
+    <div class="p-item" data-aos="zoom-in" data-aos-delay="300"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px"><div class="p-c"><h3>Detercoop</h3><p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale...</p><a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a></div></div>
 
     <div class="p-item" data-aos="zoom-in" data-aos-delay="100"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png"><div class="p-c"><h3>3Fase</h3><p>Un sito realizzato per questo gruppo musicale dove si trovano canzoni molto carine e orecchiabili...</p><a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a></div></div>
     <div class="p-item" data-aos="zoom-in" data-aos-delay="200"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png"><div class="p-c"><h3>Colorlab</h3><p>Un sito realizzato per un laboratorio fotografico di stampa professionale e realizzazione di album...</p><a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a></div></div>
@@ -164,17 +166,6 @@ footer a:hover{text-decoration:underline}
 
   <h3 style="text-align:center;margin-bottom:15px">Modulo Servizi</h3>
   <div class="transparent-box"><iframe src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe></div>
-
-  <h3 style="text-align:center;margin:30px 0 15px 0">Modulo Recensioni</h3>
-  <div class="transparent-box">
-    <div id="HCB_comment_box"></div>
-    <script type="text/javascript">hcb_user = {};hcb_user.PAGE = window.location.href;(function(){var s=document.createElement("script");s.setAttribute("type","text/javascript");s.setAttribute("src", "https://www.htmlcommentbox.com/jread?page="+encodeURIComponent(hcb_user.PAGE)+"&mod=%241%24wq1rdBcg%24e55sMVGqH3nUfdST8kzoB%2F"+"&opts=16798&num=10");document.getElementsByTagName("head")[0].appendChild(s);})();</script>
-    <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
-  </div>
-
-  <h3 style="text-align:center;margin:30px 0 15px 0">Donazione Paypal</h3>
-  <p style="text-align:center">Grazie per aver visitato il nostro sito web! Se vuoi, puoi lasciare una donazione, ci aiuterà a gestire i costi di spese,tempistiche e investimenti per un servizio sempre più professionale. Te nè saremo ugualmente grati indifferentemente</p>
-  <p style="text-align:center;margin-top:15px"><a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Dona%20ora%20PAypal.png" style="max-width:160px"></a></p>
 </section>
 
 <footer data-aos="fade" data-aos-duration="1500">
@@ -184,7 +175,8 @@ footer a:hover{text-decoration:underline}
     <a href="https://www.instagram.com/alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png"></a>
     <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png"></a>
   </div>
-  <p style="margin-top:15px"><a onclick="openPopup()">Privacy Policy</a> | <a onclick="openPopup()">Cookie Policy</a> | <a onclick="openPopup()">Termini di Servizio</a></p>
+  <!-- LINK PER COOKIE SCRIPT -->
+  <p style="margin-top:15px"><a href="#" onclick="openPopup();return false;">Privacy Policy</a> | <a href="#" onclick="openPopup();return false;">Cookie Policy</a> | <a href="#" onclick="openPopup();return false;">Termini di Servizio</a></p>
   <p style="margin-top:10px"><strong>Alan & Rose</strong> | Servizi forniti a Prestazione Occasionale ai sensi art.2222 c.c.<br>© 2026 Tutti i diritti riservati</p>
 </footer>
 
