@@ -24,14 +24,19 @@ section{padding:60px 20px;max-width:1100px;margin:auto}
 h2{text-align:center;margin-bottom:30px;border-bottom:2px solid var(--o);padding-bottom:10px;font-size:1.8rem;font-weight:600}
 
 .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.card{background:var(--bg);padding:22px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);border-top:3px solid var(--o);transition:.8s ease;backdrop-filter:blur(8px)}
-.card:hover{transform:translateY(-5px)}
+
+/* BORDO GRADIENTE ORO TRASPARENTE */
+.card{background:var(--bg);padding:22px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);transition:.8s ease;backdrop-filter:blur(8px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box}
+.card:hover{transform:translateY(-5px);box-shadow:0 6px 16px rgba(201,169,97,.2)}
+
 .btn{display:inline-block;background:var(--o);color:var(--m);padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:.95rem;transition:.3s}
 .btn:hover{background:var(--m);color:#fff}
 
 .p-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
-.p-item{background:var(--bg);border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.05);transition:.8s ease;backdrop-filter:blur(8px)}
-.p-item:hover{transform:scale(1.02)}
+
+/* BORDO GRADIENTE ANCHE SU PORTFOLIO */
+.p-item{background:var(--bg);border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.05);transition:.8s ease;backdrop-filter:blur(8px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box}
+.p-item:hover{transform:scale(1.02);box-shadow:0 6px 16px rgba(201,169,97,.2)}
 .p-item img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
 .p-c{padding:18px}
 .p-c h3{margin-bottom:8px}
@@ -42,12 +47,14 @@ h2{text-align:center;margin-bottom:30px;border-bottom:2px solid var(--o);padding
 .soc img:hover{transform:scale(1.15)}
 .social-title{text-align:center;font-size:1.2rem;margin-bottom:15px;font-weight:600;color:var(--o)}
 
+.cta-box{text-align:center;margin-top:40px;padding:25px;background:var(--bg);border-radius:12px;backdrop-filter:blur(8px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box}
+
 /* FORM E COMMENTI TRASPARENTI */
-.transparent-box{background:var(--bg);padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);backdrop-filter:blur(8px)}
-.transparent-box iframe{width:100%;border:0;border-radius:8px;overflow:hidden;height:1200px}
+.transparent-box{background:var(--bg);padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);backdrop-filter:blur(8px);overflow:hidden;border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,0.8),rgba(201,169,97,0.1));background-origin:border-box;background-clip:padding-box,border-box}
+.transparent-box iframe{width:100%;border:0;border-radius:8px;overflow:hidden;height:1500px}
 .transparent-box *{font-family:'Segoe UI',sans-serif!important}
 
-/* NASCONDI SCROLLBAR DA TUTTI GLI IFRAME */
+/* NASCONDI SCROLLBAR */
 iframe{scrollbar-width:none}
 iframe::-webkit-scrollbar{display:none}
 
@@ -65,7 +72,7 @@ footer a:hover{text-decoration:underline}
 .lo{width:55px;height:55px}
   section{padding:40px 15px}
   h2{font-size:1.5rem}
- .transparent-box iframe{height:1400px}
+.transparent-box iframe{height:1700px}
 }
 </style>
 </head>
@@ -105,10 +112,11 @@ footer a:hover{text-decoration:underline}
       <p>Receptionist e creazioni fogli di calcolo, word, o pdf da compilazione utilizzo pacchetti Office e Adobe ;<br>Creazione SPID o recupero credenziali + info su punti patente e pratiche INPS ;<br>Speaker e creatore web radio e dj edit audio.</p>
     </div>
   </div>
-  <p style="text-align:center;margin-top:25px">
+
+  <div class="cta-box" data-aos="fade-up" data-aos-delay="400">
     <a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Iscriviti alla Newsletter</a>
     <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Modulo Upload File</a>
-  </p>
+  </div>
 </section>
 
 <section id="port" data-aos="fade-up" data-aos-duration="1500" data-aos-easing="ease-in-out">
@@ -116,7 +124,10 @@ footer a:hover{text-decoration:underline}
   <div class="p-grid">
     <div class="p-item" data-aos="zoom-in" data-aos-delay="100"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png"><div class="p-c"><h3>Dj Marcello Morf</h3><p>Un sito realizzato per un deejay che offre principalmente i suoi servizi in Campania tra le zone marittime di Portici (NA)...</p><a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a></div></div>
     <div class="p-item" data-aos="zoom-in" data-aos-delay="200"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png"><div class="p-c"><h3>Donna Proverbiale</h3><p>Questo Blog è stato realizzato per le donne che ricercano il volto di Dio e la loro identità in Cristo Gesù...</p><a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a></div></div>
-    <div class="p-item" data-aos="zoom-in" data-aos-delay="300"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png"><div class="p-c"><h3>Detercoop</h3><p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale...</p><a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a></div></div>
+
+    <!-- IMMAGINE DETERCOOP SISTEMATA CON CONTAIN -->
+    <div class="p-item" data-aos="zoom-in" data-aos-delay="300"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" style="object-fit:contain;background:#fff;padding:10px"><div class="p-c"><h3>Detercoop</h3><p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale...</p><a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a></div></div>
+
     <div class="p-item" data-aos="zoom-in" data-aos-delay="100"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png"><div class="p-c"><h3>3Fase</h3><p>Un sito realizzato per questo gruppo musicale dove si trovano canzoni molto carine e orecchiabili...</p><a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a></div></div>
     <div class="p-item" data-aos="zoom-in" data-aos-delay="200"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png"><div class="p-c"><h3>Colorlab</h3><p>Un sito realizzato per un laboratorio fotografico di stampa professionale e realizzazione di album...</p><a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a></div></div>
     <div class="p-item" data-aos="zoom-in" data-aos-delay="300"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png"><div class="p-c"><h3>A Viso Scoperto</h3><p>Un Canale YouTube della Chiesa dove Alan guidato dalla forza dello Spirito Santo realizzò l'arrangiamento...</p><a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a></div></div>
@@ -125,7 +136,9 @@ footer a:hover{text-decoration:underline}
 
 <section id="mus" data-aos="fade-up" data-aos-duration="1500" data-aos-easing="ease-in-out">
   <h2>Ascoltaci</h2>
-  <div class="embed"><iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="352" allow="autoplay; encrypted-media"></iframe></div>
+  <div class="embed"><iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe></div>
+  <div class="embed"><iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></div>
+  <div class="embed"><iframe width="100%" height="400" src="https://www.youtube.com/embed?listType=user_uploads&list=Alan_e_Rose" title="YouTube Channel" allowfullscreen></iframe></div>
   <div class="social-title">SOCIAL</div>
   <div class="soc">
     <a href="https://soundcloud.com/alanrose-13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png"></a>
