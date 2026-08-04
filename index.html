@@ -5,49 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alan & Rose - Shop</title>
 
-  <!-- CSS - PER FAR VEDERE SEMPRE LO SFONDO -->
-  <style>
-    * { box-sizing: border-box; }
-    body { 
-      margin: 0; 
-      font-family: Arial, sans-serif; 
-      background: #0d0d0d url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><circle cx="10" cy="10" r="1.5" fill="%23ffffff" opacity="0.08"/><circle cx="30" cy="30" r="1.5" fill="%23ffffff" opacity="0.08"/><circle cx="50" cy="50" r="1.5" fill="%23ffffff" opacity="0.08"/></svg>');
-      color: #fff; 
-    }
-    
-    header { padding: 40px 20px; text-align: center; }
-    header h1 { margin: 0; font-size: 32px; }
-    main { padding: 40px 20px; max-width: 900px; margin: auto; text-align: center; }
-    .btn-prodotto {
-      background: #4CAF50;
-      color: #fff;
-      padding: 15px 30px;
-      border-radius: 8px;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    footer { padding: 20px; text-align: center; border-top: 1px solid #333; font-size: 14px; }
-    footer a { color: #4CAF50; text-decoration: none; margin: 0 10px; cursor: pointer; }
-  </style>
-
-  <!-- 1. GOOGLE CONSENT MODE v2 - DEVE STARE PRIMA DI TUTTO -->
+  <!-- 1. GOOGLE CONSENT MODE v2 -->
   <script data-cookieconsent="ignore">
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag("consent", "default", {
-        ad_personalization: "denied",
-        ad_storage: "denied",
-        ad_user_data: "denied",
-        analytics_storage: "denied",
-        functionality_storage: "denied",
-        personalization_storage: "denied",
-        security_storage: "granted",
-        wait_for_update: 500,
+        ad_personalization: "denied", ad_storage: "denied", ad_user_data: "denied",
+        analytics_storage: "denied", functionality_storage: "denied", 
+        personalization_storage: "denied", security_storage: "granted", wait_for_update: 500,
     });
     gtag("set", "ads_data_redaction", true);
-    gtag("set", "url_passthrough", false);
   </script>
 
   <!-- 2. COOKIEBOT - BLOCCO AUTOMATICO -->
@@ -58,39 +25,102 @@
     type="text/javascript">
   </script>
 
+  <!-- 3. CSS SITO + BANNER -->
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      margin: 0; 
+      font-family: Arial, sans-serif; 
+      background: #0d0d0d url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><circle cx="10" cy="10" r="1.5" fill="%23ffffff" opacity="0.08"/><circle cx="30" cy="30" r="1.5" fill="%23ffffff" opacity="0.08"/><circle cx="50" cy="50" r="1.5" fill="%23ffffff" opacity="0.08"/></svg>');
+      color: #fff; 
+    }
+    
+    header { padding: 60px 20px; text-align: center; background: linear-gradient(180deg, #1a1a1a, #0d0d0d); }
+    header h1 { margin: 0; font-size: 40px; color: #4CAF50; }
+    header p { font-size: 18px; color: #ccc; }
+
+    .container { max-width: 1100px; margin: auto; padding: 40px 20px; }
+    
+    .prodotti { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .card img { width: 100%; border-radius: 8px; }
+    .card h3 { margin: 15px 0 10px; }
+    .prezzo { font-size: 22px; color: #4CAF50; font-weight: bold; }
+    .btn {
+      background: #4CAF50;
+      color: #fff;
+      padding: 12px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    footer { padding: 30px 20px; text-align: center; border-top: 1px solid #333; font-size: 14px; background: #111; }
+    footer a { color: #4CAF50; text-decoration: none; margin: 0 10px; cursor: pointer; }
+  </style>
+
 </head>
 <body>
 
-  <!-- IL TUO SITO -->
+  <!-- HEADER -->
   <header>
     <h1>Alan & Rose</h1>
-    <p>Shop Dropshipping</p>
+    <p>Shop Dropshipping - Spedizione 24/48h</p>
   </header>
 
-  <main>
-    <h2>Prodotto in evidenza</h2>
-    <p>Spedizione in 24/48h</p>
-    <a href="#" class="btn-prodotto">Acquista Ora</a>
+  <!-- CONTENUTO SITO -->
+  <div class="container">
+    <h2 style="text-align:center;">Prodotti in Evidenza</h2>
     
-    <!-- ESEMPIO: METTI QUI PAYPAL, META PIXEL, GOOGLE ADS -->
-    <!-- VENGONO BLOCCATI AUTO FINO AL CONSENSO -->
-    <script type="text/plain" data-cookieconsent="marketing">
-      console.log("Marketing attivato dopo consenso");
-    </script>
+    <div class="prodotti">
+      <div class="card">
+        <img src="https://via.placeholder.com/300x300/333/fff?text=Prodotto+1" alt="Prodotto 1">
+        <h3>Prodotto Top</h3>
+        <p>Descrizione breve del prodotto dropshipping</p>
+        <div class="prezzo">€29.90</div>
+        <button class="btn">Acquista Ora</button>
+      </div>
 
-    <!-- ESEMPIO: GOOGLE ANALYTICS -->
-    <script type="text/plain" data-cookieconsent="statistics">
-      console.log("Analytics attivati dopo consenso");
-    </script>
-  </main>
+      <div class="card">
+        <img src="https://via.placeholder.com/300x300/333/fff?text=Prodotto+2" alt="Prodotto 2">
+        <h3>Best Seller</h3>
+        <p>Descrizione breve del prodotto dropshipping</p>
+        <div class="prezzo">€39.90</div>
+        <button class="btn">Acquista Ora</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- FOOTER -->
   <footer>
     <a href="/privacy.html">Privacy Policy</a> | 
     <a href="/cookie-policy.html">Cookie Policy</a> | 
     <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
+    <p style="margin-top:15px; color:#777;">© 2026 Alan & Rose. Tutti i diritti riservati.</p>
   </footer>
 
-  <!-- 3. DICHIARAZIONE COOKIE - PAGINA PER VEDERE TUTTI I COOKIE -->
+  <!-- 4. SCRIPT DA BLOCCARE - PAYPAL, PIXEL, ANALYTICS -->
+  <script type="text/plain" data-cookieconsent="marketing">
+    // QUI DENTRO METTI: PAYPAL, META PIXEL, GOOGLE ADS
+    console.log("Marketing attivato dopo consenso");
+  </script>
+
+  <script type="text/plain" data-cookieconsent="statistics">
+    // QUI DENTRO METTI: GOOGLE ANALYTICS
+    console.log("Analytics attivati dopo consenso");
+  </script>
+
+  <!-- 5. DICHIARAZIONE COOKIE -->
   <script id="CookieDeclaration" 
     src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js" 
     type="text/javascript" 
