@@ -1,227 +1,618 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Alan & Rose - Servizi Digitali, Creativi e Musicali</title>
-<meta name="description" content="Alan & Rose - Creazione siti, grafica, musica gospel, consulenza e shop. Servizi a prestazione occasionale.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Alan & Rose - Servizi Digitali, Creativi e Musicali</title>
+  <meta name="description" content="Alan & Rose - Creazione siti, grafica, musica gospel, consulenza e shop. Servizi a prestazione occasionale.">
 
-<!-- 1. GOOGLE CONSENT MODE v2 -->
-<script data-cookieconsent="ignore">
+  <!-- 1. GOOGLE CONSENT MODE v2 -->
+  <script data-cookieconsent="ignore">
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag("consent", "default", {
-        ad_personalization: "denied", ad_storage: "denied", ad_user_data: "denied",
-        analytics_storage: "denied", functionality_storage: "denied",
-        personalization_storage: "denied", security_storage: "granted", wait_for_update: 500,
+      ad_personalization: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      analytics_storage: "denied",
+      functionality_storage: "denied",
+      personalization_storage: "denied",
+      security_storage: "granted",
+      wait_for_update: 500
     });
-</script>
+  </script>
 
-<!-- 2. COOKIEBOT -->
-<script id="Cookiebot"
-  src="https://consent.cookiebot.com/uc.js"
-  data-cbid="8334eeb1-c7e5-4724-9092-2141fc8d67aa"
-  data-blockingmode="auto"
-  type="text/javascript">
-</script>
+  <!-- 2. COOKIEBOT -->
+  <script id="Cookiebot"
+    src="https://consent.cookiebot.com/uc.js"
+    data-cbid="8334eeb1-c7e5-4724-9092-2141fc8d67aa"
+    data-blockingmode="auto"
+    type="text/javascript">
+  </script>
 
-<link rel="icon" href="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Favicon%20Circular%20no%20Bord.png">
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<style>
-:root{--o:#C9A961;--m:#4A3B2A;--c:#F5F1E8;--bg:rgba(245,241,232,0.9)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;color:var(--m);scroll-behavior:smooth;line-height:1.6;background:linear-gradient(135deg,#F5F1E8 0%,#EDE6DA 100%),url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A961' fill-opacity='0.04'%3E%3Cpath d='M30 0c1.1 0 2.9 2 2v4c0 1.1-.9 2-2 2s-2-.9-2-2V2c0-1.1.9-2 2-2zm0 52c1.1 0 2.9 2 2v4c0 1.1-.9 2-2 2s-2-.9-2-2v-4c0-1.1.9-2 2-2zM0 30c0-1.1.9-2 2-2h4c1.1 0 2.9 2 2s-.9 2-2 2H2c-1.1 0-2-.9-2-2zm52 0c0-1.1.9-2 2-2h4c1.1 0 2.9 2 2s-.9 2-2 2h-4c-1.1 0-2-.9-2-2zM15.5 15.5c.8-.8 2.1-.8 2.9 0l2.8 2.8c.8.8.8 2.1 0 2.9s-2.1.8-2.9 0l-2.8-2.8c-.8-.8-.8-2.1 0-2.9zm28 28c.8-.8 2.1-.8 2.9 0l2.8 2.8c.8.8.8 2.1 0 2.9s-2.1.8-2.9 0l-2.8-2.8c-.8-.8-.8-2.1 0-2.9zM15.5 43.5c-.8-.8-.8-2.1 0-2.9l2.8-2.8c.8-.8 2.1-.8 2.9 0s.8 2.1 0 2.9l-2.8 2.8c-.8.8-2.1.8-2.9 0zm28-28c-.8-.8-.8-2.1 0-2.9l2.8-2.8c.8-.8 2.1-.8 2.9 0s.8 2.1 0 2.9l-2.8 2.8c-.8.8-2.1.8-2.9 0zM9 25c1.1 0 2.9 2 2s-.9 2-2 2-2-.9-2-2.9-2 2-2zm42 0c1.1 0 2.9 2 2s-.9 2-2 2-2-.9-2-2.9-2 2-2zM25 9c1.1 0 2.9 2 2s-.9 2-2 2-2-.9-2-2.9-2 2-2zm0 42c1.1 0 2.9 2 2s-.9 2-2 2-2-.9-2-2.9-2 2-2z'/%3E%3C/g%3E%3C/svg%3E");background-attachment:fixed;}
-header{position:relative}
-.bv{width:100%;height:55vh;object-fit:cover;display:block}
-.lo{position:absolute;top:15px;left:15px;width:70px;height:70px;object-fit:cover;border-radius:8px;z-index:10;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)}
-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:14px;background:rgba(0,0,0,.6);backdrop-filter:blur(5px)}
-nav a{color:#fff;text-decoration:none;font-weight:600;padding:6px 12px;border-radius:5px;font-size:.95rem;cursor:pointer;transition:.3s}
-nav a:hover{background:var(--o);color:var(--m)}
-section{padding:60px 20px;max-width:1100px;margin:auto}
-h2{text-align:center;margin-bottom:30px;border-bottom:2px solid var(--o);padding-bottom:10px;font-size:1.8rem;font-weight:600}
-.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.card{background:var(--bg);padding:22px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);transition:.3s ease;backdrop-filter:blur(10px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,.8),rgba(201,169,97,.1));background-origin:border-box;background-clip:padding-box,border-box}
-.card:hover{transform:translateY(-5px);box-shadow:0 6px 16px rgba(201,169,97,.2)}
-.btn{display:inline-block;background:var(--o);color:var(--m);padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:.95rem;transition:.3s;margin:5px}
-.btn:hover{background:var(--m);color:#fff}
-.p-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
-.p-item{background:var(--bg);border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.05);transition:.3s ease;backdrop-filter:blur(10px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,.8),rgba(201,169,97,.1));background-origin:border-box;background-clip:padding-box,border-box}
-.p-item:hover{transform:scale(1.02);box-shadow:0 6px 16px rgba(201,169,97,.2)}
-.p-item img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
-.p-c{padding:18px}
-.p-c h3{margin-bottom:8px}
-.embed{margin:20px 0;border-radius:12px;overflow:hidden}
-.soc{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
-.soc img{width:40px;transition:.3s}
-.soc img:hover{transform:scale(1.15)}
-.social-title{text-align:center;font-size:1.2rem;margin-bottom:15px;font-weight:600;color:var(--o)}
-.cta-box{text-align:center;margin-top:40px;padding:25px;background:var(--bg);border-radius:12px;backdrop-filter:blur(10px);border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,.8),rgba(201,169,97,.1));background-origin:border-box;background-clip:padding-box,border-box;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-.transparent-box{background:var(--bg);padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);backdrop-filter:blur(10px);overflow:hidden;border:1px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),linear-gradient(135deg,rgba(201,169,97,.8),rgba(201,169,97,.1));background-origin:border-box;background-clip:padding-box,border-box}
-.transparent-box iframe{width:100%;border:0;border-radius:8px;height:1500px}
-.transparent-box *{font-family:'Segoe UI',sans-serif!important}
-iframe{scrollbar-width:none}
-iframe::-webkit-scrollbar{display:none}
-footer{background:var(--m);color:var(--c);text-align:center;padding:30px 20px;font-size:.9rem}
-footer a{color:var(--o);cursor:pointer;text-decoration:none;margin:0 6px}
-footer a:hover{text-decoration:underline}
+  <link rel="icon" href="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Favicon%20Circular%20no%20Bord.png">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-/* POPUP */
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:9999;display:none;justify-content:center;align-items:center}
-.popup-box{background:#fff;max-width:900px;width:90%;max-height:80vh;overflow-y:auto;border-radius:12px;padding:30px 25px;position:relative;animation:pop.3s ease;color:#333}
-.popup-close{position:absolute;top:10px;right:15px;font-size:30px;color:#555;cursor:pointer}
-@keyframes pop{from{transform:scale(.9);opacity:0} to{transform:scale(1);opacity:1}}
-#CookieDeclaration{margin-top:20px}
+  <style>
+    :root {
+      --o: #C9A961;
+      --m: #4A3B2A;
+      --c: #F5F1E8;
+      --bg: rgba(245, 241, 232, 0.9);
+    }
 
-@media(max-width:768px){
-.bv{height:auto;aspect-ratio:16/9}
-.lo{width:55px;height:55px}
-section{padding:40px 15px}
-h2{font-size:1.5rem}
-.transparent-box iframe{height:1700px}
-</style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--m);
+      scroll-behavior: smooth;
+      line-height: 1.6;
+      background-color: #F5F1E8;
+      background-image:
+        radial-gradient(circle, rgba(201,169,97,0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+      background-attachment: fixed;
+    }
+
+    header {
+      position: relative;
+    }
+
+    .bv {
+      width: 100%;
+      height: 55vh;
+      object-fit: cover;
+      display: block;
+    }
+
+    .lo {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
+      z-index: 10;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      padding: 14px;
+      background: rgba(0, 0, 0, .6);
+      backdrop-filter: blur(5px);
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    nav a:hover {
+      background: var(--o);
+      color: var(--m);
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--o);
+      padding-bottom: 10px;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .g {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card,
+    .p-item,
+    .cta-box,
+    .transparent-box {
+      background: var(--bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
+      backdrop-filter: blur(10px);
+      border: 1px solid transparent;
+      background-image: linear-gradient(var(--bg), var(--bg)),
+        linear-gradient(135deg, rgba(201, 169, 97, .8), rgba(201, 169, 97, .1));
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      transition: .3s ease;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .card:hover,
+    .p-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(201, 169, 97, .2);
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--o);
+      color: var(--m);
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .95rem;
+      transition: .3s;
+      margin: 5px;
+    }
+
+    .btn:hover {
+      background: var(--m);
+      color: #fff;
+    }
+
+    .p-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .p-item {
+      overflow: hidden;
+    }
+
+    .p-item img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+    }
+
+    .p-c {
+      padding: 18px;
+    }
+
+    .p-c h3 {
+      margin-bottom: 8px;
+    }
+
+    .embed {
+      margin: 20px 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .soc {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .soc img {
+      width: 40px;
+      transition: .3s;
+    }
+
+    .soc img:hover {
+      transform: scale(1.15);
+    }
+
+    .social-title {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+      color: var(--o);
+    }
+
+    .cta-box {
+      text-align: center;
+      margin-top: 40px;
+      padding: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .transparent-box {
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .transparent-box iframe {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      height: 1500px;
+    }
+
+    .transparent-box * {
+      font-family: 'Segoe UI', sans-serif !important;
+    }
+
+    #HCB_comment_box {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      color: var(--m);
+      padding: 10px 0;
+    }
+
+    iframe {
+      scrollbar-width: none;
+    }
+
+    iframe::-webkit-scrollbar {
+      display: none;
+    }
+
+    footer {
+      background: var(--m);
+      color: var(--c);
+      text-align: center;
+      padding: 30px 20px;
+      font-size: .9rem;
+    }
+
+    footer a {
+      color: var(--o);
+      cursor: pointer;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* POPUP */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .75);
+      z-index: 9999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-box {
+      background: #fff;
+      max-width: 900px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 12px;
+      padding: 30px 25px;
+      position: relative;
+      animation: pop .3s ease;
+      color: #333;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 30px;
+      color: #555;
+      cursor: pointer;
+    }
+
+    @keyframes pop {
+      from { transform: scale(.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    #CookieDeclaration {
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .bv { height: auto; aspect-ratio: 16 / 9; }
+      .lo { width: 55px; height: 55px; }
+      section { padding: 40px 15px; }
+      h2 { font-size: 1.5rem; }
+      .transparent-box iframe { height: 1700px; }
+    }
+  </style>
 </head>
 <body>
 
-<header data-aos="fade" data-aos-duration="1500">
-<img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" class="lo" alt="Alan & Rose">
-<video autoplay muted loop playsinline class="bv">
-  <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
-  <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Banner%20Gif.gif" alt="Banner">
-</video>
-<nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
-  <a href="#chi">Chi Siamo</a><a href="#serv">Servizi</a><a href="#port">Portfolio</a>
-  <a href="#mus">Musica</a><a href="#shop">Shop</a>
-  <a href="#cont">Contatti</a><a onclick="openPopup('privacyPopup')">Privacy</a>
-</nav>
-</header>
+  <header data-aos="fade" data-aos-duration="1500">
+    <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" class="lo" alt="Alan & Rose">
+    <video autoplay muted loop playsinline class="bv">
+      <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
+      <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Banner%20Gif.gif" alt="Banner">
+    </video>
+    <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
+      <a href="#chi">Chi Siamo</a>
+      <a href="#serv">Servizi</a>
+      <a href="#port">Portfolio</a>
+      <a href="#mus">Musica</a>
+      <a href="#shop">Shop</a>
+      <a href="#cont">Contatti</a>
+      <a onclick="openPopup('privacyPopup')">Privacy</a>
+    </nav>
+  </header>
 
-<section id="chi" data-aos="fade-up" data-aos-duration="1500">
-  <h2>Chi Siamo</h2>
-  <p style="text-align:center;max-width:750px;margin:auto;">Il nostro nome "Alan&Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale.</p>
-</section>
+  <section id="chi" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Chi Siamo</h2>
+    <p style="text-align:center;max-width:750px;margin:auto;">
+      Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale.
+    </p>
+  </section>
 
-<section id="serv" data-aos="fade-up" data-aos-duration="1500">
-  <h2>I NOSTRI SERVIZI</h2>
-  <div class="g">
-    <div class="card" data-aos="fade-up" data-aos-delay="100">
-      <h3>Grafica & Web</h3>
-      <p>Creazione Loghi, Banner, Locandine ecc. in Raster e Vettoriale (Photoshop e Illustrator);<br>Creazione Siti Web Vetrina ed E-Commerce in Dropshipping;<br>Gestione / Cura Pagine e Canali Social;<br>Editore (pubblicazione digital store, copyright e gestione royalties);</p>
+  <section id="serv" data-aos="fade-up" data-aos-duration="1500">
+    <h2>I NOSTRI SERVIZI</h2>
+    <div class="g">
+      <div class="card" data-aos="fade-up" data-aos-delay="100">
+        <h3>Grafica & Web</h3>
+        <p>
+          Creazione Loghi, Banner, Locandine ecc. in Raster e Vettoriale (Photoshop e Illustrator);<br>
+          Creazione Siti Web Vetrina ed E-Commerce in Dropshipping;<br>
+          Gestione / Cura Pagine e Canali Social;<br>
+          Editore (pubblicazione digital store, copyright e gestione royalties);
+        </p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="200">
+        <h3>Musica & Produzione</h3>
+        <p>
+          Produzione Musicale, Testi, Recording, Mixing / Mastering (Solo Gospel);<br>
+          Foto e Video Editing 3D (Hitfilm, Photoshop);<br>
+          Assistenza software PC / Tablet / Smartphone;<br>
+          Gestione Google My Business / Maps;
+        </p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="300">
+        <h3>Consulenza & Altro</h3>
+        <p>
+          Receptionist e fogli di calcolo, Word, PDF;<br>
+          Creazione SPID, pratiche INPS, punti patente;<br>
+          Speaker e creatore web radio e DJ;
+        </p>
+      </div>
     </div>
-    <div class="card" data-aos="fade-up" data-aos-delay="200">
-      <h3>Musica & Produzione</h3>
-      <p>Produzione Musicale, Testi, Recording, Mixing / Mastering (Solo Gospel);<br>Foto e Video Editing 3D (Hitfilm, Photoshop);<br>Assistenza software PC / Tablet / Smartphone;<br>Gestione Google My Business / Maps;</p>
+    <div class="cta-box" data-aos="fade-up" data-aos-delay="400">
+      <a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Iscriviti alla Newsletter</a>
+      <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Modulo Upload File</a>
+      <a href="https://htmlcommentbox.com" target="_blank" class="btn">Modulo Recensioni</a>
     </div>
-    <div class="card" data-aos="fade-up" data-aos-delay="300">
-      <h3>Consulenza & Altro</h3>
-      <p>Receptionist e fogli di calcolo, Word, PDF;<br>Creazione SPID, pratiche INPS, punti patente;<br>Speaker e creatore web radio e DJ;</p>
+  </section>
+
+  <section id="port" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Portfolio</h2>
+    <div class="p-grid">
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
+        <div class="p-c">
+          <h3>Dj Marcello Morf</h3>
+          <p>Sito per deejay zona Portici NA...</p>
+          <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
+        <div class="p-c">
+          <h3>Donna Proverbiale</h3>
+          <p>Blog per donne e fede in Cristo...</p>
+          <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
+        <div class="p-c">
+          <h3>Detercoop</h3>
+          <p>Professionisti settore igienico-sanitario...</p>
+          <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png" alt="3Fase">
+        <div class="p-c">
+          <h3>3Fase</h3>
+          <p>Gruppo musicale con brani orecchiabili...</p>
+          <a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png" alt="Colorlab">
+        <div class="p-c">
+          <h3>Colorlab</h3>
+          <p>Laboratorio fotografico professionale...</p>
+          <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
+        <div class="p-c">
+          <h3>A Viso Scoperto</h3>
+          <p>Canale YouTube della Chiesa...</p>
+          <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mus" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Ascoltaci</h2>
+    <div class="embed">
+      <iframe type="text/plain" data-cookieconsent="marketing" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe>
+    </div>
+    <div class="embed">
+      <iframe type="text/plain" data-cookieconsent="marketing" width="100%" height="300" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false"></iframe>
+    </div>
+    <div class="embed">
+      <iframe type="text/plain" data-cookieconsent="marketing" width="100%" height="400" src="https://www.youtube.com/embed?listType=user_uploads&list=Alan_e_Rose" allowfullscreen></iframe>
+    </div>
+    <div class="social-title">SOCIAL</div>
+    <div class="soc">
+      <a href="https://soundcloud.com/alanrose-13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png" alt="SoundCloud"></a>
+      <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png" alt="Spotify"></a>
+      <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png" alt="YouTube"></a>
+      <a href="https://linktr.ee/alan.rose" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png" alt="Linktree"></a>
+      <a href="https://www.threads.com/@alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png" alt="Threads"></a>
+    </div>
+  </section>
+
+  <section id="shop" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Shop</h2>
+    <div class="g">
+      <div class="card">
+        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" style="width:100%;aspect-ratio:1/1;object-fit:cover;background:#fff" alt="A&R Shop">
+        <h3>A&R Shop</h3>
+        <p>Abbigliamento e oggettistica varia!</p>
+        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
+      </div>
+      <div class="card">
+        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
+        <h3>J4You Shop</h3>
+        <p>E-commerce Cristiano!</p>
+        <div class="embed">
+          <iframe type="text/plain" data-cookieconsent="marketing" height="250" src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
+        </div>
+        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a>
+      </div>
+      <div class="card">
+        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
+        <h3>SicilStreet</h3>
+        <p>E-commerce che celebra la Sicilia...</p>
+        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="cont" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Contatti & Commenti</h2>
+    <p style="text-align:center;margin-bottom:20px">
+      Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
+    </p>
+
+    <h3 style="text-align:center;margin-bottom:15px">Modulo Servizi</h3>
+    <div class="transparent-box">
+      <iframe type="text/plain" data-cookieconsent="statistics" src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
+    </div>
+
+    <h3 style="text-align:center;margin:40px 0 15px">Lascia un Commento</h3>
+    <div class="transparent-box">
+      <!-- Contenitore richiesto da HTML Comment Box: senza questo div lo script non ha dove disegnare i commenti -->
+      <div id="HCB_comment_box">Caricamento commenti...</div>
+      <script type="text/plain" data-cookieconsent="statistics" id="hcb">
+        /*<!--*/
+        if (!window.hcb_user) { hcb_user = {}; }
+        (function () {
+          var s = document.createElement("script"),
+              l = hcb_user.PAGE || ("" + window.location).replace(/'/g, "%27"),
+              h = "https://www.htmlcommentbox.com";
+          s.setAttribute("type", "text/javascript");
+          s.setAttribute("src", h + "/jread?page=" + encodeURIComponent(l).replace("+", "%2B") + "&mod=%241%24wqVtlRwE%24A6W7wQj2L1q8sZ1b2q3r4&opts=16762&num=10");
+          if (typeof s !== "undefined") document.getElementsByTagName("head")[0].appendChild(s);
+        })();
+        /*-->*/
+      </script>
+    </div>
+  </section>
+
+  <footer data-aos="fade" data-aos-duration="1500">
+    <div class="social-title">SOCIAL</div>
+    <div class="soc">
+      <a href="https://www.facebook.com/alanroseworship" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png" alt="Facebook"></a>
+      <a href="https://www.instagram.com/alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png" alt="Instagram"></a>
+      <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
+    </div>
+    <p style="margin-top:15px">
+      <a onclick="openPopup('privacyPopup');return false;">Privacy Policy</a> |
+      <a onclick="openPopup('cookiePopup');return false;">Cookie Policy</a> |
+      <a onclick="openPopup('privacyPopup');return false;">Termini</a> |
+      <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
+    </p>
+    <p style="margin-top:10px">
+      <strong>Alan & Rose</strong> | Prestazione Occasionale art.2222 c.c.<br>
+      © 2026 Tutti i diritti riservati
+    </p>
+  </footer>
+
+  <!-- POPUP PRIVACY -->
+  <div id="privacyPopup" class="popup-overlay" onclick="closePopup('privacyPopup')">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <span class="popup-close" onclick="closePopup('privacyPopup')">×</span>
+      <h2>Privacy Policy e Termini - GDPR UE 2016/679</h2>
+      <p><strong>Ultimo aggiornamento: 04 Agosto 2026</strong></p>
+      <h3>1. Titolare</h3>
+      <p>
+        <strong>Alan & Rose</strong><br>
+        Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a><br>
+        Servizi in prestazione occasionale art.2222 c.c.
+      </p>
+      <h3>2. Dati Raccolti</h3>
+      <ul>
+        <li><strong>Contatto:</strong> Nome, Email da Form e Newsletter. Base: Consenso</li>
+        <li><strong>Navigazione:</strong> IP anonimizzato via Cookiebot. Base: Interesse Legittimo</li>
+        <li><strong>Pagamenti:</strong> Gestiti da PayPal e Redbubble</li>
+      </ul>
+      <h3>3. Cookie</h3>
+      <p>Questo sito usa <strong>Cookiebot</strong>. Puoi cambiare le preferenze cliccando su "Impostazioni Cookie" nel footer.</p>
+      <h3>4. Diritti GDPR</h3>
+      <p>Accesso, Rettifica, Cancellazione. Scrivi a: alanrose.13@yahoo.com</p>
     </div>
   </div>
-  <div class="cta-box" data-aos="fade-up" data-aos-delay="400">
-    <a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Iscriviti alla Newsletter</a>
-    <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Modulo Upload File</a>
-    <a href="https://htmlcommentbox.com" target="_blank" class="btn">Modulo Recensioni</a>
+
+  <!-- POPUP COOKIE POLICY -->
+  <div id="cookiePopup" class="popup-overlay" onclick="closePopup('cookiePopup')">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <span class="popup-close" onclick="closePopup('cookiePopup')">×</span>
+      <h2>Cookie Policy</h2>
+      <p>Qui sotto trovi l'elenco completo e aggiornato di tutti i cookie usati da questo sito.</p>
+      <div id="CookieDeclaration"></div>
+    </div>
   </div>
-</section>
 
-<section id="port" data-aos="fade-up" data-aos-duration="1500">
-  <h2>Portfolio</h2>
-  <div class="p-grid">
-    <div class="p-item" data-aos="zoom-in"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png"><div class="p-c"><h3>Dj Marcello Morf</h3><p>Sito per deejay zona Portici NA...</p><a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a></div></div>
-    <div class="p-item" data-aos="zoom-in"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png"><div class="p-c"><h3>Donna Proverbiale</h3><p>Blog per donne e fede in Cristo...</p><a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a></div></div>
-    <div class="p-item" data-aos="zoom-in"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px"><div class="p-c"><h3>Detercoop</h3><p>Professionisti settore igienico-sanitario...</p><a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a></div></div>
-    <div class="p-item" data-aos="zoom-in"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png"><div class="p-c"><h3>3Fase</h3><p>Gruppo musicale con brani orecchiabili...</p><a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a></div></div>
-    <div class="p-item" data-aos="zoom-in"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png"><div class="p-c"><h3>Colorlab</h3><p>Laboratorio fotografico professionale...</p><a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a></div></div>
-    <div class="p-item" data-aos="zoom-in"><img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png"><div class="p-c"><h3>A Viso Scoperto</h3><p>Canale YouTube della Chiesa...</p><a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a></div></div>
-  </div>
-</section>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 1500 });
 
-<section id="mus" data-aos="fade-up" data-aos-duration="1500">
-  <h2>Ascoltaci</h2>
-  <div class="embed"><iframe type="text/plain" data-cookieconsent="marketing" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe></div>
-  <div class="embed"><iframe type="text/plain" data-cookieconsent="marketing" width="100%" height="300" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false"></iframe></div>
-  <div class="embed"><iframe type="text/plain" data-cookieconsent="marketing" width="100%" height="400" src="https://www.youtube.com/embed?listType=user_uploads&list=Alan_e_Rose" allowfullscreen></iframe></div>
-  <div class="social-title">SOCIAL</div>
-  <div class="soc">
-    <a href="https://soundcloud.com/alanrose-13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png"></a>
-    <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png"></a>
-    <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png"></a>
-    <a href="https://linktr.ee/alan.rose" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png"></a>
-    <a href="https://www.threads.com/@alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png"></a>
-  </div>
-</section>
+    function openPopup(id) {
+      document.getElementById(id).style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
 
-<section id="shop" data-aos="fade-up" data-aos-duration="1500">
-  <h2>Shop</h2>
-  <div class="g">
-    <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" style="width:100%;aspect-ratio:1/1;object-fit:cover;background:#fff"><h3>A&R Shop</h3><p>Abbigliamento e oggettistica varia!</p><a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a></div>
-    <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>J4You Shop</h3><p>E-commerce Cristiano!</p><div class="embed"><iframe type="text/plain" data-cookieconsent="marketing" height="250" src="https://www.youtube.com/embed/P_iVknuC9po"></iframe></div><a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a></div>
-    <div class="card"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain"><h3>SicilStreet</h3><p>E-commerce che celebra la Sicilia...</p><a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a></div>
-  </div>
-</section>
+    function closePopup(id) {
+      document.getElementById(id).style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  </script>
 
-<section id="cont" data-aos="fade-up" data-aos-duration="1500">
-  <h2>Contatti & Commenti</h2>
-  <p style="text-align:center;margin-bottom:20px">Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a></p>
-
-  <h3 style="text-align:center;margin-bottom:15px">Modulo Servizi</h3>
-  <div class="transparent-box"><iframe type="text/plain" data-cookieconsent="statistics" src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe></div>
-
-  <h3 style="text-align:center;margin:40px 0 15px">Lascia un Commento</h3>
-  <div class="transparent-box">
-    <!-- BOX COMMENTI HTMLCOMMENTBOX - BLOCCATO FINO AL CONSENSO -->
-    <script type="text/plain" data-cookieconsent="statistics" id="hcb">/*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wqVtlRwE%24A6W7wQj2L1q8sZ1b2q3r4"+"&opts=16762&num=10&ts=1722800000000");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
-  </div>
-</section>
-
-<footer data-aos="fade" data-aos-duration="1500">
-  <div class="social-title">SOCIAL</div>
-  <div class="soc">
-    <a href="https://www.facebook.com/alanroseworship" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png"></a>
-    <a href="https://www.instagram.com/alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png"></a>
-    <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png"></a>
-  </div>
-  <p style="margin-top:15px">
-    <a onclick="openPopup('privacyPopup');return false;">Privacy Policy</a> |
-    <a onclick="openPopup('cookiePopup');return false;">Cookie Policy</a> |
-    <a onclick="openPopup('privacyPopup');return false;">Termini</a> |
-    <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
-  </p>
-  <p style="margin-top:10px"><strong>Alan & Rose</strong> | Prestazione Occasionale art.2222 c.c.<br>© 2026 Tutti i diritti riservati</p>
-</footer>
-
-<!-- POPUP PRIVACY -->
-<div id="privacyPopup" class="popup-overlay" onclick="closePopup('privacyPopup')">
-<div class="popup-box" onclick="event.stopPropagation()">
-<span class="popup-close" onclick="closePopup('privacyPopup')">×</span>
-<h2>Privacy Policy e Termini - GDPR UE 2016/679</h2>
-<p><strong>Ultimo aggiornamento: 04 Agosto 2026</strong></p>
-<h3>1. Titolare</h3><p><strong>Alan & Rose</strong><br>Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a><br>Servizi in prestazione occasionale art.2222 c.c.</p>
-<h3>2. Dati Raccolti</h3><ul><li><strong>Contatto:</strong> Nome, Email da Form e Newsletter. Base: Consenso</li><li><strong>Navigazione:</strong> IP anonimizzato via Cookiebot. Base: Interesse Legittimo</li><li><strong>Pagamenti:</strong> Gestiti da PayPal e Redbubble</li></ul>
-<h3>3. Cookie</h3><p>Questo sito usa <strong>Cookiebot</strong>. Puoi cambiare le preferenze cliccando su "Impostazioni Cookie" nel footer.</p>
-<h3>4. Diritti GDPR</h3><p>Accesso, Rettifica, Cancellazione. Scrivi a: alanrose.13@yahoo.com</p>
-</div></div>
-
-<!-- POPUP COOKIE POLICY -->
-<div id="cookiePopup" class="popup-overlay" onclick="closePopup('cookiePopup')">
-<div class="popup-box" onclick="event.stopPropagation()">
-<span class="popup-close" onclick="closePopup('cookiePopup')">×</span>
-<h2>Cookie Policy</h2>
-<p>Qui sotto trovi l'elenco completo e aggiornato di tutti i cookie usati da questo sito.</p>
-<div id="CookieDeclaration"></div>
-</div></div>
-
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-AOS.init({once:true,duration:1500});
-function openPopup(id){document.getElementById(id).style.display='flex';document.body.style.overflow='hidden';}
-function closePopup(id){document.getElementById(id).style.display='none';document.body.style.overflow='auto';}
-</script>
-
-<script id="CookieDeclaration"
-  src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js"
-  type="text/javascript"
-  async>
-</script>
+  <script id="CookieDeclaration"
+    src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js"
+    type="text/javascript"
+    async>
+  </script>
 
 </body>
-                                                                                                                                                                       </html>
+</html>
