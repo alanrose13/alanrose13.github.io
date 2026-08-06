@@ -30,7 +30,9 @@
     type="text/javascript">
   </script>
 
-  <link rel="icon" href="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Favicon%20Circular%20no%20Bord.png">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://consent.cookiebot.com">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
@@ -205,6 +207,12 @@
       overflow: hidden;
     }
 
+    .embed iframe {
+      width: 100%;
+      border: 0;
+      display: block;
+    }
+
     .soc {
       display: flex;
       justify-content: center;
@@ -260,6 +268,68 @@
       text-align: center;
       color: var(--m);
       padding: 10px 0;
+    }
+
+    /* Tema HTML Comment Box adattato ai colori del sito */
+    #HCB_comment_box #hcb_form_name,
+    #HCB_comment_box #hcb_form_email,
+    #HCB_comment_box #hcb_form_website,
+    #HCB_comment_box #hcb_form_content,
+    #HCB_comment_box textarea,
+    #HCB_comment_box input.text {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff;
+      border: 1px solid rgba(201, 169, 97, .5);
+      border-radius: 6px;
+      color: var(--m);
+      padding: 8px 10px;
+    }
+
+    #HCB_comment_box .text-blur {
+      color: #b5a692;
+    }
+
+    #HCB_comment_box .text-focus {
+      color: var(--m);
+    }
+
+    #HCB_comment_box #hcb_submit,
+    #HCB_comment_box .submit {
+      background: var(--o);
+      border: 1px solid var(--m);
+      border-radius: 6px;
+      color: var(--m);
+      font-weight: 700;
+      cursor: pointer;
+      padding: 8px 18px;
+    }
+
+    #HCB_comment_box #hcb_submit:hover,
+    #HCB_comment_box .submit:hover {
+      background: var(--m);
+      color: #fff;
+    }
+
+    #HCB_comment_box blockquote {
+      background: var(--bg);
+      border-left: 3px solid var(--o);
+      border-radius: 0 8px 8px 0;
+      text-align: left;
+      padding: 10px 16px;
+      margin: 12px 0;
+    }
+
+    #HCB_comment_box .author-name {
+      color: var(--o);
+      font-weight: 700;
+    }
+
+    #HCB_comment_box .hcb-comment-body {
+      color: var(--m);
+    }
+
+    #HCB_comment_box .hcb-comment-tb a {
+      color: var(--o);
     }
 
     iframe {
@@ -340,16 +410,17 @@
       section { padding: 40px 15px; }
       h2 { font-size: 1.5rem; }
       .transparent-box iframe { height: 1700px; }
+      body { background-attachment: scroll; }
     }
   </style>
 </head>
 <body>
 
   <header data-aos="fade" data-aos-duration="1500">
-    <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" class="lo" alt="Alan & Rose">
-    <video autoplay muted loop playsinline class="bv">
+    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Logo.jpeg" class="lo" alt="Alan & Rose">
+    <video autoplay muted loop playsinline preload="auto" fetchpriority="high" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
       <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
-      <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Banner%20Gif.gif" alt="Banner">
+      <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
     </video>
     <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
       <a href="#chi">Chi Siamo</a>
@@ -358,7 +429,7 @@
       <a href="#mus">Musica</a>
       <a href="#shop">Shop</a>
       <a href="#cont">Contatti</a>
-      <a onclick="openPopup('privacyPopup')">Privacy</a>
+      <a href="javascript:void(0)" onclick="openPopup('privacyPopup')">Privacy</a>
     </nav>
   </header>
 
@@ -410,7 +481,7 @@
     <h2>Portfolio</h2>
     <div class="p-grid">
       <div class="p-item" data-aos="zoom-in">
-        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
         <div class="p-c">
           <h3>Dj Marcello Morf</h3>
           <p>Sito per deejay zona Portici NA...</p>
@@ -418,7 +489,7 @@
         </div>
       </div>
       <div class="p-item" data-aos="zoom-in">
-        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
         <div class="p-c">
           <h3>Donna Proverbiale</h3>
           <p>Blog per donne e fede in Cristo...</p>
@@ -426,7 +497,7 @@
         </div>
       </div>
       <div class="p-item" data-aos="zoom-in">
-        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
         <div class="p-c">
           <h3>Detercoop</h3>
           <p>Professionisti settore igienico-sanitario...</p>
@@ -434,7 +505,7 @@
         </div>
       </div>
       <div class="p-item" data-aos="zoom-in">
-        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/3fase.png" alt="3Fase">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
         <div class="p-c">
           <h3>3Fase</h3>
           <p>Gruppo musicale con brani orecchiabili...</p>
@@ -442,7 +513,7 @@
         </div>
       </div>
       <div class="p-item" data-aos="zoom-in">
-        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/colorlab.png" alt="Colorlab">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
         <div class="p-c">
           <h3>Colorlab</h3>
           <p>Laboratorio fotografico professionale...</p>
@@ -450,7 +521,7 @@
         </div>
       </div>
       <div class="p-item" data-aos="zoom-in">
-        <img loading="lazy" src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
         <div class="p-c">
           <h3>A Viso Scoperto</h3>
           <p>Canale YouTube della Chiesa...</p>
@@ -463,21 +534,24 @@
   <section id="mus" data-aos="fade-up" data-aos-duration="1500">
     <h2>Ascoltaci</h2>
     <div class="embed">
-      <iframe type="text/plain" data-cookieconsent="marketing" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe>
+      <iframe loading="lazy" data-cookieconsent="marketing" data-cookieblock-src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe>
     </div>
     <div class="embed">
-      <iframe type="text/plain" data-cookieconsent="marketing" width="100%" height="300" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false"></iframe>
+      <iframe loading="lazy" data-cookieconsent="marketing" height="300" data-cookieblock-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false"></iframe>
     </div>
     <div class="embed">
-      <iframe type="text/plain" data-cookieconsent="marketing" width="100%" height="400" src="https://www.youtube.com/embed?listType=user_uploads&list=Alan_e_Rose" allowfullscreen></iframe>
+      <iframe loading="lazy" data-cookieconsent="marketing" height="400" data-cookieblock-src="https://www.youtube.com/embed?listType=user_uploads&list=Alan_e_Rose" allowfullscreen></iframe>
     </div>
     <div class="social-title">SOCIAL</div>
     <div class="soc">
-      <a href="https://soundcloud.com/alanrose-13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/soundcloud_colored_44dp.png" alt="SoundCloud"></a>
-      <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/spotify_colored_44dp.png" alt="Spotify"></a>
-      <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/youtube_colored_44dp.png" alt="YouTube"></a>
-      <a href="https://linktr.ee/alan.rose" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/linktree.png" alt="Linktree"></a>
-      <a href="https://www.threads.com/@alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/threads.png" alt="Threads"></a>
+      <a href="https://soundcloud.com/alanrose-13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/soundcloud_colored_44dp.png" alt="SoundCloud"></a>
+      <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/spotify_colored_44dp.png" alt="Spotify"></a>
+      <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/youtube_colored_44dp.png" alt="YouTube"></a>
+      <a href="https://www.facebook.com/alanroseworship" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/facebook_colored_44dp.png" alt="Facebook"></a>
+      <a href="https://www.instagram.com/alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/instagram_colored_44dp.png" alt="Instagram"></a>
+      <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
+      <a href="https://www.threads.com/@alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/threads.png" alt="Threads"></a>
+      <a href="https://linktr.ee/alan.rose" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/linktree.png" alt="Linktree"></a>
     </div>
   </section>
 
@@ -485,22 +559,22 @@
     <h2>Shop</h2>
     <div class="g">
       <div class="card">
-        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/Logo.jpeg" style="width:100%;aspect-ratio:1/1;object-fit:cover;background:#fff" alt="A&R Shop">
+        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Logo.jpeg" style="width:100%;aspect-ratio:1/1;object-fit:cover;background:#fff" alt="A&R Shop">
         <h3>A&R Shop</h3>
         <p>Abbigliamento e oggettistica varia!</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
       </div>
       <div class="card">
-        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
+        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
         <h3>J4You Shop</h3>
         <p>E-commerce Cristiano!</p>
         <div class="embed">
-          <iframe type="text/plain" data-cookieconsent="marketing" height="250" src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
+          <iframe loading="lazy" data-cookieconsent="marketing" height="250" data-cookieblock-src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
         </div>
         <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a>
       </div>
       <div class="card">
-        <img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
+        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
         <h3>SicilStreet</h3>
         <p>E-commerce che celebra la Sicilia...</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a>
@@ -516,13 +590,49 @@
 
     <h3 style="text-align:center;margin-bottom:15px">Modulo Servizi</h3>
     <div class="transparent-box">
-      <iframe type="text/plain" data-cookieconsent="statistics" src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
+      <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
     </div>
 
     <h3 style="text-align:center;margin:40px 0 15px">Lascia un Commento</h3>
     <div class="transparent-box">
       <!-- Contenitore richiesto da HTML Comment Box: senza questo div lo script non ha dove disegnare i commenti -->
       <div id="HCB_comment_box">Caricamento commenti...</div>
+      <script type="text/plain" data-cookieconsent="statistics">
+        /* Etichette in italiano per HTML Comment Box: deve stare prima dello script principale */
+        if (!window.hcb_user) { hcb_user = {}; }
+        hcb_user.comments_header = "Commenti";
+        hcb_user.name_label = "Nome";
+        hcb_user.content_label = "Scrivi qui il tuo commento";
+        hcb_user.submit = "Commenta";
+        hcb_user.no_comments_msg = "Nessun commento, per ora. Scrivi il primo!";
+        hcb_user.add = "Aggiungi un commento";
+        hcb_user.again = "Scrivi un altro commento";
+        hcb_user.said = "ha scritto:";
+        hcb_user.showing = "Da";
+        hcb_user.to = "a";
+        hcb_user.website_label = "sito web (facoltativo)";
+        hcb_user.email_label = "email";
+        hcb_user.anonymous = "Anonimo";
+        hcb_user.subscribe = "Avvisami delle risposte via email";
+        hcb_user.add_image = "Aggiungi immagine";
+        hcb_user.are_you_sure = "Vuoi segnalare questo commento come inappropriato?";
+        hcb_user.reply = "Rispondi";
+        hcb_user.flag = "Segnala";
+        hcb_user.like = "Mi piace";
+        hcb_user.days_ago = "giorni fa";
+        hcb_user.hours_ago = "ore fa";
+        hcb_user.minutes_ago = "minuti fa";
+        hcb_user.within_the_last_minute = "meno di un minuto fa";
+        hcb_user.msg_thankyou = "Grazie per il tuo commento!";
+        hcb_user.msg_approval_required = "Grazie per il tuo commento! Sarà visibile dopo l'approvazione di un moderatore.";
+        hcb_user.err_bad_html = "Il commento contiene codice HTML non valido.";
+        hcb_user.err_bad_email = "Inserisci un indirizzo email valido.";
+        hcb_user.err_too_frequent = "Attendi qualche secondo prima di pubblicare un altro commento.";
+        hcb_user.err_comment_empty = "Il commento non è stato pubblicato perché era vuoto.";
+        hcb_user.err_denied = "Il tuo commento non è stato accettato.";
+        hcb_user.err_spam = "Il tuo commento è stato rilevato come spam.";
+        hcb_user.err_blocked = "Il tuo commento è stato bloccato dalle norme del sito.";
+      </script>
       <script type="text/plain" data-cookieconsent="statistics" id="hcb">
         /*<!--*/
         if (!window.hcb_user) { hcb_user = {}; }
@@ -542,9 +652,9 @@
   <footer data-aos="fade" data-aos-duration="1500">
     <div class="social-title">SOCIAL</div>
     <div class="soc">
-      <a href="https://www.facebook.com/alanroseworship" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/facebook_colored_44dp.png" alt="Facebook"></a>
-      <a href="https://www.instagram.com/alanrose.13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/instagram_colored_44dp.png" alt="Instagram"></a>
-      <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img src="https://raw.githubusercontent.com/alanrose13/site/refs/heads/main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
+      <a href="https://www.facebook.com/alanroseworship" target="_blank"><img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/facebook_colored_44dp.png" alt="Facebook"></a>
+      <a href="https://www.instagram.com/alanrose.13" target="_blank"><img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/instagram_colored_44dp.png" alt="Instagram"></a>
+      <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
     </div>
     <p style="margin-top:15px">
       <a onclick="openPopup('privacyPopup');return false;">Privacy Policy</a> |
