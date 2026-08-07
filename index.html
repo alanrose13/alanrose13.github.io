@@ -20,6 +20,8 @@
       security_storage: "granted",
       wait_for_update: 500
     });
+    gtag("set", "ads_data_redaction", true);
+    gtag("set", "url_passthrough", false);
   </script>
 
   <!-- 2. COOKIEBOT -->
@@ -472,8 +474,8 @@
     </div>
     <div class="cta-box" data-aos="fade-up" data-aos-delay="400">
       <a href="https://alan-e-rose-13.voxmail.it/user/register" target="_blank" class="btn">Iscriviti alla Newsletter</a>
-      <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Modulo Upload File</a>
-      <a href="https://htmlcommentbox.com" target="_blank" class="btn">Modulo Recensioni</a>
+      <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
+      <a href="https://htmlcommentbox.com" target="_blank" class="btn">Recensioni</a>
     </div>
   </section>
 
@@ -588,7 +590,7 @@
       Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
     </p>
 
-    <h3 style="text-align:center;margin-bottom:15px">Modulo Servizi</h3>
+    <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
     <div class="transparent-box">
       <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
     </div>
@@ -641,7 +643,7 @@
               l = hcb_user.PAGE || ("" + window.location).replace(/'/g, "%27"),
               h = "https://www.htmlcommentbox.com";
           s.setAttribute("type", "text/javascript");
-          s.setAttribute("src", h + "/jread?page=" + encodeURIComponent(l).replace("+", "%2B") + "&mod=%241%24wqVtlRwE%24A6W7wQj2L1q8sZ1b2q3r4&opts=16762&num=10");
+          s.setAttribute("src", h + "/jread?page=" + encodeURIComponent(l).replace("+", "%2B") + "&mod=%241%24wqVtlRwE%24A6W7wQj2L1q8sZ1b2q3r4&opts=16762&num=10&ts=" + Date.now());
           if (typeof s !== "undefined") document.getElementsByTagName("head")[0].appendChild(s);
         })();
         /*-->*/
@@ -699,7 +701,11 @@
       <span class="popup-close" onclick="closePopup('cookiePopup')">×</span>
       <h2>Cookie Policy</h2>
       <p>Qui sotto trovi l'elenco completo e aggiornato di tutti i cookie usati da questo sito.</p>
-      <div id="CookieDeclaration"></div>
+      <script id="CookieDeclaration"
+        src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js"
+        type="text/javascript"
+        async>
+      </script>
     </div>
   </div>
 
@@ -716,12 +722,6 @@
       document.getElementById(id).style.display = 'none';
       document.body.style.overflow = 'auto';
     }
-  </script>
-
-  <script id="CookieDeclaration"
-    src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js"
-    type="text/javascript"
-    async>
   </script>
 
 </body>
