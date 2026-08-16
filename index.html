@@ -81,10 +81,22 @@
       width: 70px;
       height: 70px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 50%;
       z-index: 10;
       border: 2px solid #fff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+    }
+
+    .banner-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(260px, 45%);
+      height: auto;
+      z-index: 3;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .4));
     }
 
     nav {
@@ -537,11 +549,12 @@
 <body>
 
   <header data-aos="fade" data-aos-duration="1500">
-    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Logo.jpeg" class="lo" alt="Alan & Rose">
+    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="lo" alt="Alan & Rose">
     <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
       <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
     </video>
+    <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" alt="A&R" class="banner-logo">
     <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
       <a href="#chi">Chi Siamo</a>
       <a href="#serv">Servizi</a>
@@ -592,7 +605,6 @@
     </div>
     <div class="cta-box" data-aos="fade-up" data-aos-delay="400">
       <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
-      <a href="https://htmlcommentbox.com" target="_blank" class="btn">Recensioni</a>
     </div>
   </section>
 
@@ -765,6 +777,11 @@
         })();
         /*-->*/
       </script>
+    </div>
+
+    <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
+    <div class="transparent-box review-form">
+      <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true">Caricamento…</iframe>
     </div>
   </section>
 
