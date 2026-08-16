@@ -87,18 +87,6 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
     }
 
-    .banner-logo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(260px, 45%);
-      height: auto;
-      z-index: 3;
-      pointer-events: none;
-      filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .4));
-    }
-
     nav {
       display: flex;
       flex-wrap: wrap;
@@ -554,7 +542,6 @@
       <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
     </video>
-    <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" alt="A&R" class="banner-logo">
     <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
       <a href="#chi">Chi Siamo</a>
       <a href="#serv">Servizi</a>
@@ -562,6 +549,7 @@
       <a href="#mus">Musica</a>
       <a href="#shop">Shop</a>
       <a href="#cont">Contatti</a>
+      <a href="#newsletter">Registrati</a>
       <a href="javascript:void(0)" onclick="openPopup('privacyPopup')">Privacy</a>
     </nav>
   </header>
@@ -690,7 +678,9 @@
     <h2>Shop</h2>
     <div class="g">
       <div class="card">
-        <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;aspect-ratio:1/1;object-fit:contain;background:transparent;padding:2px" alt="A&R Shop">
+        <div style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px">
+          <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;height:100%;object-fit:contain;transform:scale(1.5);background:transparent" alt="A&R Shop">
+        </div>
         <h3>A&R Shop</h3>
         <p>Abbigliamento e oggettistica varia!</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
@@ -786,7 +776,7 @@
   </section>
 
   <footer data-aos="fade" data-aos-duration="1500">
-    <div class="newsletter-box" data-aos="fade-up">
+    <div class="newsletter-box" id="newsletter" data-aos="fade-up">
       <h3>Iscriviti alla Newsletter</h3>
       <p>Resta aggiornato su nuovi servizi, musica e progetti.</p>
       <a href="https://alan-e-rose-13.voxmail.it/user/register_facebook" target="_blank" class="fb-subscribe">
