@@ -5,26 +5,37 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Alan & Rose - Servizi Digitali, Creativi e Musicali</title>
   <meta name="description" content="Alan & Rose - Creazione siti, grafica, musica gospel, consulenza e shop. Servizi a prestazione occasionale.">
-  <meta name="robots" content="index, follow">
 
-  <!-- GOOGLE CONSENT MODE v2 -->
+  <!-- 1. GOOGLE CONSENT MODE v2 -->
   <script data-cookieconsent="ignore">
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag("consent", "default", {
-      ad_personalization: "denied", ad_storage: "denied", ad_user_data: "denied",
-      analytics_storage: "denied", functionality_storage: "denied", personalization_storage: "denied",
-      security_storage: "granted", wait_for_update: 500
+      ad_personalization: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      analytics_storage: "denied",
+      functionality_storage: "denied",
+      personalization_storage: "denied",
+      security_storage: "granted",
+      wait_for_update: 500
     });
     gtag("set", "ads_data_redaction", true);
     gtag("set", "url_passthrough", false);
   </script>
 
-  <!-- COOKIEBOT -->
-  <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js"
-    data-cbid="8334eeb1-c7e5-4724-9092-2141fc8d67aa" data-blockingmode="auto" type="text/javascript"></script>
+  <!-- 2. COOKIEBOT -->
+  <script id="Cookiebot"
+    src="https://consent.cookiebot.com/uc.js"
+    data-cbid="8334eeb1-c7e5-4724-9092-2141fc8d67aa"
+    data-blockingmode="auto"
+    type="text/javascript">
+  </script>
 
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://consent.cookiebot.com">
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
     :root {
@@ -40,53 +51,40 @@
       padding: 0;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
       color: var(--m);
+      scroll-behavior: smooth;
       line-height: 1.6;
       background-color: #F5F1E8;
-      background-image: radial-gradient(circle, rgba(201,169,97,0.08) 1px, transparent 1px);
+      background-image:
+        radial-gradient(circle, rgba(201,169,97,0.08) 1px, transparent 1px);
       background-size: 24px 24px;
       background-attachment: fixed;
     }
 
-    body.popup-open {
-      overflow: hidden;
-    }
-
-    /* HEADER */
     header {
       position: relative;
-      overflow: hidden;
     }
 
-    .hero {
+    .bv {
       width: 100%;
       height: 55vh;
       object-fit: cover;
       display: block;
     }
 
-    .logo {
+    .lo {
       position: absolute;
       top: 15px;
       left: 15px;
       width: 70px;
       height: 70px;
+      object-fit: cover;
       border-radius: 50%;
       z-index: 10;
       border: 2px solid #fff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
-      animation: fadeIn 0.8s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
     }
 
     nav {
@@ -107,28 +105,18 @@
       border-radius: 5px;
       font-size: .95rem;
       cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
+      transition: .3s;
     }
 
-    nav a:hover, nav a:focus {
+    nav a:hover {
       background: var(--o);
       color: var(--m);
-      outline: none;
     }
 
-    /* SEZIONI */
     section {
       padding: 60px 20px;
       max-width: 1100px;
-      margin: 0 auto;
-      opacity: 0;
-      animation: slideUp 0.6s ease-out forwards;
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
+      margin: auto;
     }
 
     h2 {
@@ -138,112 +126,83 @@
       padding-bottom: 10px;
       font-size: 1.8rem;
       font-weight: 600;
-      color: var(--m);
     }
 
-    h3 {
-      font-size: 1.1rem;
-      margin-bottom: 12px;
-      color: var(--m);
-    }
-
-    p {
-      text-align: justify;
-      margin-bottom: 15px;
-    }
-
-    a {
-      color: var(--o);
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    a:hover, a:focus {
-      text-decoration: underline;
-    }
-
-    /* GRID CARDS */
-    .grid {
+    .g {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
-      margin-bottom: 30px;
+    }
+
+    .card,
+    .p-item,
+    .cta-box,
+    .transparent-box {
+      background: var(--bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
+      backdrop-filter: blur(10px);
+      border: 1px solid transparent;
+      background-image: linear-gradient(var(--bg), var(--bg)),
+        linear-gradient(135deg, rgba(201, 169, 97, .8), rgba(201, 169, 97, .1));
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      transition: .3s ease;
     }
 
     .card {
-      background: var(--bg);
-      border-radius: 12px;
       padding: 22px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(201, 169, 97, .2);
-      transition: all 0.3s ease;
     }
 
-    .card:hover {
+    .card:hover,
+    .p-item:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 16px rgba(201, 169, 97, .2);
     }
 
-    /* BOTTONI */
     .btn {
       display: inline-block;
       background: var(--o);
       color: var(--m);
       padding: 10px 20px;
       border-radius: 6px;
+      text-decoration: none;
       font-weight: 700;
       font-size: .95rem;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin: 5px 0;
+      transition: .3s;
+      margin: 5px;
     }
 
-    .btn:hover, .btn:focus {
+    .btn:hover {
       background: var(--m);
       color: #fff;
-      outline: 2px solid var(--o);
-      outline-offset: 2px;
     }
 
-    .btn-center {
-      text-align: center;
-      margin: 30px 0;
-    }
-
-    /* PORTFOLIO */
-    .portfolio {
+    .p-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
     }
 
-    .project {
-      border-radius: 12px;
+    .p-item {
       overflow: hidden;
-      background: var(--bg);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
-      transition: all 0.3s ease;
     }
 
-    .project:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 16px rgba(201, 169, 97, .2);
-    }
-
-    .project img {
+    .p-item img {
       width: 100%;
-      aspect-ratio: 1;
+      aspect-ratio: 1 / 1;
       object-fit: cover;
       display: block;
     }
 
-    .project-info {
+    .p-c {
       padding: 18px;
     }
 
-    /* MUSICA */
+    .p-c h3 {
+      margin-bottom: 8px;
+    }
+
     .embed {
       margin: 20px 0;
       border-radius: 12px;
@@ -254,143 +213,238 @@
       width: 100%;
       border: 0;
       display: block;
-      aspect-ratio: 16/9;
     }
 
-    .social {
+    .soc {
       display: flex;
       justify-content: center;
       gap: 14px;
       flex-wrap: wrap;
-      margin: 20px 0;
     }
 
-    .social a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .social a:hover {
-      background: var(--o);
-      transform: scale(1.1);
-    }
-
-    .social img {
+    .soc img {
       width: 40px;
-      height: 40px;
-      object-fit: contain;
+      transition: .3s;
     }
 
-    /* NEWSLETTER */
-    .newsletter {
+    .soc img:hover {
+      transform: scale(1.15);
+    }
+
+    .social-title {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+      color: var(--o);
+    }
+
+    .cta-box {
+      text-align: center;
+      margin-top: 40px;
+      padding: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .newsletter-box {
       background: var(--bg);
       border-radius: 12px;
-      padding: 25px;
-      max-width: 460px;
-      margin: 30px auto;
       box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
-      border: 1px solid rgba(201, 169, 97, .2);
-      filter: blur(4px);
-      transition: filter 0.3s ease;
-    }
-
-    .newsletter:focus-within {
-      filter: blur(0px);
-    }
-
-    .newsletter h3 {
+      backdrop-filter: blur(10px);
+      border: 1px solid transparent;
+      background-image: linear-gradient(var(--bg), var(--bg)),
+        linear-gradient(135deg, rgba(201, 169, 97, .8), rgba(201, 169, 97, .1));
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      color: var(--m);
       text-align: center;
+      padding: 25px;
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto 30px;
+    }
+
+    .newsletter-box h3 {
       color: var(--o);
       margin-bottom: 6px;
     }
 
-    .newsletter p {
-      text-align: center;
-      margin-bottom: 15px;
+    .newsletter-box .fb-subscribe {
+      display: inline-block;
+      margin: 8px 0;
     }
 
-    .form-group {
-      margin-bottom: 15px;
+    .newsletter-box .or-divider {
+      font-size: .85rem;
+      margin: 10px 0;
+      opacity: .8;
     }
 
-    .form-group label {
+    .newsletter-form {
+      text-align: left;
+    }
+
+    .newsletter-form label {
       display: block;
       font-weight: 600;
       margin-bottom: 4px;
       font-size: .9rem;
     }
 
-    .form-group input,
-    .form-group textarea {
+    .newsletter-form input[type="email"] {
       width: 100%;
-      padding: 8px 10px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff;
       border: 1px solid rgba(201, 169, 97, .5);
       border-radius: 6px;
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 1rem;
-      background: #fff;
       color: var(--m);
+      padding: 8px 10px;
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: 2px solid var(--o);
-      outline-offset: 2px;
-    }
-
-    .form-group small {
+    .newsletter-form .description {
       font-size: .78rem;
       opacity: .75;
-      display: block;
-      margin-top: 4px;
+      margin: 4px 0 12px;
     }
 
-    .privacy-box {
+    .newsletter-form .privacy-details {
       background: #fff;
       border: 1px solid rgba(201, 169, 97, .5);
       border-radius: 6px;
       padding: 10px 12px;
       margin-bottom: 14px;
       font-size: .78rem;
-      max-height: 200px;
+      max-height: 220px;
       overflow-y: auto;
     }
 
-    .privacy-box summary {
+    .newsletter-form .privacy-details summary {
       cursor: pointer;
       font-weight: 700;
       color: var(--o);
     }
 
-    .form-check {
+    .newsletter-form .form-item-checkbox {
       display: flex;
-      gap: 8px;
       align-items: flex-start;
-      margin-bottom: 15px;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
-    .form-check input[type="checkbox"] {
+    .newsletter-form .form-item-checkbox input {
       margin-top: 4px;
       flex-shrink: 0;
     }
 
-    .form-check label {
-      margin: 0;
-      font-weight: 600;
+    .newsletter-form .form-item-checkbox .description {
+      margin: 2px 0 0;
+      flex-basis: 100%;
     }
 
-    .form-check small {
+    .newsletter-form .form-submit {
       display: block;
-      margin-top: 2px;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    /* FOOTER */
+    .transparent-box {
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .transparent-box iframe {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      height: 1500px;
+    }
+
+    .transparent-box * {
+      font-family: 'Segoe UI', sans-serif !important;
+    }
+
+    #HCB_comment_box {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      color: var(--m);
+      padding: 10px 0;
+    }
+
+    /* Tema HTML Comment Box adattato ai colori del sito */
+    #HCB_comment_box #hcb_form_name,
+    #HCB_comment_box #hcb_form_email,
+    #HCB_comment_box #hcb_form_website,
+    #HCB_comment_box #hcb_form_content,
+    #HCB_comment_box textarea,
+    #HCB_comment_box input.text {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff;
+      border: 1px solid rgba(201, 169, 97, .5);
+      border-radius: 6px;
+      color: var(--m);
+      padding: 8px 10px;
+    }
+
+    #HCB_comment_box .text-blur {
+      color: #b5a692;
+    }
+
+    #HCB_comment_box .text-focus {
+      color: var(--m);
+    }
+
+    #HCB_comment_box #hcb_submit,
+    #HCB_comment_box .submit {
+      background: var(--o);
+      border: 1px solid var(--m);
+      border-radius: 6px;
+      color: var(--m);
+      font-weight: 700;
+      cursor: pointer;
+      padding: 8px 18px;
+    }
+
+    #HCB_comment_box #hcb_submit:hover,
+    #HCB_comment_box .submit:hover {
+      background: var(--m);
+      color: #fff;
+    }
+
+    #HCB_comment_box blockquote {
+      background: var(--bg);
+      border-left: 3px solid var(--o);
+      border-radius: 0 8px 8px 0;
+      text-align: left;
+      padding: 10px 16px;
+      margin: 12px 0;
+    }
+
+    #HCB_comment_box .author-name {
+      color: var(--o);
+      font-weight: 700;
+    }
+
+    #HCB_comment_box .hcb-comment-body {
+      color: var(--m);
+    }
+
+    #HCB_comment_box .hcb-comment-tb a {
+      color: var(--o);
+    }
+
+    iframe {
+      scrollbar-width: none;
+    }
+
+    iframe::-webkit-scrollbar {
+      display: none;
+    }
+
     footer {
       background: var(--m);
       color: var(--c);
@@ -402,10 +456,16 @@
     footer a {
       color: var(--o);
       cursor: pointer;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
     }
 
     /* POPUP */
-    .modal {
+    .popup-overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -416,403 +476,475 @@
       display: none;
       justify-content: center;
       align-items: center;
-      overflow-y: auto;
-      padding: 20px;
     }
 
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
+    .popup-box {
       background: #fff;
       max-width: 900px;
-      width: 100%;
-      max-height: 85vh;
+      width: 90%;
+      max-height: 80vh;
       overflow-y: auto;
       border-radius: 12px;
-      padding: 30px;
+      padding: 30px 25px;
       position: relative;
-      animation: popIn 0.3s ease;
-      color: var(--m);
+      animation: pop .3s ease;
+      color: #333;
     }
 
-    @keyframes popIn {
-      from { transform: scale(0.9); opacity: 0; }
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 30px;
+      color: #555;
+      cursor: pointer;
+    }
+
+    @keyframes pop {
+      from { transform: scale(.9); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
-    .modal-close {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: none;
-      border: none;
-      font-size: 28px;
-      cursor: pointer;
-      color: #666;
-      padding: 5px 10px;
-      border-radius: 4px;
-      transition: all 0.2s;
+    #CookieDeclaration {
+      margin-top: 20px;
     }
 
-    .modal-close:hover, .modal-close:focus {
-      background: rgba(201, 169, 97, 0.2);
-      color: var(--o);
-      outline: 2px solid var(--o);
-    }
-
-    /* RESPONSIVE */
     @media (max-width: 768px) {
-      .hero { height: auto; aspect-ratio: 16/9; }
-      .logo { width: 55px; height: 55px; }
+      .bv { height: auto; aspect-ratio: 16 / 9; }
+      .lo { width: 55px; height: 55px; }
       section { padding: 40px 15px; }
       h2 { font-size: 1.5rem; }
+      .transparent-box iframe { height: 1700px; }
+      body { background-attachment: scroll; }
       nav { gap: 8px; padding: 10px; }
       nav a { padding: 5px 10px; font-size: .85rem; }
-      .grid, .portfolio { gap: 15px; }
-      .embed iframe { aspect-ratio: 16/10; }
-      .modal-content { padding: 20px; max-height: 90vh; }
+      .g, .p-grid { gap: 15px; }
+      .newsletter-box { padding: 20px; }
     }
 
     @media (max-width: 480px) {
-      .logo { width: 45px; height: 45px; top: 10px; left: 10px; }
+      .lo { width: 45px; height: 45px; top: 10px; left: 10px; }
       h2 { font-size: 1.3rem; }
       section { padding: 30px 12px; }
+      .transparent-box iframe { height: 2000px; }
       .btn { padding: 8px 14px; font-size: .88rem; }
-      .modal-content { padding: 16px; }
-      .social a { width: 45px; height: 45px; }
-      .social img { width: 32px; height: 32px; }
-    }
-
-    /* LAZY LOAD */
-    [data-src] {
-      opacity: 0.6;
-    }
-
-    [data-src].loaded {
-      opacity: 1;
+      .soc img { width: 32px; }
+      .newsletter-box { padding: 16px; }
+      .popup-box { padding: 20px 16px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="logo" alt="Alan & Rose">
-  <video autoplay muted loop playsinline class="hero" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif">
-    <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
-    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
-  </video>
-  <nav aria-label="Menu principale">
-    <a href="#chi" onclick="return true">Chi Siamo</a>
-    <a href="#serv" onclick="return true">Servizi</a>
-    <a href="#port" onclick="return true">Portfolio</a>
-    <a href="#mus" onclick="return true">Musica</a>
-    <a href="#shop" onclick="return true">Shop</a>
-    <a href="#cont" onclick="return true">Contatti</a>
-    <a href="#news" onclick="return true">Newsletter</a>
-    <a onclick="modal('privacy')">Privacy</a>
-  </nav>
-</header>
+  <header data-aos="fade" data-aos-duration="1500">
+    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="lo" alt="Alan & Rose">
+    <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
+      <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
+      <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
+    </video>
+    <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
+      <a href="#chi">Chi Siamo</a>
+      <a href="#serv">Servizi</a>
+      <a href="#port">Portfolio</a>
+      <a href="#mus">Musica</a>
+      <a href="#shop">Shop</a>
+      <a href="#cont">Contatti</a>
+      <a href="#newsletter">Registrati</a>
+      <a href="javascript:void(0)" onclick="openPopup('privacyPopup')">Privacy</a>
+    </nav>
+  </header>
 
-<main>
+  <section id="chi" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Chi Siamo</h2>
+    <p style="text-align:center;max-width:750px;margin:auto;">
+      Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale.
+    </p>
+  </section>
 
-<!-- CHI SIAMO -->
-<section id="chi">
-  <h2>Chi Siamo</h2>
-  <p style="text-align:center;max-width:750px;margin:auto;">
-    Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale.
-  </p>
-</section>
-
-<!-- SERVIZI -->
-<section id="serv">
-  <h2>I Nostri Servizi</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Grafica & Web</h3>
-      <p>Creazione Loghi, Banner, Locandine in Raster e Vettoriale (Photoshop, Illustrator). Siti Web Vetrina ed E-Commerce in Dropshipping. Gestione Social Media. Editoria digitale e royalties.</p>
-    </div>
-    <div class="card">
-      <h3>Musica & Produzione</h3>
-      <p>Produzione Musicale, Testi, Recording, Mixing/Mastering (Gospel). Foto e Video Editing 3D (Hitfilm, Photoshop). Assistenza software PC/Tablet/Smartphone. Google My Business/Maps.</p>
-    </div>
-    <div class="card">
-      <h3>Consulenza & Altro</h3>
-      <p>Receptionist e gestione documenti (Word, Excel, PDF). Creazione SPID, pratiche INPS, punti patente. Speaker e creatore web radio. DJ services.</p>
-    </div>
-  </div>
-  <div class="btn-center">
-    <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">📤 Upload File</a>
-  </div>
-</section>
-
-<!-- PORTFOLIO -->
-<section id="port">
-  <h2>Portfolio</h2>
-  <div class="portfolio">
-    <div class="project">
-      <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
-      <div class="project-info">
-        <h3>Dj Marcello Morf</h3>
-        <p>Sito per deejay zona Portici NA</p>
-        <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
+  <section id="serv" data-aos="fade-up" data-aos-duration="1500">
+    <h2>I NOSTRI SERVIZI</h2>
+    <div class="g">
+      <div class="card" data-aos="fade-up" data-aos-delay="100">
+        <h3>Grafica & Web</h3>
+        <p>
+          Creazione Loghi, Banner, Locandine ecc. in Raster e Vettoriale (Photoshop e Illustrator);<br>
+          Creazione Siti Web Vetrina ed E-Commerce in Dropshipping;<br>
+          Gestione / Cura Pagine e Canali Social;<br>
+          Editore (pubblicazione digital store, copyright e gestione royalties);
+        </p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="200">
+        <h3>Musica & Produzione</h3>
+        <p>
+          Produzione Musicale, Testi, Recording, Mixing / Mastering (Solo Gospel);<br>
+          Foto e Video Editing 3D (Hitfilm, Photoshop);<br>
+          Assistenza software PC / Tablet / Smartphone;<br>
+          Gestione Google My Business / Maps;
+        </p>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="300">
+        <h3>Consulenza & Altro</h3>
+        <p>
+          Receptionist e fogli di calcolo, Word, PDF;<br>
+          Creazione SPID, pratiche INPS, punti patente;<br>
+          Speaker e creatore web radio e DJ;
+        </p>
       </div>
     </div>
-    <div class="project">
-      <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
-      <div class="project-info">
-        <h3>Donna Proverbiale</h3>
-        <p>Blog per donne e fede in Cristo</p>
-        <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
+    <div class="cta-box" data-aos="fade-up" data-aos-delay="400">
+      <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
+    </div>
+  </section>
+
+  <section id="port" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Portfolio</h2>
+    <div class="p-grid">
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
+        <div class="p-c">
+          <h3>Dj Marcello Morf</h3>
+          <p>Sito per deejay zona Portici NA...</p>
+          <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
+        <div class="p-c">
+          <h3>Donna Proverbiale</h3>
+          <p>Blog per donne e fede in Cristo...</p>
+          <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
+        <div class="p-c">
+          <h3>Detercoop</h3>
+          <p>Professionisti settore igienico-sanitario...</p>
+          <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
+        <div class="p-c">
+          <h3>3Fase</h3>
+          <p>Gruppo musicale con brani orecchiabili...</p>
+          <a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
+        <div class="p-c">
+          <h3>Colorlab</h3>
+          <p>Laboratorio fotografico professionale...</p>
+          <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
+        </div>
+      </div>
+      <div class="p-item" data-aos="zoom-in">
+        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
+        <div class="p-c">
+          <h3>A Viso Scoperto</h3>
+          <p>Canale YouTube della Chiesa...</p>
+          <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
+        </div>
       </div>
     </div>
-    <div class="project">
-      <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" alt="Detercoop" style="object-fit:contain;padding:10px">
-      <div class="project-info">
-        <h3>Detercoop</h3>
-        <p>Professionisti settore igienico-sanitario</p>
-        <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
+  </section>
+
+  <section id="mus" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Ascoltaci</h2>
+    <div class="embed">
+      <iframe loading="lazy" data-cookieconsent="marketing" data-cookieblock-src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe>
+    </div>
+    <div class="embed">
+      <iframe loading="lazy" data-cookieconsent="marketing" height="300" data-cookieblock-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false"></iframe>
+    </div>
+    <div class="embed">
+      <iframe loading="lazy" data-cookieconsent="marketing" height="400" data-cookieblock-src="https://www.youtube.com/embed/jEvIf6JCjkM" allowfullscreen></iframe>
+    </div>
+    <div class="social-title">SOCIAL</div>
+    <div class="soc">
+      <a href="https://soundcloud.com/alanrose-13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/soundcloud_colored_44dp.png" alt="SoundCloud"></a>
+      <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/spotify_colored_44dp.png" alt="Spotify"></a>
+      <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/youtube_colored_44dp.png" alt="YouTube"></a>
+      <a href="https://www.facebook.com/alanroseworship" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/facebook_colored_44dp.png" alt="Facebook"></a>
+      <a href="https://www.instagram.com/alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/instagram_colored_44dp.png" alt="Instagram"></a>
+      <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
+      <a href="https://www.threads.com/@alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/threads.png" alt="Threads"></a>
+      <a href="https://linktr.ee/alan.rose" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/linktree.png" alt="Linktree"></a>
+    </div>
+  </section>
+
+  <section id="shop" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Shop</h2>
+    <div class="g">
+      <div class="card">
+        <div style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px">
+          <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;height:100%;object-fit:contain;transform:scale(1.5);background:transparent" alt="A&R Shop">
+        </div>
+        <h3>A&R Shop</h3>
+        <p>Abbigliamento e oggettistica varia!</p>
+        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
+      </div>
+      <div class="card">
+        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
+        <h3>J4You Shop</h3>
+        <p>E-commerce Cristiano!</p>
+        <div class="embed">
+          <iframe loading="lazy" data-cookieconsent="marketing" height="250" data-cookieblock-src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
+        </div>
+        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a>
+      </div>
+      <div class="card">
+        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
+        <h3>SicilStreet</h3>
+        <p>E-commerce che celebra la Sicilia...</p>
+        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a>
       </div>
     </div>
-    <div class="project">
-      <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
-      <div class="project-info">
-        <h3>3Fase</h3>
-        <p>Gruppo musicale con brani orecchiabili</p>
-        <a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a>
-      </div>
+  </section>
+
+  <section id="cont" data-aos="fade-up" data-aos-duration="1500">
+    <h2>Contatti & Commenti</h2>
+    <p style="text-align:center;margin-bottom:20px">
+      Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
+    </p>
+
+    <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
+    <div class="transparent-box">
+      <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
     </div>
-    <div class="project">
-      <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
-      <div class="project-info">
-        <h3>Colorlab</h3>
-        <p>Laboratorio fotografico professionale</p>
-        <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
-      </div>
+
+    <h3 style="text-align:center;margin:40px 0 15px">Lascia un Commento</h3>
+    <div class="transparent-box">
+      <!-- Contenitore richiesto da HTML Comment Box: senza questo div lo script non ha dove disegnare i commenti -->
+      <div id="HCB_comment_box">Caricamento commenti...</div>
+      <script type="text/plain" data-cookieconsent="statistics">
+        /* Etichette in italiano per HTML Comment Box: deve stare prima dello script principale */
+        if (!window.hcb_user) { hcb_user = {}; }
+        hcb_user.comments_header = "Commenti";
+        hcb_user.name_label = "Nome";
+        hcb_user.content_label = "Scrivi qui il tuo commento";
+        hcb_user.submit = "Commenta";
+        hcb_user.no_comments_msg = "Nessun commento, per ora. Scrivi il primo!";
+        hcb_user.add = "Aggiungi un commento";
+        hcb_user.again = "Scrivi un altro commento";
+        hcb_user.said = "ha scritto:";
+        hcb_user.showing = "Da";
+        hcb_user.to = "a";
+        hcb_user.website_label = "sito web (facoltativo)";
+        hcb_user.email_label = "email";
+        hcb_user.anonymous = "Anonimo";
+        hcb_user.subscribe = "Avvisami delle risposte via email";
+        hcb_user.add_image = "Aggiungi immagine";
+        hcb_user.are_you_sure = "Vuoi segnalare questo commento come inappropriato?";
+        hcb_user.reply = "Rispondi";
+        hcb_user.flag = "Segnala";
+        hcb_user.like = "Mi piace";
+        hcb_user.days_ago = "giorni fa";
+        hcb_user.hours_ago = "ore fa";
+        hcb_user.minutes_ago = "minuti fa";
+        hcb_user.within_the_last_minute = "meno di un minuto fa";
+        hcb_user.msg_thankyou = "Grazie per il tuo commento!";
+        hcb_user.msg_approval_required = "Grazie per il tuo commento! Sarà visibile dopo l'approvazione di un moderatore.";
+        hcb_user.err_bad_html = "Il commento contiene codice HTML non valido.";
+        hcb_user.err_bad_email = "Inserisci un indirizzo email valido.";
+        hcb_user.err_too_frequent = "Attendi qualche secondo prima di pubblicare un altro commento.";
+        hcb_user.err_comment_empty = "Il commento non è stato pubblicato perché era vuoto.";
+        hcb_user.err_denied = "Il tuo commento non è stato accettato.";
+        hcb_user.err_spam = "Il tuo commento è stato rilevato come spam.";
+        hcb_user.err_blocked = "Il tuo commento è stato bloccato dalle norme del sito.";
+      </script>
+      <script type="text/plain" data-cookieconsent="statistics" id="hcb">
+        /*<!--*/
+        if (!window.hcb_user) { hcb_user = {}; }
+        (function () {
+          var s = document.createElement("script"),
+              l = hcb_user.PAGE || ("" + window.location).replace(/'/g, "%27"),
+              h = "https://www.htmlcommentbox.com";
+          s.setAttribute("type", "text/javascript");
+          s.setAttribute("src", h + "/jread?page=" + encodeURIComponent(l).replace("+", "%2B") + "&mod=%241%24wqVtlRwE%24A6W7wQj2L1q8sZ1b2q3r4&opts=16762&num=10&ts=" + Date.now());
+          if (typeof s !== "undefined") document.getElementsByTagName("head")[0].appendChild(s);
+        })();
+        /*-->*/
+      </script>
     </div>
-    <div class="project">
-      <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
-      <div class="project-info">
-        <h3>A Viso Scoperto</h3>
-        <p>Canale YouTube della Chiesa</p>
-        <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
-      </div>
+
+    <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
+    <div class="transparent-box review-form">
+      <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true">Caricamento…</iframe>
+    </div>
+  </section>
+
+  <footer data-aos="fade" data-aos-duration="1500">
+    <div class="newsletter-box" id="newsletter" data-aos="fade-up">
+      <h3>Iscriviti alla Newsletter</h3>
+      <p>Resta aggiornato su nuovi servizi, musica e progetti.</p>
+      <a href="https://alan-e-rose-13.voxmail.it/user/register_facebook" target="_blank" class="fb-subscribe">
+        <img width="157" height="22" src="https://alan-e-rose-13.voxmail.it/misc/icon_facebook_subscribe.png" alt="Iscriviti tramite Facebook">
+      </a>
+      <p class="or-divider">... oppure inserisci i tuoi dati:</p>
+      <form action="https://alan-e-rose-13.voxmail.it/user/register" accept-charset="UTF-8" method="post" class="newsletter-form">
+        <div class="form-item form-item-textfield">
+          <label for="nl-mail">Indirizzo email:</label>
+          <input type="email" id="nl-mail" maxlength="250" name="mail" value="" class="form-text required" required>
+          <p class="description">L'indirizzo al quale desideri ricevere le newsletter.</p>
+        </div>
+        <details class="privacy-details">
+          <summary>Informativa Privacy (art. 13 GDPR)</summary>
+          <div class="privacy_policy">La presente informativa viene resa in ossequio all'art. 13 del Regolamento 2016/679 (GDPR), ai sensi dell'art. 13 del d.lgs. n. 196/2003 (Codice in materia di protezione dei dati personali) ed è relativa a tutti i dati personali trattati secondo le modalità di seguito indicate.<br />
+            <br />
+            <br />
+            IL TITOLARE DEL TRATTAMENTO<br />
+            <br />
+            Il Titolare del trattamento dei dati personali raccolti è A&R - Email: alanrose.13@yahoo.com<br />
+            <br />
+            I dati di natura personale forniti potranno essere comunicati a destinatari opportunamente nominati che tratteranno i dati in qualità di responsabili per il trattamento e/o in qualità di incaricati, al fine di ottemperare ai contratti o finalità connesse.<br />
+            <br />
+            L'elenco completo dei responsabili del trattamento e degli incaricati al trattamento dei dati personali può essere richiesto inviando apposita richiesta all'indirizzo mail alanrose.13@yahoo.com<br />
+            <br />
+            TRASFERIMENTO DEI DATI<br />
+            <br />
+            Nel caso in cui i dati personali siano trasferiti al di fuori dell'Unione Europea, per finalità di carattere tecnico operativo e per garantire un'elevata continuità del servizio, il Titolare assicura che il trasferimento sia fondato su una decisione di adeguatezza della Commissione, al fine di assicurare che il livello di protezione delle persone fisiche garantito dalla normativa vigente e in particolare dal Regolamento UE 2016/679 non sia pregiudicato.<br />
+            <br />
+            <br />
+            DATI RACCOLTI<br />
+            <br />
+            I dati personali trattati sono raccolti in quanto forniti direttamente dall'interessato o raccolti automaticamente.<br />
+            <br />
+            I dati forniti direttamente dall'interessato sono tutti i dati personali che siano forniti al Titolare del Trattamento con qualsiasi modalità, direttamente dall'interessato.<br />
+            <br />
+            I dati raccolti automaticamente sono i dati di navigazione. Tali dati, pur non essendo raccolti al fine di essere associati all'identità dell'utente, potrebbero indirettamente, mediante elaborazione e associazioni con dati raccolti dal Titolare, consentire la sua identificazione.<br />
+            <br />
+            In seguito all'invio di newsletter, la piattaforma utilizzata consente di rilevare l'apertura di un messaggio e i clic effettuati all'interno della newsletter stessa, unitamente a dettagli relativi all'ip e al browser/device utilizzati . La raccolta di questi dati è fondamentale per il funzionamento dei sistemi di rinnovo implicito del trattamento (vedi la voce Modalità del Trattamento) e parte integrante dell'operatività della piattaforma di invio.<br />
+            <br />
+            <br />
+            FINALITÀ DEL TRATTAMENTO<br />
+            <br />
+            Il conferimento dei dati personali ha come base giuridica del trattamento esigenze contrattuali o precontrattuali o l'adempimento di obblighi legali ai quali il Titolare del trattamento è soggetto. Per tale ragione l'eventuale rifiuto al trattamento ovvero il mancato, inesatto o parziale conferimento dei dati potrebbe avere come conseguenza l'impossibilità di una corretta erogazione del servizio o l'impossibilità, per il Titolare, di rispondere alle richieste di informazioni inviate dall'interessato.<br />
+            <br />
+            Il conferimento dei dati per le finalità di invio newsletter per scopi promozionali, commerciali informativi o di ricerca è facoltativo ed il rifiuto a prestare il relativo consenso al Trattamento darà luogo all'impossibilità di essere aggiornati circa iniziative commerciali e/o campagne promozionali, di ricevere offerte o altro materiale promozionale.<br />
+            <br />
+            <br />
+            REVOCA DEL CONSENSO<br />
+            <br />
+            L'interessato può revocare il proprio consenso alla ricezione di comunicazioni promozionali e commerciali immediatamente, inviando richiesta all'indirizzo mail alanrose.13@yahoo.com oppure cliccando sull'apposito link di disiscrizione che potrà trovare nel footer di ogni mail promozionale e commerciale ricevuta.<br />
+            <br />
+            <br />
+            DESTINATARI<br />
+            <br />
+            I dati di natura personale forniti potranno essere comunicati a destinatari opportunamente nominati che tratteranno i dati in qualità di responsabili per il trattamento e/o in qualità di incaricati.<br />
+            <br />
+            Il Titolare del trattamento non comunica a terzi nessuna delle informazioni degli interessati senza il loro consenso, salvo ove richiesto dalla legge. È in ogni caso esclusa la diffusione dei dati personali trattati. L'elenco completo dei responsabili del trattamento, dei contitolari e degli incaricati al trattamento dei dati personali può essere richiesto inviando apposita richiesta all'indirizzo mail alanrose.13@yahoo.com<br />
+            <br />
+            <br />
+            MODALITÀ DEL TRATTAMENTO<br />
+            <br />
+            I dati personali sono trattati con strumenti automatizzati per il tempo strettamente necessario a conseguire gli scopi per cui sono stati raccolti, prevedendo in ogni caso la verifica annuale dei dati conservati al fine di cancellare quelli ritenuti obsoleti, salvo che la legge non preveda obblighi di archiviazione.<br />
+            <br />
+            Il trattamento dei dati avviene di norma presso la sede del Titolare, da personale o collaboratori esterni debitamente designati quali responsabili del trattamento. L'elenco completo dei responsabili del trattamento e degli Incaricati al trattamento dei dati personali può essere richiesto inviando apposita richiesta all'indirizzo mail a alanrose.13@yahoo.com<br />
+            <br />
+            Specifiche misure di sicurezza sono osservate per prevenire la perdita dei dati, usi illeciti o non corretti ed accessi non autorizzati.<br />
+            <br />
+            L'iscrizione e il trattamento relativo sono ritenuti validi fino alla disiscrizione da parte dell'utente, presente in ogni email, oppure dopo 12 mesi dall'ultima comunicazione di cui abbia evidenza di interazione diretta (click, apertura, risposta).<br />
+            <br />
+            <br />
+            DIRITTI DELL'INTERESSATO<br />
+            <br />
+            Ai sensi degli artt. 15 – 21 del Regolamento UE 2016/679 a ciascun interessato vengono riconosciuti una serie di diritti.<br />
+            <br />
+            - Diritto di Accesso: l'interessato, ai sensi dell'art. 15, ha diritto di ottenere la conferma che sia in corso un trattamento di dati personali che lo riguardano e, se del caso, di ottenerne copia. Ha inoltre il diritto di ottenere l'accesso ai dati personali che lo riguardano e a ulteriori informazioni quali la finalità del trattamento, le categorie di destinatari, il periodo di conservazione dei dati e i diritti esercitabili.<br />
+            - Diritto di rettifica: l'interessato, ai sensi dell'art. 16, ha diritto di ottenere la rettifica dei dati personali inesatti che lo riguardano o l'integrazione degli stessi.<br />
+            - Diritto alla cancellazione: l'interessato ha diritto di ottenere la cancellazione dei dati personali che lo riguardano, senza ingiustificato ritardo, qualora sussista una dei motivi previsti dall'art. 17.<br />
+            - Diritto di limitazione di trattamento: l'interessato ha diritto, nei casi previsti dall'art 18 del Regolamento 2016/679, di ottenere la limitazione del trattamento.<br />
+            - Diritto alla portabilità dei dati: l'interessato ha diritto di ricevere in un formato strutturato, di uso comune e leggibile da dispositivo automatico, i dati personali che lo riguardano e ha il diritto di trasmettere tali dati a un altro titolare senza impedimento, secondo quanto previsto dall'art. 20 del Regolamento 2016/679;<br />
+            - Diritto di opposizione al trattamento: l'interessato ha diritto di opporsi al trattamento dei dati personali che lo riguardano secondo quanto previsto dall'art. 21 del Regolamento 2016/679.<br />
+            - L'interessato ha altresì diritto di proporre reclamo all'Autorità di controllo competente, il Garante della Privacy.<br />
+            <br />
+            Le richieste di cui ai punti precedenti dovranno essere rivolte per iscritto al Titolare del trattamento. Il Titolare del trattamento provvederà, nei limiti temporali stabiliti dalla vigente normativa, a fornire tempestiva risposta alle richieste di esercizio dei diritti degli interessati.<br />
+            <br />
+            Ogni delucidazione o richiesta di chiarimenti può essere rivolta per iscritto al Titolare del trattamento.<br />
+            <br />
+            <br />
+            AGGIORNAMENTI E MODIFICHE<br />
+            <br />
+            Il Titolare del trattamento si riserva il diritto di modificare, integrare o aggiornare periodicamente la presente Informativa in ossequio alla normativa applicabile o ai provvedimenti adottati dal Garante per la Protezione dei dati personali.<br />
+            <br />
+            Le suddette modifiche o integrazioni saranno portate a conoscenza degli interessati. Invitiamo gli utenti a prendere visione della Privacy Policy con regolarità, per verificare l'Informativa aggiornata e decidere se continuare o meno ad usufruire dei servizi offerti.</div>
+        </details>
+        <div class="form-item form-item-checkbox">
+          <input type="checkbox" name="privacy" id="nl-privacy" value="1" class="form-checkbox has-sibling-label" required>
+          <label class="option" for="nl-privacy">Privacy</label>
+          <p class="description">Acconsento al trattamento dei miei dati personali (Regolamento 2016/679 - GDPR e d.lgs. n.196 del 30/6/2003)</p>
+        </div>
+        <input type="submit" name="submit" value="Iscriviti" class="form-submit btn">
+        <input type="hidden" name="form_id" value="user_register">
+      </form>
+    </div>
+    <p style="margin-top:15px">
+      <a onclick="openPopup('privacyPopup');return false;">Privacy Policy</a> |
+      <a onclick="openPopup('cookiePopup');return false;">Cookie Policy</a> |
+      <a onclick="openPopup('privacyPopup');return false;">Termini</a> |
+      <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
+    </p>
+    <p style="margin-top:10px">
+      <strong>Alan & Rose</strong> | Prestazione Occasionale art.2222 c.c.<br>
+      © 2026 Tutti i diritti riservati
+    </p>
+  </footer>
+
+  <!-- POPUP PRIVACY -->
+  <div id="privacyPopup" class="popup-overlay" onclick="closePopup('privacyPopup')">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <span class="popup-close" onclick="closePopup('privacyPopup')">×</span>
+      <h2>Privacy Policy e Termini - GDPR UE 2016/679</h2>
+      <p><strong>Ultimo aggiornamento: 04 Agosto 2026</strong></p>
+      <h3>1. Titolare</h3>
+      <p>
+        <strong>Alan & Rose</strong><br>
+        Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a><br>
+        Servizi in prestazione occasionale art.2222 c.c.
+      </p>
+      <h3>2. Dati Raccolti</h3>
+      <ul>
+        <li><strong>Contatto:</strong> Nome, Email da Form e Newsletter. Base: Consenso</li>
+        <li><strong>Navigazione:</strong> IP anonimizzato via Cookiebot. Base: Interesse Legittimo</li>
+        <li><strong>Pagamenti:</strong> Gestiti da PayPal e Redbubble</li>
+      </ul>
+      <h3>3. Cookie</h3>
+      <p>Questo sito usa <strong>Cookiebot</strong>. Puoi cambiare le preferenze cliccando su "Impostazioni Cookie" nel footer.</p>
+      <h3>4. Diritti GDPR</h3>
+      <p>Accesso, Rettifica, Cancellazione. Scrivi a: alanrose.13@yahoo.com</p>
     </div>
   </div>
-</section>
 
-<!-- MUSICA -->
-<section id="mus">
-  <h2>Ascoltaci</h2>
-  <div class="embed">
-    <iframe loading="lazy" data-cookieconsent="marketing" src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="352" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Spotify"></iframe>
-  </div>
-  <div class="embed">
-    <iframe loading="lazy" data-cookieconsent="marketing" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false" height="300" title="SoundCloud"></iframe>
-  </div>
-  <div class="embed">
-    <iframe loading="lazy" data-cookieconsent="marketing" src="https://www.youtube.com/embed/jEvIf6JCjkM" height="400" allowfullscreen title="YouTube"></iframe>
-  </div>
-  <h3 style="text-align:center;margin-top:40px;">Social Media</h3>
-  <div class="social">
-    <a href="https://soundcloud.com/alanrose-13" target="_blank" title="SoundCloud"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/soundcloud_colored_44dp.png" alt=""></a>
-    <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank" title="Spotify"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/spotify_colored_44dp.png" alt=""></a>
-    <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank" title="YouTube"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/youtube_colored_44dp.png" alt=""></a>
-    <a href="https://www.facebook.com/alanroseworship" target="_blank" title="Facebook"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/facebook_colored_44dp.png" alt=""></a>
-    <a href="https://www.instagram.com/alanrose.13" target="_blank" title="Instagram"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/instagram_colored_44dp.png" alt=""></a>
-    <a href="https://www.tiktok.com/@alan.rose13" target="_blank" title="TikTok"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/tiktok_colored_dark_44dp.png" alt=""></a>
-    <a href="https://www.threads.com/@alanrose.13" target="_blank" title="Threads"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/threads.png" alt=""></a>
-    <a href="https://linktr.ee/alan.rose" target="_blank" title="Linktree"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/linktree.png" alt=""></a>
-  </div>
-</section>
-
-<!-- SHOP -->
-<section id="shop">
-  <h2>Shop</h2>
-  <div class="grid">
-    <div class="card" style="text-align:center">
-      <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" alt="A&R Shop" style="width:120px;height:120px;object-fit:contain;margin:auto">
-      <h3>A&R Shop</h3>
-      <p>Abbigliamento e oggettistica varia!</p>
-      <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
-    </div>
-    <div class="card" style="text-align:center">
-      <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" alt="J4You Shop" style="width:100%;height:auto;object-fit:contain">
-      <h3>J4You Shop</h3>
-      <p>E-commerce Cristiano!</p>
-      <div class="embed">
-        <iframe loading="lazy" data-cookieconsent="marketing" src="https://www.youtube.com/embed/P_iVknuC9po" height="250" allowfullscreen title="Video J4You"></iframe>
-      </div>
-      <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a>
-    </div>
-    <div class="card" style="text-align:center">
-      <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" alt="SicilStreet" style="width:100%;height:auto;object-fit:contain">
-      <h3>SicilStreet</h3>
-      <p>E-commerce che celebra la Sicilia</p>
-      <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a>
+  <!-- POPUP COOKIE POLICY -->
+  <div id="cookiePopup" class="popup-overlay" onclick="closePopup('cookiePopup')">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <span class="popup-close" onclick="closePopup('cookiePopup')">×</span>
+      <h2>Cookie Policy</h2>
+      <p>Qui sotto trovi l'elenco completo e aggiornato di tutti i cookie usati da questo sito.</p>
+      <script id="CookieDeclaration"
+        src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js"
+        type="text/javascript"
+        async>
+      </script>
     </div>
   </div>
-</section>
 
-<!-- CONTATTI -->
-<section id="cont">
-  <h2>Contatti</h2>
-  <p style="text-align:center;margin-bottom:20px;">
-    Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
-  </p>
-  <h3 style="text-align:center;margin-bottom:20px;">Richiedi un Servizio</h3>
-  <div style="max-width:900px;margin:0 auto;border-radius:12px;overflow:hidden;">
-    <iframe loading="lazy" data-cookieconsent="statistics" src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0" style="border:none"></iframe>
-  </div>
-</section>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 1500 });
 
-<!-- NEWSLETTER -->
-<section id="news">
-  <h2>Iscriviti alla Newsletter</h2>
-  <div class="newsletter">
-    <h3>Rimani Aggiornato</h3>
-    <p>Resta al corrente su nuovi servizi, musica e progetti.</p>
-    <a href="https://alan-e-rose-13.voxmail.it/user/register_facebook" target="_blank" style="display:inline-block;margin:10px 0;">
-      <img width="157" height="22" src="https://alan-e-rose-13.voxmail.it/misc/icon_facebook_subscribe.png" alt="Facebook Subscribe">
-    </a>
-    <p style="font-size:0.85rem;margin:10px 0;">oppure:</p>
-    <form action="https://alan-e-rose-13.voxmail.it/user/register" method="post" accept-charset="UTF-8" style="text-align:left">
-      <div class="form-group">
-        <label for="mail">Email:</label>
-        <input type="email" id="mail" name="mail" maxlength="250" required onchange="focusForm()" onfocus="focusForm()">
-        <small>L'indirizzo dove ricevere le newsletter</small>
-      </div>
-      <details class="privacy-box">
-        <summary>Informativa Privacy GDPR</summary>
-        <p>La presente informativa viene resa in ossequio all'art. 13 del Regolamento 2016/679 (GDPR). Il Titolare del trattamento è A&R - Email: alanrose.13@yahoo.com. I dati personali forniti tramite newsletter saranno trattati per l'invio di comunicazioni promozionali, commerciali e informative, previa acquisizione del consenso esplicito. Hai diritto di accesso, rettifica, cancellazione, limitazione, portabilità e opposizione ai sensi degli artt. 15-21 GDPR. Per esercitare i tuoi diritti: scrivi a alanrose.13@yahoo.com.</p>
-      </details>
-      <div class="form-check">
-        <input type="checkbox" id="privacy" name="privacy" value="1" required>
-        <label for="privacy">Accetto il trattamento dei dati personali (GDPR 2016/679)</label>
-      </div>
-      <button type="submit" class="btn" style="width:100%">Iscriviti</button>
-      <input type="hidden" name="form_id" value="user_register">
-    </form>
-  </div>
-</section>
+    function openPopup(id) {
+      document.getElementById(id).style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
 
-</main>
-
-<!-- PRIVACY MODAL -->
-<div id="privacy" class="modal" onclick="if(event.target===this)modalClose('privacy')">
-  <div class="modal-content">
-    <button class="modal-close" onclick="modalClose('privacy')">×</button>
-    <h2>Privacy Policy & Cookie Policy</h2>
-    <p><strong>Ultimo aggiornamento: 20 Agosto 2026</strong></p>
-
-    <h3>Titolare del Trattamento</h3>
-    <p><strong>Alan & Rose</strong> | Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a> | Prestazione occasionale art.2222 c.c.</p>
-
-    <h3>Dati Raccolti</h3>
-    <ul style="margin-left:20px">
-      <li><strong>Form e Newsletter:</strong> Nome, Email. Base: Consenso</li>
-      <li><strong>Navigazione:</strong> IP anonimizzato via Cookiebot. Base: Interesse Legittimo</li>
-      <li><strong>Cookie:</strong> Gestiti da Cookiebot (essenziali sempre attivi, altri richiedono consenso)</li>
-    </ul>
-
-    <h3>Diritti GDPR (artt. 15-21)</h3>
-    <ul style="margin-left:20px">
-      <li>Accesso ai dati personali</li>
-      <li>Rettifica dati inesatti</li>
-      <li>Cancellazione "diritto all'oblio"</li>
-      <li>Limitazione del trattamento</li>
-      <li>Portabilità dei dati</li>
-      <li>Opposizione al trattamento</li>
-    </ul>
-
-    <p><strong>Esercita i tuoi diritti:</strong> Scrivi a <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>. Risponderemo entro 30 giorni.</p>
-
-    <h3>Cookie Policy</h3>
-    <p>Questo sito usa <strong>Cookiebot (Cybot A/S)</strong> per gestire i cookie conformemente al GDPR. Puoi cambiare le preferenze in qualsiasi momento cliccando "Impostazioni Cookie" nel footer.</p>
-
-    <p><strong>Categorie di cookie:</strong></p>
-    <ul style="margin-left:20px">
-      <li><strong>Essenziali:</strong> Sempre attivi (HTTPS, Cookiebot)</li>
-      <li><strong>Analitici:</strong> Statistiche di navigazione (con consenso)</li>
-      <li><strong>Marketing:</strong> Annunci personalizzati (con consenso)</li>
-    </ul>
-
-    <h3>Contatti Garante Privacy</h3>
-    <p>Garante per la Protezione dei Dati Personali (Italia) | Sito: <a href="https://www.garanteprivacy.it" target="_blank">garanteprivacy.it</a></p>
-  </div>
-</div>
-
-<footer>
-  <p>
-    <a onclick="modal('privacy')">Privacy & Cookie</a> |
-    <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
-  </p>
-  <p style="margin-top:15px">
-    <strong>Alan & Rose</strong> | Prestazione Occasionale art.2222 c.c.<br>
-    © 2026 Tutti i diritti riservati
-  </p>
-</footer>
-
-<script>
-// MODAL FUNCTIONS
-function modal(id) {
-  document.getElementById(id).classList.add('active');
-  document.body.classList.add('popup-open');
-}
-
-function modalClose(id) {
-  document.getElementById(id).classList.remove('active');
-  document.body.classList.remove('popup-open');
-}
-
-// ESC per chiudere
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal.active').forEach(m => {
-      m.classList.remove('active');
-      document.body.classList.remove('popup-open');
-    });
-  }
-});
-
-// Newsletter blur remove
-function focusForm() {
-  document.querySelector('.newsletter').style.filter = 'blur(0px)';
-}
-
-// Scroll smooth (nativo HTML)
-// già in CSS: html { scroll-behavior: smooth; }
-
-// Lazy load images
-if ('IntersectionObserver' in window) {
-  const images = document.querySelectorAll('img[loading="lazy"]');
-  const imageObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.src || img.dataset.src;
-        img.classList.add('loaded');
-        observer.unobserve(img);
-      }
-    });
-  });
-  images.forEach(img => imageObserver.observe(img));
-}
-
-// Animazioni sezioni al scroll
-if ('IntersectionObserver' in window) {
-  const sections = document.querySelectorAll('section');
-  const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-      }
-    });
-  }, { threshold: 0.1 });
-  sections.forEach(section => sectionObserver.observe(section));
-}
-</script>
+    function closePopup(id) {
+      document.getElementById(id).style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  </script>
 
 </body>
 </html>
