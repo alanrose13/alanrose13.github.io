@@ -474,22 +474,19 @@
     }
 
     /* POPUP */
-    html, body {
-      position: relative;
-    }
-
     .popup-overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      min-height: 100%;
+      height: 100%;
       background: rgba(0, 0, 0, .75);
       z-index: 9999;
       display: none;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       padding: 40px 0;
+      overflow-y: auto;
     }
 
     .popup-box {
@@ -662,6 +659,18 @@
       #arChatWindow { right: 10px; bottom: 80px; width: calc(100vw - 20px); }
       #arChatBtn { right: 15px; bottom: 15px; }
     }
+
+    /* Riposiziona il tasto flottante di Cookiebot a sinistra, come il tasto chat a destra */
+    #CybotCookiebotDialogPoweredByText,
+    .CookiebotWidget,
+    #CookiebotWidget {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 20px !important;
+      right: auto !important;
+      top: auto !important;
+      z-index: 9998 !important;
+    }
   </style>
 </head>
 <body>
@@ -719,9 +728,6 @@
           Speaker e creatore web radio e DJ;
         </p>
       </div>
-    </div>
-    <div class="btn-upload-wrap" data-aos="fade-up" data-aos-delay="400">
-      <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
     </div>
   </section>
 
@@ -950,9 +956,6 @@
               Speaker e creatore web radio e DJ;
             </p>
           </div>
-        </div>
-        <div class="btn-upload-wrap">
-          <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
         </div>
       </section>
     </div>
@@ -1212,7 +1215,7 @@
     </div>
     <p style="margin-top:15px">
       <a onclick="openPopup('privacyPopup');return false;">Privacy Policy</a> |
-      <a onclick="openPopup('cookiePopup');return false;">Cookie Policy</a> |
+      <a href="cookie-policy.html" target="_blank">Cookie Policy</a> |
       <a onclick="openPopup('privacyPopup');return false;">Termini</a> |
       <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
     </p>
@@ -1289,7 +1292,7 @@
     }
 
     // ⚠️ SOSTITUISCI questo URL con quello del tuo Cloudflare Worker dopo il deploy
-    const AR_WORKER_URL = "https://alanrose-chatbot.TUO-ACCOUNT.workers.dev";
+    const AR_WORKER_URL = "https://chat.alanrose.workers.dev/";
 
     function arToggleChat() {
       const w = document.getElementById('arChatWindow');
