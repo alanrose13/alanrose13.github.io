@@ -1340,7 +1340,7 @@
     }
 
     // ⚠️ SOSTITUISCI questo URL con quello del tuo Cloudflare Worker dopo il deploy
-    const AR_WORKER_URL = "https://chat.alanrose.workers.dev/";
+    const AR_WORKER_URL = "https://script.google.com/macros/s/AKfycbx8iErKJRy3AqMg0igvJHiGR5lYTftLxaqAjEPD8WoGs4EPDTa-xLaKVzy44n_UteRa/exec";
 
     function arToggleChat() {
       const w = document.getElementById('arChatWindow');
@@ -1369,7 +1369,7 @@
       try {
         const response = await fetch(AR_WORKER_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ message: msg })
         });
 
