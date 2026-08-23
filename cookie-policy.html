@@ -84,6 +84,133 @@
       color: var(--m);
       font-size: .85rem;
     }
+
+    /* ============ CHATBOT WIDGET (stessa posizione del sito) ============ */
+    #arChatBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--o);
+      color: var(--m);
+      border: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,.3);
+      cursor: pointer;
+      font-size: 26px;
+      z-index: 10000;
+      transition: .3s;
+    }
+    #arChatBtn:hover { background: var(--m); color: #fff; transform: scale(1.08); }
+
+    #arChatWindow {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 340px;
+      max-width: 90vw;
+      height: 460px;
+      max-height: 75vh;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.35);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 10000;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #arChatHeader {
+      background: var(--m);
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+    }
+    #arChatHeader span.close { cursor: pointer; font-size: 20px; }
+
+    #arChatMessages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      background: #F5F1E8;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ar-msg {
+      max-width: 85%;
+      padding: 9px 13px;
+      border-radius: 12px;
+      font-size: .9rem;
+      line-height: 1.4;
+    }
+    .ar-msg.bot {
+      background: #fff;
+      border: 1px solid rgba(201,169,97,.4);
+      align-self: flex-start;
+      color: var(--m);
+    }
+    .ar-msg.user {
+      background: var(--o);
+      color: var(--m);
+      align-self: flex-end;
+      font-weight: 600;
+    }
+    .ar-msg.typing {
+      background: #fff;
+      border: 1px solid rgba(201,169,97,.4);
+      align-self: flex-start;
+      color: #999;
+      font-style: italic;
+    }
+
+    #arChatInputRow {
+      display: flex;
+      border-top: 1px solid #eee;
+      padding: 8px;
+      gap: 6px;
+    }
+    #arChatInput {
+      flex: 1;
+      border: 1px solid rgba(201,169,97,.5);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: .9rem;
+    }
+    #arChatSend {
+      background: var(--o);
+      color: var(--m);
+      border: none;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    #arChatSend:hover { background: var(--m); color: #fff; }
+
+    @media (max-width: 480px) {
+      #arChatWindow { right: 10px; bottom: 80px; width: calc(100vw - 20px); }
+      #arChatBtn { right: 15px; bottom: 15px; }
+    }
+
+    /* Riposiziona il tasto flottante di Cookiebot a sinistra, come nel resto del sito */
+    #CybotCookiebotDialogPoweredByText,
+    .CookiebotWidget,
+    #CookiebotWidget {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 20px !important;
+      right: auto !important;
+      top: auto !important;
+      z-index: 9998 !important;
+    }
   </style>
 </head>
 <body>
@@ -135,6 +262,70 @@
     <strong>Alan & Rose</strong> | Prestazione Occasionale art.2222 c.c.<br>
     © 2026 Tutti i diritti riservati
   </footer>
+
+  <!-- ============ CHATBOT WIDGET ALAN & ROSE ============ -->
+  <button id="arChatBtn" onclick="arToggleChat()">💬</button>
+
+  <div id="arChatWindow">
+    <div id="arChatHeader">
+      <span>Assistente Alan & Rose</span>
+      <span class="close" onclick="arToggleChat()">×</span>
+    </div>
+    <div id="arChatMessages">
+      <div class="ar-msg bot">Ciao! Sono l'assistente virtuale di Alan & Rose. Chiedimi pure dei nostri servizi, portfolio, musica o shop 😊</div>
+    </div>
+    <div id="arChatInputRow">
+      <input type="text" id="arChatInput" placeholder="Scrivi un messaggio..." onkeydown="if(event.key==='Enter')arSendMessage()">
+      <button id="arChatSend" onclick="arSendMessage()">Invia</button>
+    </div>
+  </div>
+
+  <script>
+    const AR_WORKER_URL = "https://chat.alanrose.workers.dev/";
+
+    function arToggleChat() {
+      const w = document.getElementById('arChatWindow');
+      w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function arAddMessage(text, cls) {
+      const box = document.getElementById('arChatMessages');
+      const div = document.createElement('div');
+      div.className = 'ar-msg ' + cls;
+      div.textContent = text;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      return div;
+    }
+
+    async function arSendMessage() {
+      const input = document.getElementById('arChatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      arAddMessage(msg, 'user');
+      input.value = '';
+
+      const typingEl = arAddMessage('Sto scrivendo...', 'typing');
+
+      try {
+        const response = await fetch(AR_WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+
+        if (!response.ok) throw new Error('Errore di rete: ' + response.status);
+
+        const data = await response.json();
+        typingEl.remove();
+        arAddMessage(data.reply || 'Mi dispiace, non ho capito. Puoi riformulare?', 'bot');
+      } catch (err) {
+        typingEl.remove();
+        arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
+        console.error('Errore chatbot:', err);
+      }
+    }
+  </script>
 
 </body>
 </html>
