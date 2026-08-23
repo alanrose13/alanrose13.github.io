@@ -1367,11 +1367,7 @@
       const typingEl = arAddMessage('Sto scrivendo...', 'typing');
 
       try {
-        const response = await fetch(AR_WORKER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ message: msg })
-        });
+        const response = await fetch(AR_WORKER_URL + "?message=" + encodeURIComponent(msg));
 
         if (!response.ok) throw new Error('Errore di rete: ' + response.status);
 
