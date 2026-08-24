@@ -547,6 +547,14 @@
       text-decoration: underline;
     }
 
+    /* === NASCONDI I COMMENTI PUBBLICATI === */
+    .hcb-comment-list {
+      display: none !important;
+    }
+    .hcb-comment-count {
+      display: none !important;
+    }
+
     @media (max-width: 768px) {
       .bv { height: auto; aspect-ratio: 16 / 9; }
       .lo { width: 55px; height: 55px; }
@@ -1414,7 +1422,7 @@
       document.getElementById(id).style.display = 'none';
     }
 
-    // ========== GDPR COMMENT CHECKBOX ==========
+    // ========== GDPR COMMENT CHECKBOX (MODIFICATO) ==========
     document.addEventListener('DOMContentLoaded', function() {
       const checkbox = document.getElementById('gdprCommentConsent');
       if (!checkbox) return;
@@ -1430,12 +1438,33 @@
         }
       }
 
+      function spostaCheckbox() {
+        const checkboxDiv = document.querySelector('.gdpr-comment-consent');
+        if (!checkboxDiv) return;
+
+        // Cerca il contenitore dei pulsanti (di solito .hcb-form-submit o .hcb-form-actions)
+        let container = document.querySelector('#HCB_comment_box .hcb-form-submit, #HCB_comment_box .hcb-form-actions');
+        if (!container) {
+          // Se non c'è, cerca il pulsante submit e usa il suo genitore
+          const submitBtn = findCommentSubmit();
+          if (!submitBtn) return;
+          container = submitBtn.parentNode;
+        }
+
+        // Se la checkbox è già dentro il widget, non fare nulla
+        if (checkboxDiv.closest('#HCB_comment_box')) return;
+
+        // Inserisci la checkbox PRIMA del container (dunque sopra i pulsanti)
+        container.parentNode.insertBefore(checkboxDiv, container);
+      }
+
       checkbox.addEventListener('change', toggleSubmit);
 
       const observer = new MutationObserver(function(mutations) {
         const btn = findCommentSubmit();
         if (btn) {
           toggleSubmit();
+          spostaCheckbox();
           observer.disconnect();
         }
       });
@@ -1447,6 +1476,7 @@
           const btn = findCommentSubmit();
           if (btn) {
             toggleSubmit();
+            spostaCheckbox();
             observer.disconnect();
           }
         }, 3000);
@@ -1530,7 +1560,6 @@
         // Gestione errori dal worker
         if (data.error) {
           let errorMsg = 'Si è verificato un errore. Riprova più tardi.';
-          // Controlla se l'errore è relativo a "high demand" o "overload"
           if (data.error.toLowerCase().includes('high demand') ||
               data.error.toLowerCase().includes('overload') ||
               data.error.toLowerCase().includes('too many requests')) {
