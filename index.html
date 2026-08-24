@@ -545,7 +545,7 @@
       .popup-box { padding: 20px 16px; }
     }
 
-    /* ============ CHATBOT WIDGET ============ */
+    /* ============ CHATBOT WIDGET ANIMATO ============ */
     #arChatBtn {
       position: fixed;
       bottom: 20px;
@@ -561,8 +561,15 @@
       font-size: 26px;
       z-index: 10000;
       transition: .3s;
+      animation: pulse 2s infinite;
     }
-    #arChatBtn:hover { background: var(--m); color: #fff; transform: scale(1.08); }
+    #arChatBtn:hover { background: var(--m); color: #fff; transform: scale(1.08); animation-play-state: paused; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(201, 169, 97, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0); }
+    }
 
     #arChatWindow {
       position: fixed;
@@ -580,6 +587,12 @@
       overflow: hidden;
       z-index: 10000;
       font-family: 'Segoe UI', sans-serif;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     #arChatHeader {
@@ -609,6 +622,11 @@
       border-radius: 12px;
       font-size: .9rem;
       line-height: 1.4;
+      animation: msgIn 0.3s ease;
+    }
+    @keyframes msgIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
     .ar-msg.bot {
       background: #fff;
@@ -628,6 +646,24 @@
       align-self: flex-start;
       color: #999;
       font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #999;
+      border-radius: 50%;
+      display: inline-block;
+      animation: typingBounce 1.4s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1.0); }
     }
 
     #arChatInputRow {
@@ -652,12 +688,41 @@
       padding: 0 16px;
       font-weight: 700;
       cursor: pointer;
+      transition: .3s;
     }
     #arChatSend:hover { background: var(--m); color: #fff; }
 
     @media (max-width: 480px) {
       #arChatWindow { right: 10px; bottom: 80px; width: calc(100vw - 20px); }
       #arChatBtn { right: 15px; bottom: 15px; }
+    }
+
+    /* Stile per la checkbox GDPR dei commenti */
+    .gdpr-consent-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: var(--bg);
+        border: 1px solid rgba(201, 169, 97, .5);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 20px 0;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+    .gdpr-consent-box input[type="checkbox"] {
+        margin-top: 4px;
+        flex-shrink: 0;
+    }
+    .gdpr-consent-box label {
+        cursor: pointer;
+        line-height: 1.4;
+    }
+    .comment-area {
+        display: none;
+    }
+    .comment-area.visible {
+        display: block;
     }
 
     /* Riposiziona il tasto flottante di Cookiebot a sinistra, come il tasto chat a destra */
@@ -803,584 +868,4 @@
       <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/youtube_colored_44dp.png" alt="YouTube"></a>
       <a href="https://www.facebook.com/alanroseworship" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/facebook_colored_44dp.png" alt="Facebook"></a>
       <a href="https://www.instagram.com/alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/instagram_colored_44dp.png" alt="Instagram"></a>
-      <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
-      <a href="https://www.threads.com/@alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/threads.png" alt="Threads"></a>
-      <a href="https://linktr.ee/alan.rose" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/linktree.png" alt="Linktree"></a>
-    </div>
-  </section>
-
-  <section id="shop" data-aos="fade-up" data-aos-duration="1500">
-    <h2>Shop</h2>
-    <div class="g">
-      <div class="card">
-        <div style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px">
-          <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;height:100%;object-fit:contain;transform:scale(1.5);background:transparent" alt="A&R Shop">
-        </div>
-        <h3>A&R Shop</h3>
-        <p>Abbigliamento e oggettistica varia!</p>
-        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
-      </div>
-      <div class="card">
-        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
-        <h3>J4You Shop</h3>
-        <p>E-commerce Cristiano!</p>
-        <div class="embed">
-          <iframe loading="lazy" data-cookieconsent="marketing" height="250" data-cookieblock-src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
-        </div>
-        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a>
-      </div>
-      <div class="card">
-        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
-        <h3>SicilStreet</h3>
-        <p>E-commerce che celebra la Sicilia...</p>
-        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="cont" data-aos="fade-up" data-aos-duration="1500">
-    <h2>Contatti & Commenti</h2>
-    <p style="text-align:center;margin-bottom:20px">
-      Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
-    </p>
-
-    <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
-    <div class="transparent-box">
-      <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
-    </div>
-
-    <div class="btn-upload-wrap">
-      <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
-    </div>
-
-    <h3 style="text-align:center;margin:40px 0 15px">Lascia un Commento</h3>
-    <div class="transparent-box">
-      <div id="HCB_comment_box">Caricamento commenti...</div>
-      <script type="text/plain" data-cookieconsent="statistics">
-        if (!window.hcb_user) { hcb_user = {}; }
-        hcb_user.comments_header = "Commenti";
-        hcb_user.name_label = "Nome";
-        hcb_user.content_label = "Scrivi qui il tuo commento";
-        hcb_user.submit = "Commenta";
-        hcb_user.no_comments_msg = "Nessun commento, per ora. Scrivi il primo!";
-        hcb_user.add = "Aggiungi un commento";
-        hcb_user.again = "Scrivi un altro commento";
-        hcb_user.said = "ha scritto:";
-        hcb_user.showing = "Da";
-        hcb_user.to = "a";
-        hcb_user.website_label = "sito web (facoltativo)";
-        hcb_user.email_label = "email";
-        hcb_user.anonymous = "Anonimo";
-        hcb_user.subscribe = "Avvisami delle risposte via email";
-        hcb_user.add_image = "Aggiungi immagine";
-        hcb_user.are_you_sure = "Vuoi segnalare questo commento come inappropriato?";
-        hcb_user.reply = "Rispondi";
-        hcb_user.flag = "Segnala";
-        hcb_user.like = "Mi piace";
-        hcb_user.days_ago = "giorni fa";
-        hcb_user.hours_ago = "ore fa";
-        hcb_user.minutes_ago = "minuti fa";
-        hcb_user.within_the_last_minute = "meno di un minuto fa";
-        hcb_user.msg_thankyou = "Grazie per il tuo commento!";
-        hcb_user.msg_approval_required = "Grazie per il tuo commento! Sarà visibile dopo l'approvazione di un moderatore.";
-        hcb_user.err_bad_html = "Il commento contiene codice HTML non valido.";
-        hcb_user.err_bad_email = "Inserisci un indirizzo email valido.";
-        hcb_user.err_too_frequent = "Attendi qualche secondo prima di pubblicare un altro commento.";
-        hcb_user.err_comment_empty = "Il commento non è stato pubblicato perché era vuoto.";
-        hcb_user.err_denied = "Il tuo commento non è stato accettato.";
-        hcb_user.err_spam = "Il tuo commento è stato rilevato come spam.";
-        hcb_user.err_blocked = "Il tuo commento è stato bloccato dalle norme del sito.";
-      </script>
-      <script type="text/plain" data-cookieconsent="statistics" id="hcb">
-        /*<!--*/
-        if (!window.hcb_user) { hcb_user = {}; }
-        (function () {
-          var s = document.createElement("script"),
-              l = hcb_user.PAGE || ("" + window.location).replace(/'/g, "%27"),
-              h = "https://www.htmlcommentbox.com";
-          s.setAttribute("type", "text/javascript");
-          s.setAttribute("src", h + "/jread?page=" + encodeURIComponent(l).replace("+", "%2B") + "&mod=%241%24wqVtlRwE%24A6W7wQj2L1q8sZ1b2q3r4&opts=16762&num=10&ts=" + Date.now());
-          if (typeof s !== "undefined") document.getElementsByTagName("head")[0].appendChild(s);
-        })();
-        /*-->*/
-      </script>
-    </div>
-
-    <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
-    <div class="transparent-box review-form">
-      <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true">Caricamento…</iframe>
-    </div>
-  </section>
-
-  <div id="chiPopup" class="popup-overlay" onclick="closePopup('chiPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('chiPopup')">×</span>
-      <section>
-        <h2>Chi Siamo</h2>
-        <p style="text-align:center;max-width:750px;margin:auto;">
-          Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale.
-        </p>
-      </section>
-    </div>
-  </div>
-
-  <div id="servPopup" class="popup-overlay" onclick="closePopup('servPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('servPopup')">×</span>
-      <section>
-        <h2>I NOSTRI SERVIZI</h2>
-        <div class="g">
-          <div class="card">
-            <h3>Grafica & Web</h3>
-            <p>
-              Creazione Loghi, Banner, Locandine ecc. in Raster e Vettoriale (Photoshop e Illustrator);<br>
-              Creazione Siti Web Vetrina ed E-Commerce in Dropshipping;<br>
-              Gestione / Cura Pagine e Canali Social;<br>
-              Editore (pubblicazione digital store, copyright e gestione royalties);
-            </p>
-          </div>
-          <div class="card">
-            <h3>Musica & Produzione</h3>
-            <p>
-              Produzione Musicale, Testi, Recording, Mixing / Mastering (Solo Gospel);<br>
-              Foto e Video Editing 3D (Hitfilm, Photoshop);<br>
-              Assistenza software PC / Tablet / Smartphone;<br>
-              Gestione Google My Business / Maps;
-            </p>
-          </div>
-          <div class="card">
-            <h3>Consulenza & Altro</h3>
-            <p>
-              Receptionist e fogli di calcolo, Word, PDF;<br>
-              Creazione SPID, pratiche INPS, punti patente;<br>
-              Speaker e creatore web radio e DJ;
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div id="portPopup" class="popup-overlay" onclick="closePopup('portPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('portPopup')">×</span>
-      <section>
-        <h2>Portfolio</h2>
-        <div class="p-grid">
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
-            <div class="p-c">
-              <h3>Dj Marcello Morf</h3>
-              <p>Sito per deejay zona Portici NA...</p>
-              <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
-            <div class="p-c">
-              <h3>Donna Proverbiale</h3>
-              <p>Blog per donne e fede in Cristo...</p>
-              <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
-            <div class="p-c">
-              <h3>Detercoop</h3>
-              <p>Professionisti settore igienico-sanitario...</p>
-              <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
-            <div class="p-c">
-              <h3>3Fase</h3>
-              <p>Gruppo musicale con brani orecchiabili...</p>
-              <a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
-            <div class="p-c">
-              <h3>Colorlab</h3>
-              <p>Laboratorio fotografico professionale...</p>
-              <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
-            <div class="p-c">
-              <h3>A Viso Scoperto</h3>
-              <p>Canale YouTube della Chiesa...</p>
-              <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div id="musPopup" class="popup-overlay" onclick="closePopup('musPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('musPopup')">×</span>
-      <section>
-        <h2>Ascoltaci</h2>
-        <div class="embed">
-          <iframe loading="lazy" data-cookieconsent="marketing" data-cookieblock-src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe>
-        </div>
-        <div class="embed">
-          <iframe loading="lazy" data-cookieconsent="marketing" height="300" data-cookieblock-src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alanrose-13&color=%23C9A961&auto_play=false"></iframe>
-        </div>
-        <div class="embed">
-          <iframe loading="lazy" data-cookieconsent="marketing" height="400" data-cookieblock-src="https://www.youtube.com/embed/jEvIf6JCjkM" allowfullscreen></iframe>
-        </div>
-        <div class="social-title">SOCIAL</div>
-        <div class="soc">
-          <a href="https://soundcloud.com/alanrose-13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/soundcloud_colored_44dp.png" alt="SoundCloud"></a>
-          <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/spotify_colored_44dp.png" alt="Spotify"></a>
-          <a href="https://www.youtube.com/@Alan_e_Rose?sub_confirmation=1" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/youtube_colored_44dp.png" alt="YouTube"></a>
-          <a href="https://www.facebook.com/alanroseworship" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/facebook_colored_44dp.png" alt="Facebook"></a>
-          <a href="https://www.instagram.com/alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/instagram_colored_44dp.png" alt="Instagram"></a>
-          <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
-          <a href="https://www.threads.com/@alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/threads.png" alt="Threads"></a>
-          <a href="https://linktr.ee/alan.rose" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/linktree.png" alt="Linktree"></a>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div id="shopPopup" class="popup-overlay" onclick="closePopup('shopPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('shopPopup')">×</span>
-      <section>
-        <h2>Shop</h2>
-        <div class="g">
-          <div class="card">
-            <div style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px">
-              <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;height:100%;object-fit:contain;transform:scale(1.5);background:transparent" alt="A&R Shop">
-            </div>
-            <h3>A&R Shop</h3>
-            <p>Abbigliamento e oggettistica varia!</p>
-            <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
-          </div>
-          <div class="card">
-            <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
-            <h3>J4You Shop</h3>
-            <p>E-commerce Cristiano!</p>
-            <div class="embed">
-              <iframe loading="lazy" data-cookieconsent="marketing" height="250" data-cookieblock-src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
-            </div>
-            <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose" target="_blank" class="btn">Entra</a>
-          </div>
-          <div class="card">
-            <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
-            <h3>SicilStreet</h3>
-            <p>E-commerce che celebra la Sicilia...</p>
-            <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755" target="_blank" class="btn">Entra</a>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div id="contPopup" class="popup-overlay" onclick="closePopup('contPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('contPopup')">×</span>
-      <section>
-        <h2>Contatti & Commenti</h2>
-        <p style="text-align:center;margin-bottom:20px">
-          Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
-        </p>
-        <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
-        <div class="transparent-box">
-          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
-        </div>
-        <div class="btn-upload-wrap">
-          <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
-        </div>
-        <p style="text-align:center;margin-top:25px">
-          Per lasciare un commento o una recensione, scorri fino alla sezione
-          <a onclick="closePopup('contPopup');document.getElementById('cont').scrollIntoView({behavior:'smooth'});" style="color:var(--o);cursor:pointer;font-weight:600;">"Contatti & Commenti"</a>
-          più in basso nella pagina.
-        </p>
-      </section>
-    </div>
-  </div>
-
-
-  <footer data-aos="fade" data-aos-duration="1500">
-    <div class="newsletter-box" id="newsletter" data-aos="fade-up">
-      <h3>Iscriviti alla Newsletter</h3>
-      <p>Resta aggiornato su nuovi servizi, musica e progetti.</p>
-      <a href="https://alan-e-rose-13.voxmail.it/user/register_facebook" target="_blank" class="fb-subscribe">
-        <img width="157" height="22" src="https://alan-e-rose-13.voxmail.it/misc/icon_facebook_subscribe.png" alt="Iscriviti tramite Facebook">
-      </a>
-      <p class="or-divider">... oppure inserisci i tuoi dati:</p>
-      <form action="https://alan-e-rose-13.voxmail.it/user/register" accept-charset="UTF-8" method="post" class="newsletter-form">
-        <div class="form-item form-item-textfield">
-          <label for="nl-mail">Indirizzo email:</label>
-          <input type="email" id="nl-mail" maxlength="250" name="mail" value="" class="form-text required" required>
-          <p class="description">L'indirizzo al quale desideri ricevere le newsletter.</p>
-        </div>
-        <details class="privacy-details">
-          <summary>Informativa Privacy (art. 13 GDPR)</summary>
-          <div class="privacy_policy">La presente informativa viene resa in ossequio all'art. 13 del Regolamento 2016/679 (GDPR), ai sensi dell'art. 13 del d.lgs. n. 196/2003 (Codice in materia di protezione dei dati personali) ed è relativa a tutti i dati personali trattati secondo le modalità di seguito indicate.<br />
-            <br />
-            <br />
-            IL TITOLARE DEL TRATTAMENTO<br />
-            <br />
-            Il Titolare del trattamento dei dati personali raccolti è Alfio Ragusa, operante con il nome commerciale A&R - Email: alanrose.13@yahoo.com<br />
-            <br />
-            I dati di natura personale forniti potranno essere comunicati a destinatari opportunamente nominati che tratteranno i dati in qualità di responsabili per il trattamento e/o in qualità di incaricati, al fine di ottemperare ai contratti o finalità connesse.<br />
-            <br />
-            L'elenco completo dei responsabili del trattamento e degli incaricati al trattamento dei dati personali può essere richiesto inviando apposita richiesta all'indirizzo mail alanrose.13@yahoo.com<br />
-            <br />
-            TRASFERIMENTO DEI DATI<br />
-            <br />
-            Nel caso in cui i dati personali siano trasferiti al di fuori dell'Unione Europea, per finalità di carattere tecnico operativo e per garantire un'elevata continuità del servizio, il Titolare assicura che il trasferimento sia fondato su una decisione di adeguatezza della Commissione, al fine di assicurare che il livello di protezione delle persone fisiche garantito dalla normativa vigente e in particolare dal Regolamento UE 2016/679 non sia pregiudicato.<br />
-            <br />
-            <br />
-            DATI RACCOLTI<br />
-            <br />
-            I dati personali trattati sono raccolti in quanto forniti direttamente dall'interessato o raccolti automaticamente.<br />
-            <br />
-            I dati forniti direttamente dall'interessato sono tutti i dati personali che siano forniti al Titolare del Trattamento con qualsiasi modalità, direttamente dall'interessato.<br />
-            <br />
-            I dati raccolti automaticamente sono i dati di navigazione. Tali dati, pur non essendo raccolti al fine di essere associati all'identità dell'utente, potrebbero indirettamente, mediante elaborazione e associazioni con dati raccolti dal Titolare, consentire la sua identificazione.<br />
-            <br />
-            In seguito all'invio di newsletter, la piattaforma utilizzata consente di rilevare l'apertura di un messaggio e i clic effettuati all'interno della newsletter stessa, unitamente a dettagli relativi all'ip e al browser/device utilizzati . La raccolta di questi dati è fondamentale per il funzionamento dei sistemi di rinnovo implicito del trattamento (vedi la voce Modalità del Trattamento) e parte integrante dell'operatività della piattaforma di invio.<br />
-            <br />
-            <br />
-            FINALITÀ DEL TRATTAMENTO<br />
-            <br />
-            Il conferimento dei dati personali ha come base giuridica del trattamento esigenze contrattuali o precontrattuali o l'adempimento di obblighi legali ai quali il Titolare del trattamento è soggetto. Per tale ragione l'eventuale rifiuto al trattamento ovvero il mancato, inesatto o parziale conferimento dei dati potrebbe avere come conseguenza l'impossibilità di una corretta erogazione del servizio o l'impossibilità, per il Titolare, di rispondere alle richieste di informazioni inviate dall'interessato.<br />
-            <br />
-            Il conferimento dei dati per le finalità di invio newsletter per scopi promozionali, commerciali informativi o di ricerca è facoltativo ed il rifiuto a prestare il relativo consenso al Trattamento darà luogo all'impossibilità di essere aggiornati circa iniziative commerciali e/o campagne promozionali, di ricevere offerte o altro materiale promozionale.<br />
-            <br />
-            <br />
-            REVOCA DEL CONSENSO<br />
-            <br />
-            L'interessato può revocare il proprio consenso alla ricezione di comunicazioni promozionali e commerciali immediatamente, inviando richiesta all'indirizzo mail alanrose.13@yahoo.com oppure cliccando sull'apposito link di disiscrizione che potrà trovare nel footer di ogni mail promozionale e commerciale ricevuta.<br />
-            <br />
-            <br />
-            DESTINATARI<br />
-            <br />
-            I dati di natura personale forniti potranno essere comunicati a destinatari opportunamente nominati che tratteranno i dati in qualità di responsabili per il trattamento e/o in qualità di incaricati.<br />
-            <br />
-            Il Titolare del trattamento non comunica a terzi nessuna delle informazioni degli interessati senza il loro consenso, salvo ove richiesto dalla legge. È in ogni caso esclusa la diffusione dei dati personali trattati. L'elenco completo dei responsabili del trattamento, dei contitolari e degli incaricati al trattamento dei dati personali può essere richiesto inviando apposita richiesta all'indirizzo mail alanrose.13@yahoo.com<br />
-            <br />
-            <br />
-            MODALITÀ DEL TRATTAMENTO<br />
-            <br />
-            I dati personali sono trattati con strumenti automatizzati per il tempo strettamente necessario a conseguire gli scopi per cui sono stati raccolti, prevedendo in ogni caso la verifica annuale dei dati conservati al fine di cancellare quelli ritenuti obsoleti, salvo che la legge non preveda obblighi di archiviazione.<br />
-            <br />
-            Il trattamento dei dati avviene di norma presso la sede del Titolare, da personale o collaboratori esterni debitamente designati quali responsabili del trattamento. L'elenco completo dei responsabili del trattamento e degli Incaricati al trattamento dei dati personali può essere richiesto inviando apposita richiesta all'indirizzo mail a alanrose.13@yahoo.com<br />
-            <br />
-            Specifiche misure di sicurezza sono osservate per prevenire la perdita dei dati, usi illeciti o non corretti ed accessi non autorizzati.<br />
-            <br />
-            L'iscrizione e il trattamento relativo sono ritenuti validi fino alla disiscrizione da parte dell'utente, presente in ogni email, oppure dopo 12 mesi dall'ultima comunicazione di cui abbia evidenza di interazione diretta (click, apertura, risposta).<br />
-            <br />
-            <br />
-            DIRITTI DELL'INTERESSATO<br />
-            <br />
-            Ai sensi degli artt. 15 – 21 del Regolamento UE 2016/679 a ciascun interessato vengono riconosciuti una serie di diritti.<br />
-            <br />
-            - Diritto di Accesso: l'interessato, ai sensi dell'art. 15, ha diritto di ottenere la conferma che sia in corso un trattamento di dati personali che lo riguardano e, se del caso, di ottenerne copia. Ha inoltre il diritto di ottenere l'accesso ai dati personali che lo riguardano e a ulteriori informazioni quali la finalità del trattamento, le categorie di destinatari, il periodo di conservazione dei dati e i diritti esercitabili.<br />
-            - Diritto di rettifica: l'interessato, ai sensi dell'art. 16, ha diritto di ottenere la rettifica dei dati personali inesatti che lo riguardano o l'integrazione degli stessi.<br />
-            - Diritto alla cancellazione: l'interessato ha diritto di ottenere la cancellazione dei dati personali che lo riguardano, senza ingiustificato ritardo, qualora sussista una dei motivi previsti dall'art. 17.<br />
-            - Diritto di limitazione di trattamento: l'interessato ha diritto, nei casi previsti dall'art 18 del Regolamento 2016/679, di ottenere la limitazione del trattamento.<br />
-            - Diritto alla portabilità dei dati: l'interessato ha diritto di ricevere in un formato strutturato, di uso comune e leggibile da dispositivo automatico, i dati personali che lo riguardano e ha il diritto di trasmettere tali dati a un altro titolare senza impedimento, secondo quanto previsto dall'art. 20 del Regolamento 2016/679;<br />
-            - Diritto di opposizione al trattamento: l'interessato ha diritto di opporsi al trattamento dei dati personali che lo riguardano secondo quanto previsto dall'art. 21 del Regolamento 2016/679.<br />
-            - L'interessato ha altresì diritto di proporre reclamo all'Autorità di controllo competente, il Garante della Privacy.<br />
-            <br />
-            Le richieste di cui ai punti precedenti dovranno essere rivolte per iscritto al Titolare del trattamento. Il Titolare del trattamento provvederà, nei limiti temporali stabiliti dalla vigente normativa, a fornire tempestiva risposta alle richieste di esercizio dei diritti degli interessati.<br />
-            <br />
-            Ogni delucidazione o richiesta di chiarimenti può essere rivolta per iscritto al Titolare del trattamento.<br />
-            <br />
-            <br />
-            AGGIORNAMENTI E MODIFICHE<br />
-            <br />
-            Il Titolare del trattamento si riserva il diritto di modificare, integrare o aggiornare periodicamente la presente Informativa in ossequio alla normativa applicabile o ai provvedimenti adottati dal Garante per la Protezione dei dati personali.<br />
-            <br />
-            Le suddette modifiche o integrazioni saranno portate a conoscenza degli interessati. Invitiamo gli utenti a prendere visione della Privacy Policy con regolarità, per verificare l'Informativa aggiornata e decidere se continuare o meno ad usufruire dei servizi offerti.</div>
-        </details>
-        <div class="form-item form-item-checkbox">
-          <input type="checkbox" name="privacy" id="nl-privacy" value="1" class="form-checkbox has-sibling-label" required>
-          <label class="option" for="nl-privacy">Privacy</label>
-          <p class="description">Acconsento al trattamento dei miei dati personali (Regolamento 2016/679 - GDPR e d.lgs. n.196 del 30/6/2003)</p>
-        </div>
-        <input type="submit" name="submit" value="Iscriviti" class="form-submit btn">
-        <input type="hidden" name="form_id" value="user_register">
-      </form>
-    </div>
-    <p style="margin-top:15px">
-      <a onclick="openPopup('privacyPopup');return false;">Privacy Policy</a> |
-      <a href="cookie-policy.html" target="_blank">Cookie Policy</a> |
-      <a onclick="openPopup('privacyPopup');return false;">Termini</a> |
-      <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
-    </p>
-    <p style="margin-top:10px">
-      <strong>Alan & Rose</strong> di Alfio Ragusa | Prestazione Occasionale art.2222 c.c.<br>
-      © 2026 Tutti i diritti riservati
-    </p>
-  </footer>
-
-  <div id="privacyPopup" class="popup-overlay" onclick="closePopup('privacyPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('privacyPopup')">×</span>
-      <h2>Privacy Policy - GDPR UE 2016/679</h2>
-      <p><strong>Ultimo aggiornamento: 23 Agosto 2026</strong></p>
-
-      <h3>1. Titolare del Trattamento</h3>
-      <p>
-        <strong>Alfio Ragusa</strong>, in qualità di prestatore in regime di prestazione
-        occasionale (art. 2222 c.c.), operante con il nome commerciale "Alan & Rose" (A&R).<br>
-        Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
-      </p>
-
-      <h3>2. Dati Raccolti e Finalità</h3>
-      <ul>
-        <li><strong>Dati di contatto</strong> (nome, email, contenuto del messaggio): raccolti tramite i moduli "Richiedi un Servizio", "Upload File" e "Recensioni". Base giuridica: esecuzione di misure precontrattuali su richiesta dell'interessato.</li>
-        <li><strong>Dati della newsletter</strong> (email): raccolti tramite il modulo di iscrizione. Base giuridica: consenso.</li>
-        <li><strong>Commenti</strong> (nome, email facoltativa, sito web facoltativo, contenuto): raccolti tramite il sistema di commenti in calce alla sezione Contatti. Base giuridica: consenso.</li>
-        <li><strong>Dati di navigazione e cookie</strong>: raccolti tramite Cookiebot secondo le categorie e le finalità da te selezionate al momento del consenso. Base giuridica: consenso (cookie non tecnici) o interesse legittimo (cookie tecnici).</li>
-        <li><strong>Dati di pagamento</strong>: gli acquisti effettuati tramite gli shop collegati (Redbubble) sono gestiti direttamente da PayPal e Redbubble; il Titolare non riceve né conserva dati di pagamento.</li>
-      </ul>
-
-      <h3>3. Soggetti Terzi che Trattano i Dati (Responsabili del Trattamento)</h3>
-      <p>Per l'erogazione dei servizi il sito si avvale dei seguenti fornitori terzi, ciascuno responsabile del trattamento secondo la propria informativa:</p>
-      <ul>
-        <li><strong>Google Forms / Google LLC</strong> — gestione dei moduli di richiesta servizio, upload file e recensioni</li>
-        <li><strong>HTML Comment Box</strong> — gestione del sistema di commenti</li>
-        <li><strong>Voxmail</strong> — invio delle newsletter</li>
-        <li><strong>Cookiebot</strong> — gestione del consenso ai cookie</li>
-        <li><strong>Google Gemini (Google AI Studio)</strong> — elaborazione dei messaggi inviati tramite l'assistente virtuale (chatbot) del sito; i messaggi scritti in chat vengono trasmessi a Google per generare una risposta</li>
-        <li><strong>PayPal, Redbubble</strong> — gestione di pagamenti e vendite negli shop collegati</li>
-        <li><strong>YouTube, Spotify, SoundCloud</strong> — riproduzione di contenuti multimediali incorporati (attivi solo previo consenso ai cookie di marketing)</li>
-      </ul>
-
-      <h3>4. Trasferimento dei Dati Extra-UE</h3>
-      <p>
-        Alcuni dei fornitori sopra elencati hanno sede o trattano dati anche al di fuori
-        dell'Unione Europea (es. Stati Uniti). In tali casi il trasferimento avviene sulla
-        base di decisioni di adeguatezza della Commissione Europea o di clausole contrattuali
-        standard adottate dal singolo fornitore, secondo quanto previsto dal Capo V del
-        Regolamento UE 2016/679.
-      </p>
-
-      <h3>5. Periodo di Conservazione</h3>
-      <p>
-        I dati sono conservati per il tempo necessario a rispondere alla richiesta o erogare
-        il servizio, e comunque non oltre 24 mesi dall'ultimo contatto, salvo obblighi di
-        legge diversi (es. conservazione fiscale) o revoca anticipata del consenso.
-      </p>
-
-      <h3>6. Diritti dell'Interessato (artt. 15-21 GDPR)</h3>
-      <p>In qualsiasi momento puoi esercitare, scrivendo a <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>, i seguenti diritti:</p>
-      <ul>
-        <li><strong>Accesso</strong>: ottenere conferma e copia dei tuoi dati trattati</li>
-        <li><strong>Rettifica</strong>: correggere dati inesatti o incompleti</li>
-        <li><strong>Cancellazione</strong>: ottenere la cancellazione dei dati, salvo obblighi legali di conservazione</li>
-        <li><strong>Limitazione</strong>: limitare il trattamento in specifici casi previsti dall'art. 18</li>
-        <li><strong>Portabilità</strong>: ricevere i tuoi dati in formato strutturato e trasmetterli ad altro titolare</li>
-        <li><strong>Opposizione</strong>: opporti al trattamento basato su interesse legittimo</li>
-        <li><strong>Reclamo</strong>: rivolgerti al Garante per la Protezione dei Dati Personali (www.garanteprivacy.it)</li>
-      </ul>
-
-      <h3>7. Cookie</h3>
-      <p>
-        Questo sito usa <strong>Cookiebot</strong> per la gestione dei cookie. Puoi consultare
-        l'elenco completo e modificare le preferenze in qualsiasi momento nella
-        <a href="cookie-policy.html" target="_blank">Cookie Policy</a> dedicata, o cliccando
-        sul tasto Cookiebot visibile in basso a sinistra su ogni pagina.
-      </p>
-    </div>
-  </div>
-
-  <div id="cookiePopup" class="popup-overlay" onclick="closePopup('cookiePopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('cookiePopup')">×</span>
-      <h2>Cookie Policy</h2>
-      <p>Qui sotto trovi l'elenco completo e aggiornato di tutti i cookie usati da questo sito.</p>
-      <script id="CookieDeclaration"
-        src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js"
-        type="text/javascript"
-        async>
-      </script>
-    </div>
-  </div>
-
-  <!-- ============ CHATBOT WIDGET ALAN & ROSE ============ -->
-  <button id="arChatBtn" onclick="arToggleChat()">💬</button>
-
-  <div id="arChatWindow">
-    <div id="arChatHeader">
-      <span>Assistente Alan & Rose</span>
-      <span class="close" onclick="arToggleChat()">×</span>
-    </div>
-    <div id="arChatMessages">
-      <div class="ar-msg bot">Ciao! Sono l'assistente virtuale di Alan & Rose. Chiedimi pure dei nostri servizi, portfolio, musica o shop 😊</div>
-    </div>
-    <div id="arChatInputRow">
-      <input type="text" id="arChatInput" placeholder="Scrivi un messaggio..." onkeydown="if(event.key==='Enter')arSendMessage()">
-      <button id="arChatSend" onclick="arSendMessage()">Invia</button>
-    </div>
-  </div>
-
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init({ once: true, duration: 1500 });
-
-    function openPopup(id) {
-      document.getElementById(id).style.display = 'flex';
-    }
-
-    function closePopup(id) {
-      document.getElementById(id).style.display = 'none';
-    }
-
-    // ⚠️ SOSTITUISCI questo URL con quello del tuo Cloudflare Worker dopo il deploy
-    const AR_WORKER_URL = "https://script.google.com/macros/s/AKfycbysmy_8NVIehNt5cLbeAHzhxyY7OdzY6drD3OW4izAVL3RCxVSoSSQqgn7rskl9sMsG3A/exec";
-
-    function arToggleChat() {
-      const w = document.getElementById('arChatWindow');
-      w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    function arAddMessage(text, cls) {
-      const box = document.getElementById('arChatMessages');
-      const div = document.createElement('div');
-      div.className = 'ar-msg ' + cls;
-      div.textContent = text;
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-      return div;
-    }
-
-    async function arSendMessage() {
-      const input = document.getElementById('arChatInput');
-      const msg = input.value.trim();
-      if (!msg) return;
-      arAddMessage(msg, 'user');
-      input.value = '';
-
-      const typingEl = arAddMessage('Sto scrivendo...', 'typing');
-
-      try {
-        const response = await fetch(AR_WORKER_URL + "?message=" + encodeURIComponent(msg));
-
-        if (!response.ok) throw new Error('Errore di rete: ' + response.status);
-
-        const data = await response.json();
-        typingEl.remove();
-        arAddMessage(data.reply || 'Mi dispiace, non ho capito. Puoi riformulare?', 'bot');
-      } catch (err) {
-        typingEl.remove();
-        arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
-        console.error('Errore chatbot:', err);
-      }
-    }
-  </script>
-
-</body>
-</html>
+      <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main
