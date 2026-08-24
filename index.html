@@ -96,12 +96,14 @@
         linear-gradient(135deg, rgba(201,169,97,.8), rgba(201,169,97,.1));
       background-origin: border-box;
       background-clip: padding-box, border-box;
-      transition: .3s ease;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transizione più fluida */
     }
     .card { padding: 22px; }
+    /* EFFETTO HOVER "SPIRITUALE" - Bagliore e leggero sollevamento */
     .card:hover, .p-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 16px rgba(201,169,97,.2);
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 12px 40px rgba(201,169,97,0.25), 0 0 30px rgba(201,169,97,0.08);
+      border-color: rgba(201,169,97,0.4);
     }
     .btn {
       display: inline-block; background: var(--o); color: var(--m);
@@ -109,7 +111,7 @@
       font-weight: 700; font-size: .95rem; transition: .3s;
       margin: 5px; border: none; cursor: pointer;
     }
-    .btn:hover { background: var(--m); color: #fff; }
+    .btn:hover { background: var(--m); color: #fff; box-shadow: 0 0 20px rgba(201,169,97,0.3); }
     .btn-upload-wrap { text-align: center; margin-top: 18px; }
     .p-grid {
       display: grid;
@@ -124,7 +126,7 @@
     .embed iframe { width: 100%; border: 0; display: block; }
     .soc { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
     .soc img { width: 40px; transition: .3s; }
-    .soc img:hover { transform: scale(1.15); }
+    .soc img:hover { transform: scale(1.15) rotate(-2deg); }
     .social-title { text-align: center; font-size: 1.2rem; margin-bottom: 15px; font-weight: 600; color: var(--o); }
     .newsletter-box {
       background: var(--bg);
@@ -204,7 +206,7 @@
 
     /* DONAZIONE - stile panna */
     .donation-box {
-      background: #f5f1e8; /* panna */
+      background: #f5f1e8;
       border-radius: 12px;
       padding: 28px 24px;
       max-width: 700px;
@@ -225,7 +227,7 @@
       transition: .3s;
     }
     .donation-box img:hover {
-      transform: scale(1.05);
+      transform: scale(1.05) rotate(-1deg);
     }
 
     footer {
@@ -235,7 +237,7 @@
     footer a { color: var(--o); cursor: pointer; text-decoration: none; margin: 0 6px; }
     footer a:hover { text-decoration: underline; }
 
-    /* POPUP */
+    /* POPUP - ANIMAZIONE SPIRITUALE ED ELEGANTE */
     .popup-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,.75); z-index: 9999; display: none;
@@ -245,10 +247,15 @@
     .popup-box {
       background: #fff; max-width: 900px; width: 90%; max-height: 85vh;
       overflow-y: auto; border-radius: 12px; padding: 30px 25px;
-      position: relative; animation: pop .3s ease; color: #333;
+      position: relative; color: #333;
+      /* Animazione eterea: dissolvenza + leggero movimento verso l'alto */
+      animation: floatIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    @keyframes floatIn {
+      0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
     .popup-close { position: absolute; top: 10px; right: 15px; font-size: 30px; color: #555; cursor: pointer; z-index: 5; }
-    @keyframes pop { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     #CookieDeclaration { margin-top: 20px; }
 
     /* GDPR CHECKBOX PER COMMENTI */
@@ -371,13 +378,13 @@
 </head>
 <body>
 
-<header data-aos="fade" data-aos-duration="1500">
+<header data-aos="fade" data-aos-duration="1800" data-aos-easing="ease-out">
   <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="lo" alt="Alan & Rose">
   <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
     <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
     <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
   </video>
-  <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">
+  <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1600" data-aos-easing="ease-out">
     <a href="javascript:void(0)" onclick="openPopup('chiPopup')">Chi Siamo</a>
     <a href="javascript:void(0)" onclick="openPopup('servPopup')">Servizi</a>
     <a href="javascript:void(0)" onclick="openPopup('portPopup')">Portfolio</a>
@@ -388,17 +395,17 @@
   </nav>
 </header>
 
-<section id="chi" data-aos="fade-up" data-aos-duration="1500">
+<section id="chi" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
   <h2>Chi Siamo</h2>
   <p style="text-align:center;max-width:750px;margin:auto;">
     Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale. Dopo molti anni di esperienza su varie mansioni, oggi abbiamo la possibilità di offrire dei servizi, risolvere varie problematiche e velocizzare i sistemi di lavoro per chi lavora nel digitale.
   </p>
 </section>
 
-<section id="serv" data-aos="fade-up" data-aos-duration="1500">
+<section id="serv" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
   <h2>I NOSTRI SERVIZI</h2>
   <div class="g">
-    <div class="card" data-aos="fade-up" data-aos-delay="100">
+    <div class="card" data-aos="fade-up" data-aos-delay="100" data-aos-duration="1800" data-aos-easing="ease-out">
       <h3>Grafica & Web</h3>
       <p>
         Creazione Loghi, Banner, Locandine ecc. in Raster e Vettoriale (Photoshop e Illustrator);<br>
@@ -407,7 +414,7 @@
         Editore (pubblicazione digital store, copyright e gestione royalties);
       </p>
     </div>
-    <div class="card" data-aos="fade-up" data-aos-delay="200">
+    <div class="card" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1800" data-aos-easing="ease-out">
       <h3>Musica & Produzione</h3>
       <p>
         Produzione Musicale, Testi, Recording, Mixing / Mastering (Solo Gospel);<br>
@@ -416,7 +423,7 @@
         Gestione Google My Business / Maps;
       </p>
     </div>
-    <div class="card" data-aos="fade-up" data-aos-delay="300">
+    <div class="card" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1800" data-aos-easing="ease-out">
       <h3>Consulenza & Altro</h3>
       <p>
         Receptionist e fogli di calcolo, Word, PDF;<br>
@@ -427,10 +434,10 @@
   </div>
 </section>
 
-<section id="port" data-aos="fade-up" data-aos-duration="1500">
+<section id="port" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
   <h2>Portfolio</h2>
   <div class="p-grid">
-    <div class="p-item" data-aos="zoom-in">
+    <div class="p-item" data-aos="fade-up" data-aos-delay="100" data-aos-duration="1800" data-aos-easing="ease-out">
       <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
       <div class="p-c">
         <h3>Dj Marcello Morf</h3>
@@ -438,7 +445,7 @@
         <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
       </div>
     </div>
-    <div class="p-item" data-aos="zoom-in">
+    <div class="p-item" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1800" data-aos-easing="ease-out">
       <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
       <div class="p-c">
         <h3>Donna Proverbiale</h3>
@@ -446,7 +453,7 @@
         <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
       </div>
     </div>
-    <div class="p-item" data-aos="zoom-in">
+    <div class="p-item" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1800" data-aos-easing="ease-out">
       <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
       <div class="p-c">
         <h3>Detercoop</h3>
@@ -454,7 +461,7 @@
         <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
       </div>
     </div>
-    <div class="p-item" data-aos="zoom-in">
+    <div class="p-item" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1800" data-aos-easing="ease-out">
       <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
       <div class="p-c">
         <h3>3Fase</h3>
@@ -462,7 +469,7 @@
         <a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a>
       </div>
     </div>
-    <div class="p-item" data-aos="zoom-in">
+    <div class="p-item" data-aos="fade-up" data-aos-delay="500" data-aos-duration="1800" data-aos-easing="ease-out">
       <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
       <div class="p-c">
         <h3>Colorlab</h3>
@@ -470,7 +477,7 @@
         <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
       </div>
     </div>
-    <div class="p-item" data-aos="zoom-in">
+    <div class="p-item" data-aos="fade-up" data-aos-delay="600" data-aos-duration="1800" data-aos-easing="ease-out">
       <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
       <div class="p-c">
         <h3>A Viso Scoperto</h3>
@@ -481,7 +488,7 @@
   </div>
 </section>
 
-<section id="mus" data-aos="fade-up" data-aos-duration="1500">
+<section id="mus" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
   <h2>Ascoltaci</h2>
   <div class="embed">
     <iframe loading="lazy" data-cookieconsent="marketing" data-cookieblock-src="https://open.spotify.com/embed/artist/4ZvjO3hNZdxsMZmRadwqoV" height="400" allow="autoplay; encrypted-media"></iframe>
@@ -505,10 +512,10 @@
   </div>
 </section>
 
-<section id="shop" data-aos="fade-up" data-aos-duration="1500">
+<section id="shop" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
   <h2>Shop</h2>
   <div class="g">
-    <div class="card">
+    <div class="card" data-aos="fade-up" data-aos-delay="100" data-aos-duration="1800" data-aos-easing="ease-out">
       <div style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px">
         <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;height:100%;object-fit:contain;transform:scale(1.5);background:transparent" alt="A&R Shop">
       </div>
@@ -516,7 +523,7 @@
       <p>Abbigliamento e oggettistica varia!</p>
       <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
     </div>
-    <div class="card">
+    <div class="card" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1800" data-aos-easing="ease-out">
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
       <h3>J4You Shop</h3>
       <p>J4You è un e-commerce Cristiano in dropshipping che offre capi e accessori con messaggi e simboli cristiani, realizzati in print on demand con grafiche originali per esprimere la propria fede con stile.</p>
@@ -525,7 +532,7 @@
       </div>
       <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288820&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a>
     </div>
-    <div class="card">
+    <div class="card" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1800" data-aos-easing="ease-out">
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
       <h3>SicilStreet</h3>
       <p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell’isola. Uno stile urban e contemporaneo che unisce l’amore per la terra siciliana con la libertà della moda streetwear.</p>
@@ -534,7 +541,7 @@
   </div>
 </section>
 
-<section id="cont" data-aos="fade-up" data-aos-duration="1500">
+<section id="cont" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
   <h2>Contatti & Commenti</h2>
   <p style="text-align:center;margin-bottom:20px">
     Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
@@ -818,20 +825,19 @@
   </div>
 </div>
 
-<footer data-aos="fade" data-aos-duration="1500">
+<footer data-aos="fade" data-aos-duration="1800" data-aos-easing="ease-out">
 
   <!-- BOX DONAZIONE IN STILE PANNA (sopra il footer marrone) -->
   <div class="donation-box">
     <p>
       Grazie per aver visitato il nostro sito web! Se vuoi, puoi lasciare una donazione, ci aiuterà a gestire i costi di spese, tempistiche e investimenti per un servizio sempre più professionale. Te ne saremo ugualmente grati indifferentemente dalla somma o dalla scelta di non proseguire. Grazie!
     </p>
-    <!-- Pulsante immagine PayPal originale -->
     <a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank" title="Dona con PayPal">
       <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Dona%20ora%20PAypal.png" alt="Dona ora con PayPal">
     </a>
   </div>
 
-  <div class="newsletter-box" id="newsletter" data-aos="fade-up">
+  <div class="newsletter-box" id="newsletter" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <h3>Iscriviti alla Newsletter</h3>
     <p>Resta aggiornato su nuovi servizi, musica e progetti.</p>
     <a href="https://alan-e-rose-13.voxmail.it/user/register_facebook" target="_blank" class="fb-subscribe">
@@ -983,7 +989,14 @@
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  AOS.init({ once: true, duration: 1500 });
+  // Inizializzazione AOS con parametri "ambientali": morbido, lento, elegante
+  AOS.init({
+    once: true,
+    duration: 1800,
+    easing: 'ease-out',
+    offset: 80,
+    delay: 0
+  });
 
   function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
   function closePopup(id) { document.getElementById(id).style.display = 'none'; }
