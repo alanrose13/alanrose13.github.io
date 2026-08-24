@@ -167,7 +167,7 @@
     .newsletter-form .form-item-checkbox .description { margin: 2px 0 0; flex-basis: 100%; }
     .newsletter-form .form-submit { display: block; width: 100%; border: none; cursor: pointer; font-family: 'Segoe UI', sans-serif; }
     .transparent-box { padding: 20px; overflow: hidden; }
-    .transparent-box iframe { width: 100%; border: 0; border-radius: 8px; height: 1800px; overflow: hidden; } /* modificato */
+    .transparent-box iframe { width: 100%; border: 0; border-radius: 8px; height: 1800px; overflow: hidden; }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
     #HCB_comment_box { font-family: 'Segoe UI', sans-serif; text-align: center; color: var(--m); padding: 10px 0; }
@@ -219,21 +219,13 @@
       margin-bottom: 16px;
       color: #4A3B2A;
     }
-    .donation-box .btn-donate {
-      background: var(--o);
-      color: var(--m);
-      padding: 10px 28px;
-      border-radius: 6px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-block;
+    .donation-box img {
+      max-width: 200px;
+      height: auto;
       transition: .3s;
-      border: none;
-      cursor: pointer;
     }
-    .donation-box .btn-donate:hover {
-      background: var(--m);
-      color: #fff;
+    .donation-box img:hover {
+      transform: scale(1.05);
     }
 
     footer {
@@ -269,8 +261,7 @@
     .gdpr-comment-consent label { cursor: pointer; }
     .gdpr-comment-consent a { color: var(--o); text-decoration: underline; }
 
-    /* NASCONDI I COMMENTI PUBBLICATI? (non serve più, usiamo moderazione) */
-    .hcb-comment-list { display: block !important; } /* mostriamo tutto */
+    .hcb-comment-list { display: block !important; }
     .hcb-comment-count { display: block !important; }
 
     @media (max-width: 768px) {
@@ -278,13 +269,14 @@
       .lo { width: 55px; height: 55px; }
       section { padding: 40px 15px; }
       h2 { font-size: 1.5rem; }
-      .transparent-box iframe { height: 2200px; } /* più alto su mobile */
+      .transparent-box iframe { height: 2200px; }
       body { background-attachment: scroll; }
       nav { gap: 8px; padding: 10px; }
       nav a { padding: 5px 10px; font-size: .85rem; }
       .g, .p-grid { gap: 15px; }
       .newsletter-box { padding: 20px; }
       .donation-box { padding: 20px; }
+      .donation-box img { max-width: 160px; }
     }
     @media (max-width: 480px) {
       .lo { width: 45px; height: 45px; top: 10px; left: 10px; }
@@ -296,6 +288,7 @@
       .newsletter-box { padding: 16px; }
       .popup-box { padding: 20px 16px; }
       .gdpr-comment-consent { font-size: .85rem; padding: 12px; }
+      .donation-box img { max-width: 140px; }
     }
 
     /* CHATBOT */
@@ -549,7 +542,6 @@
 
   <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
   <div class="transparent-box">
-    <!-- iframe senza scroll e con altezza maggiore per evitare doppia barra -->
     <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="overflow:hidden;height:1800px;"></iframe>
   </div>
 
@@ -604,7 +596,6 @@
       hcb_user.err_denied = "Il tuo commento non è stato accettato.";
       hcb_user.err_spam = "Il tuo commento è stato rilevato come spam.";
       hcb_user.err_blocked = "Il tuo commento è stato bloccato dalle norme del sito.";
-      // MODERAZIONE ATTIVA: i commenti devono essere approvati prima della pubblicazione
       hcb_user.moderation = 'pre';
     </script>
     <script type="text/plain" data-cookieconsent="statistics" id="hcb">
@@ -620,7 +611,6 @@
       })();
       /*-->*/
     </script>
-    <!-- Link per gestire i commenti (dashboard) -->
     <p style="text-align:center;margin-top:15px;font-size:.9rem;">
       <a href="https://www.htmlcommentbox.com/account/" target="_blank" style="color:var(--o);">Gestisci i commenti (modera / elimina)</a>
     </p>
@@ -830,12 +820,15 @@
 
 <footer data-aos="fade" data-aos-duration="1500">
 
-  <!-- NUOVO BOX DONAZIONE IN STILE PANNA -->
+  <!-- BOX DONAZIONE IN STILE PANNA (sopra il footer marrone) -->
   <div class="donation-box">
     <p>
       Grazie per aver visitato il nostro sito web! Se vuoi, puoi lasciare una donazione, ci aiuterà a gestire i costi di spese, tempistiche e investimenti per un servizio sempre più professionale. Te ne saremo ugualmente grati indifferentemente dalla somma o dalla scelta di non proseguire. Grazie!
     </p>
-    <a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank" class="btn-donate">Dona ora con PayPal</a>
+    <!-- Pulsante immagine PayPal originale -->
+    <a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank" title="Dona con PayPal">
+      <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Dona%20ora%20PAypal.png" alt="Dona ora con PayPal">
+    </a>
   </div>
 
   <div class="newsletter-box" id="newsletter" data-aos="fade-up">
