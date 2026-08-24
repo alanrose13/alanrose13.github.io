@@ -1419,13 +1419,10 @@
       const checkbox = document.getElementById('gdprCommentConsent');
       if (!checkbox) return;
 
-      // Funzione per trovare il pulsante di submit dei commenti
       function findCommentSubmit() {
-        // Cerca sia #hcb_submit che .submit all'interno del contenitore
         return document.querySelector('#HCB_comment_box #hcb_submit, #HCB_comment_box .submit');
       }
 
-      // Applica visibilità in base allo stato della checkbox
       function toggleSubmit() {
         const btn = findCommentSubmit();
         if (btn) {
@@ -1433,23 +1430,19 @@
         }
       }
 
-      // Ascolta il cambio della checkbox
       checkbox.addEventListener('change', toggleSubmit);
 
-      // Osserva il DOM per quando il pulsante viene aggiunto (caricamento asincrono del widget)
       const observer = new MutationObserver(function(mutations) {
         const btn = findCommentSubmit();
         if (btn) {
           toggleSubmit();
-          observer.disconnect(); // smetti di osservare
+          observer.disconnect();
         }
       });
 
-      // Inizia l'osservazione sul contenitore dei commenti appena disponibile
       const commentBox = document.getElementById('HCB_comment_box');
       if (commentBox) {
         observer.observe(commentBox, { childList: true, subtree: true });
-        // Fallback: prova anche dopo 3 secondi nel caso il widget sia già caricato
         setTimeout(function() {
           const btn = findCommentSubmit();
           if (btn) {
@@ -1460,7 +1453,7 @@
       }
     });
 
-    // ========== CHATBOT GEMINI ANIMATA ==========
+    // ========== CHATBOT GEMINI ANIMATA CON GESTIONE ERRORI ==========
     const AR_WORKER_URL = "https://script.google.com/macros/s/AKfycbysmy_8NVIehNt5cLbeAHzhxyY7OdzY6drD3OW4izAVL3RCxVSoSSQqgn7rskl9sMsG3A/exec";
     let typingInterval = null;
 
@@ -1479,7 +1472,6 @@
       return div;
     }
 
-    // Mostra un messaggio con effetto di digitazione (carattere per carattere)
     function arTypeMessage(text, cls, speed = 25) {
       return new Promise((resolve) => {
         const box = document.getElementById('arChatMessages');
@@ -1501,7 +1493,6 @@
       });
     }
 
-    // Mostra l'indicatore di digitazione (tre puntini animati)
     function arShowTyping() {
       const box = document.getElementById('arChatMessages');
       const div = document.createElement('div');
@@ -1522,27 +1513,34 @@
       const msg = input.value.trim();
       if (!msg) return;
 
-      // Disabilita input durante l'invio
       input.disabled = true;
       document.getElementById('arChatSend').disabled = true;
 
-      // Mostra il messaggio utente
       arAddMessage(msg, 'user');
       input.value = '';
 
-      // Mostra l'indicatore di digitazione
       arShowTyping();
 
       try {
         const response = await fetch(AR_WORKER_URL + "?message=" + encodeURIComponent(msg));
-        if (!response.ok) throw new Error('Errore di rete: ' + response.status);
         const data = await response.json();
-        const reply = data.reply || 'Mi dispiace, non ho capito. Puoi riformulare?';
 
-        // Rimuovi l'indicatore
         arRemoveTyping();
 
-        // Simula la digitazione del bot
+        // Gestione errori dal worker
+        if (data.error) {
+          let errorMsg = 'Si è verificato un errore. Riprova più tardi.';
+          // Controlla se l'errore è relativo a "high demand" o "overload"
+          if (data.error.toLowerCase().includes('high demand') ||
+              data.error.toLowerCase().includes('overload') ||
+              data.error.toLowerCase().includes('too many requests')) {
+            errorMsg = 'Il servizio di intelligenza artificiale è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, puoi contattarci direttamente a alanrose.13@yahoo.com.';
+          }
+          await arTypeMessage(errorMsg, 'bot', 20);
+          return;
+        }
+
+        const reply = data.reply || 'Mi dispiace, non ho capito. Puoi riformulare?';
         await arTypeMessage(reply, 'bot', 20);
 
       } catch (err) {
@@ -1550,14 +1548,13 @@
         arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
         console.error('Errore chatbot:', err);
       } finally {
-        // Riabilita input
         input.disabled = false;
         document.getElementById('arChatSend').disabled = false;
         input.focus();
       }
     }
 
-    // Apri la chat di default con un piccolo ritardo per l'animazione iniziale
+    // Apri la chat di default con un piccolo ritardo
     setTimeout(() => {
       document.getElementById('arChatWindow').classList.add('open');
     }, 800);
