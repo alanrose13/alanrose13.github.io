@@ -167,7 +167,7 @@
     .newsletter-form .form-item-checkbox .description { margin: 2px 0 0; flex-basis: 100%; }
     .newsletter-form .form-submit { display: block; width: 100%; border: none; cursor: pointer; font-family: 'Segoe UI', sans-serif; }
     .transparent-box { padding: 20px; overflow: hidden; }
-    .transparent-box iframe { width: 100%; border: 0; border-radius: 8px; height: 1500px; }
+    .transparent-box iframe { width: 100%; border: 0; border-radius: 8px; height: 1800px; overflow: hidden; } /* modificato */
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
     #HCB_comment_box { font-family: 'Segoe UI', sans-serif; text-align: center; color: var(--m); padding: 10px 0; }
@@ -202,6 +202,40 @@
     iframe { scrollbar-width: none; }
     iframe::-webkit-scrollbar { display: none; }
 
+    /* DONAZIONE - stile panna */
+    .donation-box {
+      background: #f5f1e8; /* panna */
+      border-radius: 12px;
+      padding: 28px 24px;
+      max-width: 700px;
+      margin: 0 auto 30px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,.05);
+      border: 1px solid rgba(201,169,97,.3);
+    }
+    .donation-box p {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      color: #4A3B2A;
+    }
+    .donation-box .btn-donate {
+      background: var(--o);
+      color: var(--m);
+      padding: 10px 28px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: .3s;
+      border: none;
+      cursor: pointer;
+    }
+    .donation-box .btn-donate:hover {
+      background: var(--m);
+      color: #fff;
+    }
+
     footer {
       background: var(--m); color: var(--c); text-align: center;
       padding: 30px 20px; font-size: .9rem;
@@ -235,27 +269,28 @@
     .gdpr-comment-consent label { cursor: pointer; }
     .gdpr-comment-consent a { color: var(--o); text-decoration: underline; }
 
-    /* NASCONDI I COMMENTI PUBBLICATI */
-    .hcb-comment-list { display: none !important; }
-    .hcb-comment-count { display: none !important; }
+    /* NASCONDI I COMMENTI PUBBLICATI? (non serve più, usiamo moderazione) */
+    .hcb-comment-list { display: block !important; } /* mostriamo tutto */
+    .hcb-comment-count { display: block !important; }
 
     @media (max-width: 768px) {
       .bv { height: auto; aspect-ratio: 16/9; }
       .lo { width: 55px; height: 55px; }
       section { padding: 40px 15px; }
       h2 { font-size: 1.5rem; }
-      .transparent-box iframe { height: 1700px; }
+      .transparent-box iframe { height: 2200px; } /* più alto su mobile */
       body { background-attachment: scroll; }
       nav { gap: 8px; padding: 10px; }
       nav a { padding: 5px 10px; font-size: .85rem; }
       .g, .p-grid { gap: 15px; }
       .newsletter-box { padding: 20px; }
+      .donation-box { padding: 20px; }
     }
     @media (max-width: 480px) {
       .lo { width: 45px; height: 45px; top: 10px; left: 10px; }
       h2 { font-size: 1.3rem; }
       section { padding: 30px 12px; }
-      .transparent-box iframe { height: 2000px; }
+      .transparent-box iframe { height: 2600px; }
       .btn { padding: 8px 14px; font-size: .88rem; }
       .soc img { width: 32px; }
       .newsletter-box { padding: 16px; }
@@ -514,7 +549,8 @@
 
   <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
   <div class="transparent-box">
-    <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
+    <!-- iframe senza scroll e con altezza maggiore per evitare doppia barra -->
+    <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="overflow:hidden;height:1800px;"></iframe>
   </div>
 
   <div class="btn-upload-wrap">
@@ -568,6 +604,8 @@
       hcb_user.err_denied = "Il tuo commento non è stato accettato.";
       hcb_user.err_spam = "Il tuo commento è stato rilevato come spam.";
       hcb_user.err_blocked = "Il tuo commento è stato bloccato dalle norme del sito.";
+      // MODERAZIONE ATTIVA: i commenti devono essere approvati prima della pubblicazione
+      hcb_user.moderation = 'pre';
     </script>
     <script type="text/plain" data-cookieconsent="statistics" id="hcb">
       /*<!--*/
@@ -582,6 +620,10 @@
       })();
       /*-->*/
     </script>
+    <!-- Link per gestire i commenti (dashboard) -->
+    <p style="text-align:center;margin-top:15px;font-size:.9rem;">
+      <a href="https://www.htmlcommentbox.com/account/" target="_blank" style="color:var(--o);">Gestisci i commenti (modera / elimina)</a>
+    </p>
   </div>
 
   <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
@@ -772,7 +814,7 @@
       </p>
       <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
       <div class="transparent-box">
-        <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true"></iframe>
+        <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="overflow:hidden;height:1800px;"></iframe>
       </div>
       <div class="btn-upload-wrap">
         <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
@@ -787,12 +829,13 @@
 </div>
 
 <footer data-aos="fade" data-aos-duration="1500">
-  <!-- PULSANTE DONAZIONE (prima della newsletter) -->
-  <div style="text-align:center; margin-bottom:20px;">
-    <a href="https://www.paypal.com/donate/?
-hosted_button_id=GMWKF6839MTDE" target="_blank" title="Dona con PayPal">
-      <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Dona%20ora%20PAypal.png" alt="Dona ora con PayPal" style="max-width:200px; height:auto;">
-    </a>
+
+  <!-- NUOVO BOX DONAZIONE IN STILE PANNA -->
+  <div class="donation-box">
+    <p>
+      Grazie per aver visitato il nostro sito web! Se vuoi, puoi lasciare una donazione, ci aiuterà a gestire i costi di spese, tempistiche e investimenti per un servizio sempre più professionale. Te ne saremo ugualmente grati indifferentemente dalla somma o dalla scelta di non proseguire. Grazie!
+    </p>
+    <a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank" class="btn-donate">Dona ora con PayPal</a>
   </div>
 
   <div class="newsletter-box" id="newsletter" data-aos="fade-up">
