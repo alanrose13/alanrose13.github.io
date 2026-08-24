@@ -115,11 +115,20 @@
       background: #fff;
       border-radius: 14px;
       box-shadow: 0 8px 30px rgba(0,0,0,.35);
-      display: none;
+      display: flex;
       flex-direction: column;
       overflow: hidden;
       z-index: 10000;
       font-family: 'Segoe UI', sans-serif;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      pointer-events: none;
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    #arChatWindow.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
     }
 
     #arChatHeader {
@@ -131,7 +140,12 @@
       align-items: center;
       font-weight: 700;
     }
-    #arChatHeader span.close { cursor: pointer; font-size: 20px; }
+    #arChatHeader span.close {
+      cursor: pointer;
+      font-size: 20px;
+      transition: .2s;
+    }
+    #arChatHeader span.close:hover { opacity: .7; }
 
     #arChatMessages {
       flex: 1;
@@ -149,6 +163,11 @@
       border-radius: 12px;
       font-size: .9rem;
       line-height: 1.4;
+      animation: arMsgIn .25s ease;
+    }
+    @keyframes arMsgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .ar-msg.bot {
       background: #fff;
@@ -168,6 +187,23 @@
       align-self: flex-start;
       color: #999;
       font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ar-msg.typing .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #999;
+      border-radius: 50%;
+      animation: dotPulse 1s infinite alternate;
+    }
+    .ar-msg.typing .dot:nth-child(2) { animation-delay: .2s; }
+    .ar-msg.typing .dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes dotPulse {
+      0% { opacity: .3; transform: scale(.8); }
+      100% { opacity: 1; transform: scale(1.2); }
     }
 
     #arChatInputRow {
@@ -192,6 +228,7 @@
       padding: 0 16px;
       font-weight: 700;
       cursor: pointer;
+      transition: .3s;
     }
     #arChatSend:hover { background: var(--m); color: #fff; }
 
@@ -282,10 +319,11 @@
 
   <script>
     const AR_WORKER_URL = "https://script.google.com/macros/s/AKfycbysmy_8NVIehNt5cLbeAHzhxyY7OdzY6drD3OW4izAVL3RCxVSoSSQqgn7rskl9sMsG3A/exec";
+    let typingInterval = null;
 
     function arToggleChat() {
       const w = document.getElementById('arChatWindow');
-      w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
+      w.classList.toggle('open');
     }
 
     function arAddMessage(text, cls) {
@@ -298,29 +336,90 @@
       return div;
     }
 
+    function arTypeMessage(text, cls, speed = 25) {
+      return new Promise((resolve) => {
+        const box = document.getElementById('arChatMessages');
+        const div = document.createElement('div');
+        div.className = 'ar-msg ' + cls;
+        box.appendChild(div);
+        let i = 0;
+        typingInterval = setInterval(() => {
+          if (i < text.length) {
+            div.textContent += text.charAt(i);
+            i++;
+            box.scrollTop = box.scrollHeight;
+          } else {
+            clearInterval(typingInterval);
+            typingInterval = null;
+            resolve();
+          }
+        }, speed);
+      });
+    }
+
+    function arShowTyping() {
+      const box = document.getElementById('arChatMessages');
+      const div = document.createElement('div');
+      div.className = 'ar-msg typing';
+      div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+      div.id = 'arTypingIndicator';
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function arRemoveTyping() {
+      const el = document.getElementById('arTypingIndicator');
+      if (el) el.remove();
+    }
+
     async function arSendMessage() {
       const input = document.getElementById('arChatInput');
       const msg = input.value.trim();
       if (!msg) return;
+
+      input.disabled = true;
+      document.getElementById('arChatSend').disabled = true;
+
       arAddMessage(msg, 'user');
       input.value = '';
 
-      const typingEl = arAddMessage('Sto scrivendo...', 'typing');
+      arShowTyping();
 
       try {
         const response = await fetch(AR_WORKER_URL + "?message=" + encodeURIComponent(msg));
-
-        if (!response.ok) throw new Error('Errore di rete: ' + response.status);
-
         const data = await response.json();
-        typingEl.remove();
-        arAddMessage(data.reply || 'Mi dispiace, non ho capito. Puoi riformulare?', 'bot');
+
+        arRemoveTyping();
+
+        if (data.error) {
+          let errorMsg = 'Si è verificato un errore. Riprova più tardi.';
+          if (data.error.toLowerCase().includes('high demand') ||
+              data.error.toLowerCase().includes('overload') ||
+              data.error.toLowerCase().includes('too many requests')) {
+            errorMsg = 'Il servizio di intelligenza artificiale è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, puoi contattarci direttamente a alanrose.13@yahoo.com.';
+          }
+          await arTypeMessage(errorMsg, 'bot', 20);
+          return;
+        }
+
+        const reply = data.reply || 'Mi dispiace, non ho capito. Puoi riformulare?';
+        await arTypeMessage(reply, 'bot', 20);
+
       } catch (err) {
-        typingEl.remove();
+        arRemoveTyping();
         arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
         console.error('Errore chatbot:', err);
+      } finally {
+        input.disabled = false;
+        document.getElementById('arChatSend').disabled = false;
+        input.focus();
       }
     }
+
+    // Apri la chat di default con un piccolo ritardo
+    setTimeout(() => {
+      document.getElementById('arChatWindow').classList.add('open');
+    }, 800);
   </script>
 
 </body>
