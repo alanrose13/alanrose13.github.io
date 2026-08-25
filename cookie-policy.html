@@ -158,7 +158,7 @@
     }
 
     /* ============================================================
-       CHATBOT
+       CHATBOT - ALLINEATO CON INDEX.HTML
     ============================================================ */
     #arChatBtn {
       position: fixed;
@@ -666,16 +666,38 @@
     let isBotTyping = false;
     let currentBotMessage = null;
 
-    // Rimuove il "thinking" dalla risposta
+    // Pulisce la risposta del bot (rimuove il "thinking" in italiano e inglese)
     function cleanBotResponse(text) {
-      // Rimuove tutto ciò che è tra <think> e </think>
-      let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-      // Rimuove anche "Here's a thinking process:" e simili
-      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?1\.\s*\*\*/gi, '').trim();
-      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?\\*/gi, '').trim();
-      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?Ready\./gi, '').trim();
-      // Se dopo la pulizia è vuoto o contiene solo <think>, restituisci un fallback
-      if (!cleaned || cleaned.match(/^<think>[\s\S]*<\/think>$/)) {
+      let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+
+      const thinkPatterns = [
+        /Here's a thinking process:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Analyze User Input:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Analizza input utente:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Check Rules:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Verifica regole:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Determine Response Strategy:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Determina strategia di risposta:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Draft Response:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Check Against Constraints:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Final Output Generation:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /SELF[ -]CORRECTION:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Output matches/gi,
+        /Proceeds\./gi,
+        /Ready\./gi,
+        /Done\./gi,
+        /✅/g, /❌/g, /🔧/g, /🚀/g, /📄/g
+      ];
+
+      for (let i = 0; i < thinkPatterns.length; i++) {
+        cleaned = cleaned.replace(thinkPatterns[i], '').trim();
+      }
+
+      cleaned = cleaned.replace(/^\d+\.\s*[\*\*]+.*$/gm, '').trim();
+      cleaned = cleaned.replace(/^-\s*(Language|Intent|Type|Constraints|Tone|Context|Lingua|Intento|Tipo|Vincoli|Tono|Contesto):.*$/gim, '').trim();
+      cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+
+      if (!cleaned) {
         return "Mi dispiace, non ho capito. Puoi riformulare?";
       }
       return cleaned;
