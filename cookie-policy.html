@@ -86,7 +86,7 @@
     }
 
     /* ============================================================
-       SELEZIONE LINGUA - SOLO NOSTRO (Rilevamento automatico)
+       SELEZIONE LINGUA - CON BANDIERINE
     ============================================================ */
     .language-selector {
       position: fixed;
@@ -94,24 +94,30 @@
       right: 12px;
       z-index: 9999;
       background: rgba(245, 241, 232, 0.92);
-      padding: 4px 10px;
-      border-radius: 20px;
+      padding: 6px 14px;
+      border-radius: 24px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border: 1px solid rgba(201,169,97,0.2);
+      border: 1px solid rgba(201,169,97,0.25);
       backdrop-filter: blur(10px);
-      font-size: 13px;
+      font-size: 14px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+    }
+    .language-selector .flag-icon {
+      font-size: 20px;
+      line-height: 1;
+      min-width: 28px;
+      text-align: center;
     }
     .language-selector select {
       border: none;
       background: transparent;
       font-family: 'Segoe UI', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       color: #4A3B2A;
       cursor: pointer;
-      padding: 4px 6px;
+      padding: 4px 8px;
       outline: none;
       font-weight: 600;
       appearance: auto;
@@ -123,23 +129,14 @@
       padding: 4px 8px;
       font-family: 'Segoe UI', sans-serif;
     }
-    .language-selector .flag-icon {
-      font-size: 20px;
-      line-height: 1;
-      min-width: 24px;
-      text-align: center;
-    }
 
-    /* Nascondi Google Translate completamente */
+    /* NASCONDI SOLO GLI ELEMENTI DI GOOGLE TRANSLATE CHE DANNEGGIANO */
     .goog-te-banner-frame,
     .skiptranslate,
     .goog-te-gadget-simple,
-    .goog-te-gadget,
-    .goog-logo-link,
     .goog-te-spinner-pos,
     .goog-te-balloon-frame,
     #goog-gt-tt,
-    .goog-te-menu-value,
     .goog-te-menu-frame,
     .goog-te-menu2 {
       display: none !important;
@@ -152,21 +149,16 @@
       .language-selector {
         top: 8px;
         right: 8px;
-        padding: 3px 8px;
-        font-size: 11px;
+        padding: 4px 10px;
+        font-size: 12px;
+        gap: 4px;
       }
-      .language-selector select {
-        font-size: 11px;
-        padding: 2px 4px;
-      }
-      .language-selector .flag-icon {
-        font-size: 16px;
-        min-width: 20px;
-      }
+      .language-selector select { font-size: 12px; padding: 2px 4px; }
+      .language-selector .flag-icon { font-size: 16px; min-width: 22px; }
     }
 
     /* ============================================================
-       CHATBOT - SOFT AMBIENT + ICONA GRANDE
+       CHATBOT
     ============================================================ */
     #arChatBtn {
       position: fixed;
@@ -194,10 +186,7 @@
       transform: scale(1.1) rotate(-3deg);
       box-shadow: 0 12px 40px rgba(201, 169, 97, 0.4), 0 0 80px rgba(201, 169, 97, 0.15);
     }
-    #arChatBtn svg {
-      width: 55px;
-      height: 55px;
-    }
+    #arChatBtn svg { width: 55px; height: 55px; }
 
     #arChatWindow {
       position: fixed;
@@ -253,11 +242,6 @@
       justify-content: center;
       font-size: 16px;
       border: 1px solid rgba(201,169,97,0.4);
-    }
-    #arChatHeader .header-left .chat-title {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
     }
     #arChatHeader .header-left .chat-title .name {
       font-size: 1rem;
@@ -414,6 +398,18 @@
       transform: none;
     }
 
+    @media (max-width: 480px) {
+      #arChatWindow {
+        right: 10px;
+        bottom: 80px;
+        width: calc(100vw - 20px);
+        height: 70vh;
+      }
+      #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
+      #arChatBtn svg { width: 46px; height: 46px; }
+      .ar-msg.user .user-avatar { width: 20px; height: 20px; font-size: 10px; }
+    }
+
     /* ============================================================
        ACCESSIBILITÀ
     ============================================================ */
@@ -447,7 +443,6 @@
     }
     .ar-msg.bot a:hover { color: #8A7024; }
 
-    /* Riposiziona il tasto flottante di Cookiebot a sinistra */
     #CybotCookiebotDialogPoweredByText,
     .CookiebotWidget,
     #CookiebotWidget {
@@ -458,32 +453,15 @@
       top: auto !important;
       z-index: 9998 !important;
     }
-
-    @media (max-width: 480px) {
-      #arChatWindow {
-        right: 10px;
-        bottom: 80px;
-        width: calc(100vw - 20px);
-        height: 70vh;
-      }
-      #arChatBtn {
-        right: 15px;
-        bottom: 15px;
-        width: 60px;
-        height: 60px;
-      }
-      #arChatBtn svg { width: 46px; height: 46px; }
-      .ar-msg.user .user-avatar { width: 20px; height: 20px; font-size: 10px; }
-    }
   </style>
 </head>
 <body>
 
   <!-- ============================================================
-    SELEZIONE LINGUA - SOLO NOSTRO (Rilevamento automatico)
+    SELEZIONE LINGUA - CON BANDIERINE
   ============================================================ -->
   <div class="language-selector" id="languageSelector">
-    <span class="flag-icon" id="currentFlag">🌐</span>
+    <span class="flag-icon" id="currentFlag">🇮🇹</span>
     <select id="languageSelect" onchange="changeLanguage(this.value)">
       <option value="it">🇮🇹 Italiano</option>
       <option value="en">🇬🇧 English</option>
@@ -502,7 +480,7 @@
 
   <script>
     // ============================================================
-    // SELEZIONE LINGUA - RILEVAMENTO AUTOMATICO
+    // SELEZIONE LINGUA
     // ============================================================
     const flagMap = {
       'it': '🇮🇹',
@@ -531,14 +509,6 @@
       if (gtCombo) {
         gtCombo.value = lang;
         gtCombo.dispatchEvent(new Event('change'));
-      } else {
-        setTimeout(() => {
-          const gtComboRetry = document.querySelector('.goog-te-combo');
-          if (gtComboRetry) {
-            gtComboRetry.value = lang;
-            gtComboRetry.dispatchEvent(new Event('change'));
-          }
-        }, 500);
       }
     }
 
@@ -637,7 +607,7 @@
     © 2026 Tutti i diritti riservati
   </footer>
 
-  <!-- ============ CHATBOT "BLESS" ============ -->
+  <!-- ============ CHATBOT WIDGET ALAN & ROSE ============ -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente">
     <svg width="55" height="55" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="48" fill="#4A3B2A" opacity="0.05"/>
@@ -687,7 +657,7 @@
 
   <script>
     // ============================================================
-    // CHATBOT "BLESS" - CON GROQ + CLOUDFLARE WORKER
+    // CHATBOT CON GROQ + CLOUDFLARE WORKER
     // ============================================================
 
     const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
@@ -696,9 +666,16 @@
     let isBotTyping = false;
     let currentBotMessage = null;
 
+    // Rimuove il "thinking" dalla risposta
     function cleanBotResponse(text) {
+      // Rimuove tutto ciò che è tra <think> e </think>
       let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-      if (!cleaned) {
+      // Rimuove anche "Here's a thinking process:" e simili
+      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?1\.\s*\*\*/gi, '').trim();
+      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?\\*/gi, '').trim();
+      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?Ready\./gi, '').trim();
+      // Se dopo la pulizia è vuoto o contiene solo <think>, restituisci un fallback
+      if (!cleaned || cleaned.match(/^<think>[\s\S]*<\/think>$/)) {
         return "Mi dispiace, non ho capito. Puoi riformulare?";
       }
       return cleaned;
