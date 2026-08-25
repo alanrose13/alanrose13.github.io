@@ -175,8 +175,20 @@
     .newsletter-form .form-item-checkbox .description { margin: 2px 0 0; flex-basis: 100%; }
     .newsletter-form .form-submit { display: block; width: 100%; border: none; cursor: pointer; font-family: 'Segoe UI', sans-serif; }
 
-    .transparent-box { padding: 20px; overflow: hidden; position: relative; }
-    .transparent-box iframe { width: 100%; border: 0; border-radius: 8px; display: block; overflow: hidden; }
+    .transparent-box {
+      padding: 20px;
+      overflow: visible;
+      position: relative;
+    }
+    .transparent-box iframe {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      display: block;
+      overflow: visible;
+      min-height: 600px;
+      height: auto;
+    }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
     #HCB_comment_box { font-family: 'Segoe UI', sans-serif; text-align: center; color: var(--m); padding: 10px 0; }
@@ -290,7 +302,7 @@
       .donation-box { padding: 20px; }
       .donation-box img { max-width: 160px; }
       .transparent-box { padding: 12px; }
-      .transparent-box iframe { height: auto; min-height: 500px; }
+      .transparent-box iframe { min-height: 500px; height: auto; }
     }
     @media (max-width: 480px) {
       .lo { width: 45px; height: 45px; top: 10px; left: 10px; }
@@ -303,7 +315,7 @@
       .gdpr-comment-consent { font-size: .85rem; padding: 12px; }
       .donation-box img { max-width: 140px; }
       .donation-box { padding: 16px; }
-      .transparent-box iframe { min-height: 400px; }
+      .transparent-box iframe { min-height: 400px; height: auto; }
     }
 
     /* ============================================================
@@ -548,7 +560,7 @@
     }
 
     /* ============================================================
-       SELEZIONE LINGUA - BANDIERINE VISIBILI
+       SELEZIONE LINGUA - CON BANDIERINE
     ============================================================ */
     .language-selector {
       position: fixed;
@@ -971,7 +983,7 @@
 
     <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
     <div class="transparent-box">
-      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:hidden;" onload="resizeIframe(this)"></iframe>
+      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:600px;height:auto;" onload="resizeIframe(this)"></iframe>
     </div>
 
     <div class="btn-upload-wrap">
@@ -1046,7 +1058,7 @@
 
     <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
     <div class="transparent-box review-form">
-      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:hidden;" onload="resizeIframe(this)">Caricamento…</iframe>
+      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:600px;height:auto;" onload="resizeIframe(this)">Caricamento…</iframe>
     </div>
   </section>
 
@@ -1234,7 +1246,7 @@
         </p>
         <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
         <div class="transparent-box">
-          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:hidden;" onload="resizeIframe(this)"></iframe>
+          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:600px;height:auto;" onload="resizeIframe(this)"></iframe>
         </div>
         <div class="btn-upload-wrap">
           <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
@@ -1456,40 +1468,42 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     // ============================================================
-    // AOS INIT
+    // AOS INIT - CORRETTO
     // ============================================================
-    AOS.init({
-      once: true,
-      duration: 1800,
-      easing: 'ease-out',
-      offset: 80,
-      delay: 0
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          once: true,
+          duration: 1800,
+          easing: 'ease-out',
+          offset: 80,
+          delay: 0
+        });
+      }
+      // Refresh AOS dopo il caricamento dinamico
+      setTimeout(function() {
+        if (typeof AOS !== 'undefined') {
+          AOS.refresh();
+        }
+      }, 1000);
     });
 
     // ============================================================
-    // RESIZE IFRAME
+    // RESIZE IFRAME - MODULI COMPLETI
     // ============================================================
     function resizeIframe(iframe) {
       try {
         iframe.style.height = 'auto';
         if (iframe.contentWindow && iframe.contentWindow.document) {
-          const height = iframe.contentWindow.document.documentElement.scrollHeight;
-          iframe.style.height = Math.max(height + 50, 500) + 'px';
+          var height = iframe.contentWindow.document.documentElement.scrollHeight;
+          iframe.style.height = Math.max(height + 50, 600) + 'px';
         } else {
-          iframe.style.height = '600px';
+          iframe.style.height = '700px';
         }
       } catch (e) {
-        iframe.style.height = '600px';
+        iframe.style.height = '700px';
       }
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(() => {
-        document.querySelectorAll('.transparent-box iframe').forEach(function(iframe) {
-          resizeIframe(iframe);
-        });
-      }, 2000);
-    });
 
     // ============================================================
     // POPUP
@@ -1501,7 +1515,7 @@
     // GDPR COMMENT CHECKBOX
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-      const checkbox = document.getElementById('gdprCommentConsent');
+      var checkbox = document.getElementById('gdprCommentConsent');
       if (!checkbox) return;
 
       function findCommentSubmit() {
@@ -1509,19 +1523,19 @@
       }
 
       function toggleSubmit() {
-        const btn = findCommentSubmit();
+        var btn = findCommentSubmit();
         if (btn) {
           btn.style.display = checkbox.checked ? '' : 'none';
         }
       }
 
       function spostaCheckbox() {
-        const checkboxDiv = document.querySelector('.gdpr-comment-consent');
+        var checkboxDiv = document.querySelector('.gdpr-comment-consent');
         if (!checkboxDiv) return;
 
-        let container = document.querySelector('#HCB_comment_box .hcb-form-submit, #HCB_comment_box .hcb-form-actions');
+        var container = document.querySelector('#HCB_comment_box .hcb-form-submit, #HCB_comment_box .hcb-form-actions');
         if (!container) {
-          const submitBtn = findCommentSubmit();
+          var submitBtn = findCommentSubmit();
           if (!submitBtn) return;
           container = submitBtn.parentNode;
         }
@@ -1532,8 +1546,8 @@
 
       checkbox.addEventListener('change', toggleSubmit);
 
-      const observer = new MutationObserver(function() {
-        const btn = findCommentSubmit();
+      var observer = new MutationObserver(function() {
+        var btn = findCommentSubmit();
         if (btn) {
           toggleSubmit();
           spostaCheckbox();
@@ -1541,11 +1555,11 @@
         }
       });
 
-      const commentBox = document.getElementById('HCB_comment_box');
+      var commentBox = document.getElementById('HCB_comment_box');
       if (commentBox) {
         observer.observe(commentBox, { childList: true, subtree: true });
         setTimeout(function() {
-          const btn = findCommentSubmit();
+          var btn = findCommentSubmit();
           if (btn) {
             toggleSubmit();
             spostaCheckbox();
@@ -1561,20 +1575,42 @@
     
     const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
     
-    let typingInterval = null;
-    let isBotTyping = false;
-    let currentBotMessage = null;
+    var typingInterval = null;
+    var isBotTyping = false;
+    var currentBotMessage = null;
 
-    // Rimuove il "thinking" dalla risposta
+    // Pulisce la risposta del bot (rimuove il "thinking" in italiano e inglese)
     function cleanBotResponse(text) {
-      // Rimuove tutto ciò che è tra <think> e </think>
-      let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-      // Rimuove anche "Here's a thinking process:" e simili
-      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?1\.\s*\*\*/gi, '').trim();
-      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?\\*/gi, '').trim();
-      cleaned = cleaned.replace(/Here's a thinking process:[\s\S]*?Ready\./gi, '').trim();
-      // Se dopo la pulizia è vuoto o contiene solo <think>, restituisci un fallback
-      if (!cleaned || cleaned.match(/^<think>[\s\S]*<\/think>$/)) {
+      var cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+
+      var thinkPatterns = [
+        /Here's a thinking process:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Analyze User Input:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Analizza input utente:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Check Rules:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Verifica regole:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Determine Response Strategy:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Determina strategia di risposta:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Draft Response:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Check Against Constraints:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Final Output Generation:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /SELF[ -]CORRECTION:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
+        /Output matches/gi,
+        /Proceeds\./gi,
+        /Ready\./gi,
+        /Done\./gi,
+        /✅/g, /❌/g, /🔧/g, /🚀/g, /📄/g
+      ];
+
+      for (var i = 0; i < thinkPatterns.length; i++) {
+        cleaned = cleaned.replace(thinkPatterns[i], '').trim();
+      }
+
+      cleaned = cleaned.replace(/^\d+\.\s*[\*\*]+.*$/gm, '').trim();
+      cleaned = cleaned.replace(/^-\s*(Language|Intent|Type|Constraints|Tone|Context|Lingua|Intento|Tipo|Vincoli|Tono|Contesto):.*$/gim, '').trim();
+      cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+
+      if (!cleaned) {
         return "Mi dispiace, non ho capito. Puoi riformulare?";
       }
       return cleaned;
@@ -1594,35 +1630,36 @@
     }
 
     function arAddMessage(text, cls) {
-      const box = document.getElementById('arChatMessages');
-      const div = document.createElement('div');
+      var box = document.getElementById('arChatMessages');
+      var div = document.createElement('div');
       div.className = 'ar-msg ' + cls;
       if (cls === 'bot') {
         div.innerHTML = text;
       } else {
-        div.innerHTML = `<span class="user-avatar">👤</span><span>${text}</span>`;
+        div.innerHTML = '<span class="user-avatar">👤</span><span>' + text + '</span>';
       }
       box.appendChild(div);
       box.scrollTop = box.scrollHeight;
       return div;
     }
 
-    function arTypeMessage(text, cls, speed = 25) {
-      return new Promise((resolve) => {
-        const box = document.getElementById('arChatMessages');
-        const div = document.createElement('div');
+    function arTypeMessage(text, cls, speed) {
+      if (speed === undefined) speed = 25;
+      return new Promise(function(resolve) {
+        var box = document.getElementById('arChatMessages');
+        var div = document.createElement('div');
         div.className = 'ar-msg ' + cls;
         if (cls === 'bot') {
           div.textContent = '';
         } else {
-          div.innerHTML = `<span class="user-avatar">👤</span><span></span>`;
+          div.innerHTML = '<span class="user-avatar">👤</span><span></span>';
         }
         box.appendChild(div);
-        let i = 0;
+        var i = 0;
         isBotTyping = true;
         currentBotMessage = div;
         
-        typingInterval = setInterval(() => {
+        typingInterval = setInterval(function() {
           if (!isBotTyping) {
             clearInterval(typingInterval);
             typingInterval = null;
@@ -1633,7 +1670,7 @@
             if (cls === 'bot') {
               div.textContent += text.charAt(i);
             } else {
-              const span = div.querySelector('span:last-child');
+              var span = div.querySelector('span:last-child');
               if (span) span.textContent += text.charAt(i);
             }
             i++;
@@ -1650,8 +1687,8 @@
     }
 
     function arShowTyping() {
-      const box = document.getElementById('arChatMessages');
-      const div = document.createElement('div');
+      var box = document.getElementById('arChatMessages');
+      var div = document.createElement('div');
       div.className = 'ar-msg typing';
       div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
       div.id = 'arTypingIndicator';
@@ -1660,13 +1697,13 @@
     }
 
     function arRemoveTyping() {
-      const el = document.getElementById('arTypingIndicator');
+      var el = document.getElementById('arTypingIndicator');
       if (el) el.remove();
     }
 
     async function arSendMessage() {
-      const input = document.getElementById('arChatInput');
-      const msg = input.value.trim();
+      var input = document.getElementById('arChatInput');
+      var msg = input.value.trim();
       if (!msg) return;
 
       if (isBotTyping) {
@@ -1681,7 +1718,7 @@
       arShowTyping();
 
       try {
-        const response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
+        var response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1691,21 +1728,7 @@
             messages: [
               {
                 role: 'system',
-                content: `Sei l'assistente virtuale "BLESS" di "Alan & Rose" (A&R). 
-
-                REGOLE FEREE (rispettale sempre):
-                1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l'utente scrive.
-                2. **RISPOSTE BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.
-                3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero (es. "Here's a thinking process...", "I'll analyze...", "Let me check...") nella risposta. Rispondi solo con il messaggio finale destinato all'utente.
-                4. Quando un utente chiede un servizio/preventivo (es. "voglio un servizio", "vorrei un preventivo"), chiedi: Nome, Email, Tipo di servizio (Grafica & Web, Musica & Produzione, Consulenza), Breve descrizione.
-                5. Dopo i dati, dai un riepilogo e il link al modulo.
-                6. Menziona la Privacy Policy solo se chiesto o se l'utente parla di dati personali.
-
-                Servizi: Grafica & Web, Musica & Produzione, Consulenza.
-                Team: Alan (Alfio Ragusa) e Rose.
-                Sito: alanrose13.github.io | Email: alanrose.13@yahoo.com
-
-                Tono: professionale, amichevole, caloroso. Usa "noi" e "ti capiamo".`
+                content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FEREE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **RISPOSTE BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero (es. "Here\'s a thinking process...", "I\'ll analyze...", "Let me check...") nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. Quando un utente chiede un servizio/preventivo (es. "voglio un servizio", "vorrei un preventivo"), chiedi: Nome, Email, Tipo di servizio (Grafica & Web, Musica & Produzione, Consulenza), Breve descrizione.\n5. Dopo i dati, dai un riepilogo e il link al modulo.\n6. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nTono: professionale, amichevole, caloroso. Usa "noi" e "ti capiamo".'
               },
               {
                 role: 'user',
@@ -1714,15 +1737,15 @@
             ],
             stream: false,
             temperature: 0.7,
-            max_tokens: 100,
-          }),
+            max_tokens: 100
+          })
         });
 
-        const data = await response.json();
+        var data = await response.json();
         arRemoveTyping();
 
         if (data.error) {
-          let errorMsg = 'Si è verificato un errore. Riprova più tardi.';
+          var errorMsg = 'Si è verificato un errore. Riprova più tardi.';
           if (data.error.message && data.error.message.toLowerCase().includes('rate')) {
             errorMsg = 'Il servizio è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, contattaci a alanrose.13@yahoo.com.';
           } else if (data.error.message) {
@@ -1732,7 +1755,7 @@
           return;
         }
 
-        let reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
+        var reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
         reply = cleanBotResponse(reply);
         await arTypeMessage(reply, 'bot', 20);
 
@@ -1747,7 +1770,7 @@
       }
     }
 
-    setTimeout(() => {
+    setTimeout(function() {
       document.getElementById('arChatWindow').classList.add('open');
     }, 800);
   </script>
