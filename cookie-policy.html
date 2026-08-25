@@ -318,7 +318,13 @@
   </div>
 
   <script>
-    const AR_WORKER_URL = "https://script.google.com/macros/s/AKfycbysmy_8NVIehNt5cLbeAHzhxyY7OdzY6drD3OW4izAVL3RCxVSoSSQqgn7rskl9sMsG3A/exec";
+    // ============================================================
+    // CHATBOT CON GROQ + CLOUDFLARE WORKER
+    // ============================================================
+
+    // 🔥 URL DEL TUO WORKER CLOUDFLARE
+    const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
+
     let typingInterval = null;
 
     function arToggleChat() {
@@ -382,27 +388,60 @@
 
       arAddMessage(msg, 'user');
       input.value = '';
-
       arShowTyping();
 
       try {
-        const response = await fetch(AR_WORKER_URL + "?message=" + encodeURIComponent(msg));
-        const data = await response.json();
+        // --- Chiamata al Worker Cloudflare (che parla con Groq) ---
+        const response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              {
+                role: 'system',
+                content: `Sei l'assistente virtuale di "Alan & Rose" (A&R). 
+                Alan & Rose offre:
+                - Grafica & Web: loghi, banner, siti web, social media management, editoria digitale
+                - Musica & Produzione: produzione gospel, mixing/mastering, video editing, assistenza software
+                - Consulenza: receptionist, fogli di calcolo, SPID, INPS, punti patente, speaker, web radio, DJ
+                
+                Il team è composto da Alan (Alfio Ragusa) e Rose, una coppia che opera in regime di prestazione occasionale (art.2222 c.c.).
+                Sito: alanrose13.github.io
+                Email: alanrose.13@yahoo.com
+                
+                Rispondi in modo professionale, amichevole e conciso. Se ti chiedono di te, presentati come assistente di A&R.`
+              },
+              {
+                role: 'user',
+                content: msg
+              }
+            ],
+            stream: false,
+            temperature: 0.7,
+            max_tokens: 1024,
+          }),
+        });
 
+        const data = await response.json();
         arRemoveTyping();
 
+        // Controllo errori
         if (data.error) {
           let errorMsg = 'Si è verificato un errore. Riprova più tardi.';
-          if (data.error.toLowerCase().includes('high demand') ||
-              data.error.toLowerCase().includes('overload') ||
-              data.error.toLowerCase().includes('too many requests')) {
-            errorMsg = 'Il servizio di intelligenza artificiale è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, puoi contattarci direttamente a alanrose.13@yahoo.com.';
+          if (data.error.message && data.error.message.toLowerCase().includes('rate')) {
+            errorMsg = 'Il servizio è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, contattaci a alanrose.13@yahoo.com.';
+          } else if (data.error.message) {
+            errorMsg = 'Errore: ' + data.error.message;
           }
           await arTypeMessage(errorMsg, 'bot', 20);
           return;
         }
 
-        const reply = data.reply || 'Mi dispiace, non ho capito. Puoi riformulare?';
+        // Estrai la risposta dal formato OpenAI
+        const reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
         await arTypeMessage(reply, 'bot', 20);
 
       } catch (err) {
