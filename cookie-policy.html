@@ -86,6 +86,61 @@
     }
 
     /* ============================================================
+       SELEZIONE LINGUA CON BANDIERINE
+    ============================================================ */
+    .language-selector {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 9999;
+      background: rgba(245, 241, 232, 0.95);
+      padding: 4px 10px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      border: 1px solid rgba(201,169,97,0.3);
+      backdrop-filter: blur(10px);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .language-selector select {
+      border: none;
+      background: transparent;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 13px;
+      color: #4A3B2A;
+      cursor: pointer;
+      padding: 4px 6px;
+      outline: none;
+      font-weight: 600;
+    }
+    .language-selector select option {
+      background: #fff;
+      color: #4A3B2A;
+      padding: 4px 8px;
+    }
+    .language-selector .flag-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+    @media (max-width: 480px) {
+      .language-selector {
+        top: 8px;
+        right: 8px;
+        padding: 3px 8px;
+        font-size: 11px;
+      }
+      .language-selector select {
+        font-size: 11px;
+        padding: 2px 4px;
+      }
+      .language-selector .flag-icon {
+        font-size: 14px;
+      }
+    }
+
+    /* ============================================================
        CHATBOT - STILE DREAMY/PACIFICO CON ICONA SVG
     ============================================================ */
     #arChatBtn {
@@ -243,56 +298,13 @@
     }
     #arChatSend:hover { background: var(--m); color: #fff; }
 
-    /* ============================================================
-       GOOGLE TRANSLATE WIDGET
-    ============================================================ */
-    #google_translate_element {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 9999;
-      background: rgba(245, 241, 232, 0.95);
-      padding: 6px 12px;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-      border: 1px solid rgba(201,169,97,0.3);
-      backdrop-filter: blur(10px);
-      font-size: 13px;
-    }
-    #google_translate_element .goog-te-gadget {
-      color: #4A3B2A !important;
-      font-family: 'Segoe UI', sans-serif !important;
-    }
-    #google_translate_element .goog-te-gadget a {
-      color: #C9A961 !important;
-    }
-    #google_translate_element .goog-te-gadget .goog-te-combo {
-      border: 1px solid rgba(201,169,97,0.4);
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-family: 'Segoe UI', sans-serif;
-      background: #fff;
-      color: #4A3B2A;
-      font-size: 13px;
-    }
-
     @media (max-width: 480px) {
-      #google_translate_element {
-        top: 8px;
-        right: 8px;
-        padding: 4px 8px;
-        font-size: 11px;
-      }
-      #google_translate_element .goog-te-gadget .goog-te-combo {
-        font-size: 11px;
-        padding: 2px 4px;
-      }
       #arChatWindow { right: 10px; bottom: 80px; width: calc(100vw - 20px); }
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn svg { width: 42px; height: 42px; }
     }
 
-    /* Riposiziona il tasto flottante di Cookiebot a sinistra, come nel resto del sito */
+    /* Riposiziona il tasto flottante di Cookiebot a sinistra */
     #CybotCookiebotDialogPoweredByText,
     .CookiebotWidget,
     #CookiebotWidget {
@@ -308,9 +320,86 @@
 <body>
 
   <!-- ============================================================
-    GOOGLE TRANSLATE WIDGET
+    SELEZIONE LINGUA CON BANDIERINE
   ============================================================ -->
-  <div id="google_translate_element"></div>
+  <div class="language-selector" id="languageSelector">
+    <span class="flag-icon" id="currentFlag">🇮🇹</span>
+    <select id="languageSelect" onchange="changeLanguage(this.value)">
+      <option value="it">🇮🇹 Italiano</option>
+      <option value="en">🇬🇧 English</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="pt">🇵🇹 Português</option>
+      <option value="ar">🇸🇦 العربية</option>
+      <option value="ru">🇷🇺 Русский</option>
+      <option value="zh">🇨🇳 中文</option>
+      <option value="ja">🇯🇵 日本語</option>
+      <option value="ko">🇰🇷 한국어</option>
+      <option value="hi">🇮🇳 हिन्दी</option>
+    </select>
+  </div>
+
+  <script>
+    // Mappa lingua → flag
+    const flagMap = {
+      'it': '🇮🇹',
+      'en': '🇬🇧',
+      'es': '🇪🇸',
+      'fr': '🇫🇷',
+      'de': '🇩🇪',
+      'pt': '🇵🇹',
+      'ar': '🇸🇦',
+      'ru': '🇷🇺',
+      'zh': '🇨🇳',
+      'ja': '🇯🇵',
+      'ko': '🇰🇷',
+      'hi': '🇮🇳'
+    };
+
+    function changeLanguage(lang) {
+      document.getElementById('currentFlag').textContent = flagMap[lang] || '🌐';
+      const gtCombo = document.querySelector('.goog-te-combo');
+      if (gtCombo) {
+        gtCombo.value = lang;
+        gtCombo.dispatchEvent(new Event('change'));
+      } else {
+        setTimeout(() => {
+          const gtComboRetry = document.querySelector('.goog-te-combo');
+          if (gtComboRetry) {
+            gtComboRetry.value = lang;
+            gtComboRetry.dispatchEvent(new Event('change'));
+          }
+        }, 500);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const observer = new MutationObserver(function() {
+        const gtCombo = document.querySelector('.goog-te-combo');
+        if (gtCombo) {
+          const currentLang = gtCombo.value;
+          const flag = flagMap[currentLang] || '🌐';
+          document.getElementById('currentFlag').textContent = flag;
+          const ourSelect = document.getElementById('languageSelect');
+          if (ourSelect && ourSelect.value !== currentLang) {
+            ourSelect.value = currentLang;
+          }
+        }
+      });
+      
+      const checkInterval = setInterval(() => {
+        const gtCombo = document.querySelector('.goog-te-combo');
+        if (gtCombo) {
+          observer.observe(gtCombo, { attributes: true, attributeFilter: ['value'] });
+          clearInterval(checkInterval);
+        }
+      }, 500);
+    });
+  </script>
+
+  <!-- Google Translate (mantenuto per la funzione di traduzione) -->
+  <div id="google_translate_element" style="display:none;"></div>
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -375,33 +464,20 @@
   <!-- ============ CHATBOT WIDGET ALAN & ROSE ============ -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente">
     <svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Sfondo -->
       <circle cx="50" cy="50" r="48" fill="#4A3B2A" opacity="0.05"/>
-      
-      <!-- Figura 1: Persona a sinistra (Alan) -->
       <circle cx="38" cy="40" r="13" fill="#C9A961" opacity="0.9"/>
       <path d="M25 60 Q28 43 38 40 Q48 43 51 60 Q43 66 33 66 Q27 64 25 60Z" fill="#C9A961" opacity="0.9"/>
-      <!-- Occhi (Alan) -->
       <circle cx="34" cy="38" r="2.5" fill="#4A3B2A"/>
       <circle cx="42" cy="38" r="2.5" fill="#4A3B2A"/>
       <path d="M35 44 Q38 47 41 44" stroke="#4A3B2A" stroke-width="2" stroke-linecap="round"/>
-      
-      <!-- Figura 2: Persona a destra (Rose) -->
       <circle cx="62" cy="40" r="13" fill="#4A3B2A" opacity="0.8"/>
       <path d="M49 60 Q52 43 62 40 Q72 43 75 60 Q67 66 57 66 Q51 64 49 60Z" fill="#4A3B2A" opacity="0.8"/>
-      <!-- Occhi (Rose) -->
       <circle cx="58" cy="38" r="2.5" fill="#C9A961"/>
       <circle cx="66" cy="38" r="2.5" fill="#C9A961"/>
       <path d="M59 44 Q62 47 65 44" stroke="#C9A961" stroke-width="2" stroke-linecap="round"/>
-      
-      <!-- Cuore pacifico -->
       <path d="M47 50 Q50 46 53 50 Q56 46 59 50 Q54 58 47 50Z" fill="#C9A961" opacity="0.7"/>
-      
-      <!-- Onde di serenità -->
       <path d="M22 70 Q35 64 48 70 Q60 76 72 70 Q82 64 88 70" stroke="#C9A961" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
       <path d="M22 78 Q38 72 50 78 Q62 84 75 78" stroke="#4A3B2A" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-      
-      <!-- Punti luce -->
       <circle cx="18" cy="28" r="2.5" fill="#C9A961" opacity="0.4"/>
       <circle cx="82" cy="26" r="2.5" fill="#C9A961" opacity="0.4"/>
       <circle cx="24" cy="18" r="2" fill="#4A3B2A" opacity="0.3"/>
@@ -515,28 +591,19 @@
               {
                 role: 'system',
                 content: `Sei l'assistente virtuale di "Alan & Rose" (A&R). 
-                Il tuo compito è aiutare i clienti a conoscere i servizi e, se vogliono, guidarli nella richiesta di un preventivo.
 
                 REGOLE IMPORTANTI:
-                1. **LINGUA**: Devi rispondere SEMPRE nella stessa lingua in cui l'utente ti scrive. Se l'utente scrive in italiano, rispondi in italiano. Se scrive in inglese, rispondi in inglese. Se scrive in spagnolo, rispondi in spagnolo, ecc.
-                2. Quando un utente dice "voglio richiedere un servizio", "vorrei un preventivo", "posso avere un servizio?" o frasi simili, rispondi chiedendo:
-                   - Nome e Cognome
-                   - Email
-                   - Tipo di servizio desiderato (tra: Grafica & Web, Musica & Produzione, Consulenza & Altro)
-                   - Breve descrizione di cosa serve
-                3. Dopo che l'utente ha fornito tutti i dati, rispondi con un riepilogo e il link al modulo: https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform
-                4. Ricorda sempre di menzionare la Privacy Policy e che i dati sono trattati in modo sicuro.
+                1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l'utente scrive.
+                2. **RISPOSTE BREVI**: Ai saluti come "ciao", "hello", "hola" rispondi con un saluto breve e amichevole, massimo 2-3 frasi. Non elencare tutti i servizi a meno che l'utente non chieda esplicitamente.
+                3. Quando un utente chiede un servizio/preventivo, chiedi: Nome, Email, Tipo di servizio, Breve descrizione.
+                4. Dopo i dati, dai un riepilogo e il link al modulo: https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform
+                5. Menziona sempre la Privacy Policy.
 
-                Alan & Rose offre:
-                - Grafica & Web: loghi, banner, siti web, social media management, editoria digitale
-                - Musica & Produzione: produzione gospel, mixing/mastering, video editing, assistenza software
-                - Consulenza: receptionist, fogli di calcolo, SPID, INPS, punti patente, speaker, web radio, DJ
+                Servizi: Grafica & Web, Musica & Produzione, Consulenza.
+                Team: Alan (Alfio Ragusa) e Rose, prestazione occasionale (art.2222 c.c.).
+                Sito: alanrose13.github.io | Email: alanrose.13@yahoo.com
 
-                Il team è composto da Alan (Alfio Ragusa) e Rose, una coppia che opera in regime di prestazione occasionale (art.2222 c.c.).
-                Sito: alanrose13.github.io
-                Email: alanrose.13@yahoo.com
-
-                Rispondi in modo professionale, amichevole e conciso, come se fossi Alan o Rose a parlare. Usa "noi" e "ti capiamo" per creare empatia.`
+                Tono: professionale, amichevole, empatico. Usa "noi" e "ti capiamo".`
               },
               {
                 role: 'user',
@@ -545,7 +612,7 @@
             ],
             stream: false,
             temperature: 0.7,
-            max_tokens: 1024,
+            max_tokens: 300,
           }),
         });
 
@@ -577,7 +644,6 @@
       }
     }
 
-    // Apri la chat di default con un piccolo ritardo
     setTimeout(() => {
       document.getElementById('arChatWindow').classList.add('open');
     }, 800);
