@@ -86,7 +86,7 @@
     }
 
     /* ============================================================
-       SELEZIONE LINGUA CON BANDIERINE
+       SELEZIONE LINGUA CON BANDIERINE (FIXED)
     ============================================================ */
     .language-selector {
       position: fixed;
@@ -114,15 +114,20 @@
       padding: 4px 6px;
       outline: none;
       font-weight: 600;
+      appearance: auto;
+      -webkit-appearance: auto;
     }
     .language-selector select option {
       background: #fff;
       color: #4A3B2A;
       padding: 4px 8px;
+      font-family: 'Segoe UI', sans-serif;
     }
     .language-selector .flag-icon {
-      font-size: 18px;
+      font-size: 20px;
       line-height: 1;
+      min-width: 24px;
+      text-align: center;
     }
     @media (max-width: 480px) {
       .language-selector {
@@ -136,7 +141,8 @@
         padding: 2px 4px;
       }
       .language-selector .flag-icon {
-        font-size: 14px;
+        font-size: 16px;
+        min-width: 20px;
       }
     }
 
@@ -298,6 +304,56 @@
     }
     #arChatSend:hover { background: var(--m); color: #fff; }
 
+    /* ============================================================
+       ACCESSIBILITÀ
+    ============================================================ */
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid #C9A961;
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      [data-aos] {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    .ar-msg.bot a {
+      color: #B8962E;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .ar-msg.bot a:hover {
+      color: #8A7024;
+    }
+
+    /* ============================================================
+       NASCONDI GOOGLE TRANSLATE UI
+    ============================================================ */
+    .goog-te-banner-frame,
+    .skiptranslate,
+    .goog-te-gadget-simple {
+      display: none !important;
+    }
+    body {
+      top: 0 !important;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
     @media (max-width: 480px) {
       #arChatWindow { right: 10px; bottom: 80px; width: calc(100vw - 20px); }
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
@@ -320,7 +376,7 @@
 <body>
 
   <!-- ============================================================
-    SELEZIONE LINGUA CON BANDIERINE
+    SELEZIONE LINGUA CON BANDIERINE (FIXED)
   ============================================================ -->
   <div class="language-selector" id="languageSelector">
     <span class="flag-icon" id="currentFlag">🇮🇹</span>
@@ -398,7 +454,7 @@
     });
   </script>
 
-  <!-- Google Translate (mantenuto per la funzione di traduzione) -->
+  <!-- Google Translate (nascosto) -->
   <div id="google_translate_element" style="display:none;"></div>
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -511,10 +567,21 @@
     const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
 
     let typingInterval = null;
+    let isBotTyping = false;
+    let currentBotMessage = null;
 
     function arToggleChat() {
       const w = document.getElementById('arChatWindow');
       w.classList.toggle('open');
+    }
+
+    function arStopTyping() {
+      if (typingInterval) {
+        clearInterval(typingInterval);
+        typingInterval = null;
+      }
+      isBotTyping = false;
+      arRemoveTyping();
     }
 
     function arAddMessage(text, cls) {
@@ -538,7 +605,16 @@
         div.className = 'ar-msg ' + cls;
         box.appendChild(div);
         let i = 0;
+        isBotTyping = true;
+        currentBotMessage = div;
+        
         typingInterval = setInterval(() => {
+          if (!isBotTyping) {
+            clearInterval(typingInterval);
+            typingInterval = null;
+            resolve();
+            return;
+          }
           if (i < text.length) {
             div.textContent += text.charAt(i);
             i++;
@@ -546,6 +622,8 @@
           } else {
             clearInterval(typingInterval);
             typingInterval = null;
+            isBotTyping = false;
+            currentBotMessage = null;
             resolve();
           }
         }, speed);
@@ -572,6 +650,10 @@
       const msg = input.value.trim();
       if (!msg) return;
 
+      if (isBotTyping) {
+        arStopTyping();
+      }
+
       input.disabled = true;
       document.getElementById('arChatSend').disabled = true;
 
@@ -592,18 +674,18 @@
                 role: 'system',
                 content: `Sei l'assistente virtuale di "Alan & Rose" (A&R). 
 
-                REGOLE IMPORTANTI:
+                REGOLE FEREE (rispettale sempre):
                 1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l'utente scrive.
-                2. **RISPOSTE BREVI**: Ai saluti come "ciao", "hello", "hola" rispondi con un saluto breve e amichevole, massimo 2-3 frasi. Non elencare tutti i servizi a meno che l'utente non chieda esplicitamente.
-                3. Quando un utente chiede un servizio/preventivo, chiedi: Nome, Email, Tipo di servizio, Breve descrizione.
-                4. Dopo i dati, dai un riepilogo e il link al modulo: https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform
-                5. Menziona sempre la Privacy Policy.
+                2. **RISPOSTE BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.
+                3. Quando un utente chiede un servizio/preventivo (es. "voglio un servizio", "vorrei un preventivo"), chiedi: Nome, Email, Tipo di servizio (Grafica & Web, Musica & Produzione, Consulenza), Breve descrizione.
+                4. Dopo i dati, dai un riepilogo e il link al modulo.
+                5. Menziona la Privacy Policy solo se chiesto o se l'utente parla di dati personali.
 
                 Servizi: Grafica & Web, Musica & Produzione, Consulenza.
-                Team: Alan (Alfio Ragusa) e Rose, prestazione occasionale (art.2222 c.c.).
+                Team: Alan (Alfio Ragusa) e Rose.
                 Sito: alanrose13.github.io | Email: alanrose.13@yahoo.com
 
-                Tono: professionale, amichevole, empatico. Usa "noi" e "ti capiamo".`
+                Tono: professionale, amichevole. Usa "noi".`
               },
               {
                 role: 'user',
