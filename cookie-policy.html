@@ -86,18 +86,18 @@
     }
 
     /* ============================================================
-       SELEZIONE LINGUA CON BANDIERINE (FIXED)
+       SELEZIONE LINGUA - SOLO NOSTRO (Rilevamento automatico)
     ============================================================ */
     .language-selector {
       position: fixed;
       top: 12px;
       right: 12px;
       z-index: 9999;
-      background: rgba(245, 241, 232, 0.95);
+      background: rgba(245, 241, 232, 0.92);
       padding: 4px 10px;
       border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-      border: 1px solid rgba(201,169,97,0.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid rgba(201,169,97,0.2);
       backdrop-filter: blur(10px);
       font-size: 13px;
       display: flex;
@@ -129,6 +129,25 @@
       min-width: 24px;
       text-align: center;
     }
+
+    /* Nascondi Google Translate completamente */
+    .goog-te-banner-frame,
+    .skiptranslate,
+    .goog-te-gadget-simple,
+    .goog-te-gadget,
+    .goog-logo-link,
+    .goog-te-spinner-pos,
+    .goog-te-balloon-frame,
+    #goog-gt-tt,
+    .goog-te-menu-value,
+    .goog-te-menu-frame,
+    .goog-te-menu2 {
+      display: none !important;
+    }
+    body {
+      top: 0 !important;
+    }
+
     @media (max-width: 480px) {
       .language-selector {
         top: 8px;
@@ -147,7 +166,7 @@
     }
 
     /* ============================================================
-       CHATBOT - STILE DREAMY/PACIFICO CON ICONA SVG
+       CHATBOT - SOFT AMBIENT + ICONA GRANDE
     ============================================================ */
     #arChatBtn {
       position: fixed;
@@ -165,28 +184,33 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      animation: chatPulse 3s ease-in-out infinite;
+    }
+    @keyframes chatPulse {
+      0%, 100% { box-shadow: 0 8px 30px rgba(201, 169, 97, 0.3), 0 0 60px rgba(201, 169, 97, 0.1); }
+      50% { box-shadow: 0 8px 40px rgba(201, 169, 97, 0.4), 0 0 80px rgba(201, 169, 97, 0.15); }
     }
     #arChatBtn:hover {
       transform: scale(1.1) rotate(-3deg);
       box-shadow: 0 12px 40px rgba(201, 169, 97, 0.4), 0 0 80px rgba(201, 169, 97, 0.15);
-      border-color: #C9A961;
     }
     #arChatBtn svg {
-      width: 50px;
-      height: 50px;
+      width: 55px;
+      height: 55px;
     }
 
     #arChatWindow {
       position: fixed;
-      bottom: 90px;
+      bottom: 100px;
       right: 20px;
-      width: 340px;
+      width: 360px;
       max-width: 90vw;
-      height: 460px;
+      height: 500px;
       max-height: 75vh;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.35);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 80px rgba(201,169,97,0.05);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -195,7 +219,8 @@
       opacity: 0;
       transform: translateY(20px) scale(0.95);
       pointer-events: none;
-      transition: opacity .3s ease, transform .3s ease;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 1px solid rgba(201,169,97,0.2);
     }
     #arChatWindow.open {
       opacity: 1;
@@ -204,105 +229,190 @@
     }
 
     #arChatHeader {
-      background: var(--m);
+      background: linear-gradient(135deg, #4A3B2A 0%, #3A2B1A 100%);
       color: #fff;
-      padding: 14px 16px;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 700;
+      border-bottom: 1px solid rgba(201,169,97,0.2);
+    }
+    #arChatHeader .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #arChatHeader .header-left .avatar-small {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F5F1E8 0%, #C9A961 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 1px solid rgba(201,169,97,0.4);
+    }
+    #arChatHeader .header-left .chat-title {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    #arChatHeader .header-left .chat-title .name {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    #arChatHeader .header-left .chat-title .sub {
+      font-size: 0.65rem;
+      opacity: 0.7;
+      font-weight: 400;
     }
     #arChatHeader span.close {
       cursor: pointer;
-      font-size: 20px;
+      font-size: 22px;
       transition: .2s;
+      opacity: 0.7;
     }
-    #arChatHeader span.close:hover { opacity: .7; }
+    #arChatHeader span.close:hover { opacity: 1; }
 
     #arChatMessages {
       flex: 1;
       overflow-y: auto;
-      padding: 14px;
-      background: #F5F1E8;
+      padding: 16px;
+      background: rgba(245, 241, 232, 0.3);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+    }
+    #arChatMessages::-webkit-scrollbar {
+      width: 4px;
+    }
+    #arChatMessages::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+      border-radius: 10px;
+    }
+    #arChatMessages::-webkit-scrollbar-thumb {
+      background: rgba(201,169,97,0.3);
+      border-radius: 10px;
     }
 
     .ar-msg {
       max-width: 85%;
-      padding: 9px 13px;
-      border-radius: 12px;
+      padding: 10px 14px;
+      border-radius: 16px;
       font-size: .9rem;
-      line-height: 1.4;
-      animation: arMsgIn .25s ease;
+      line-height: 1.5;
+      animation: arMsgIn .3s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     @keyframes arMsgIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(8px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .ar-msg.bot {
       background: #fff;
-      border: 1px solid rgba(201,169,97,.4);
+      border: 1px solid rgba(201,169,97,0.2);
       align-self: flex-start;
       color: var(--m);
+      border-top-left-radius: 4px;
     }
     .ar-msg.user {
-      background: var(--o);
-      color: var(--m);
+      background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
+      color: #fff;
       align-self: flex-end;
-      font-weight: 600;
+      font-weight: 500;
+      border-top-right-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ar-msg.user .user-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.2);
     }
     .ar-msg.typing {
-      background: #fff;
-      border: 1px solid rgba(201,169,97,.4);
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(201,169,97,0.15);
       align-self: flex-start;
       color: #999;
       font-style: italic;
       display: flex;
       align-items: center;
       gap: 6px;
+      padding: 12px 16px;
+      border-radius: 20px;
+      border-top-left-radius: 4px;
+      backdrop-filter: blur(10px);
     }
     .ar-msg.typing .dot {
       display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: #999;
+      width: 7px;
+      height: 7px;
+      background: #C9A961;
       border-radius: 50%;
-      animation: dotPulse 1s infinite alternate;
+      animation: dotPulse 1.2s ease-in-out infinite;
     }
-    .ar-msg.typing .dot:nth-child(2) { animation-delay: .2s; }
-    .ar-msg.typing .dot:nth-child(3) { animation-delay: .4s; }
+    .ar-msg.typing .dot:nth-child(2) { animation-delay: .15s; }
+    .ar-msg.typing .dot:nth-child(3) { animation-delay: .3s; }
     @keyframes dotPulse {
-      0% { opacity: .3; transform: scale(.8); }
-      100% { opacity: 1; transform: scale(1.2); }
+      0%, 60%, 100% { opacity: .3; transform: scale(.8); }
+      30% { opacity: 1; transform: scale(1.2); }
     }
 
     #arChatInputRow {
       display: flex;
-      border-top: 1px solid #eee;
-      padding: 8px;
-      gap: 6px;
+      border-top: 1px solid rgba(201,169,97,0.15);
+      padding: 10px 12px;
+      gap: 8px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(10px);
     }
     #arChatInput {
       flex: 1;
-      border: 1px solid rgba(201,169,97,.5);
-      border-radius: 8px;
-      padding: 8px 10px;
+      border: 1px solid rgba(201,169,97,0.2);
+      border-radius: 12px;
+      padding: 10px 14px;
       font-family: 'Segoe UI', sans-serif;
       font-size: .9rem;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      transition: .3s;
+    }
+    #arChatInput:focus {
+      outline: none;
+      border-color: #C9A961;
+      box-shadow: 0 0 0 3px rgba(201,169,97,0.1);
     }
     #arChatSend {
-      background: var(--o);
-      color: var(--m);
+      background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 0 16px;
+      border-radius: 12px;
+      padding: 0 18px;
       font-weight: 700;
       cursor: pointer;
       transition: .3s;
+      font-size: .9rem;
     }
-    #arChatSend:hover { background: var(--m); color: #fff; }
+    #arChatSend:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(201,169,97,0.3);
+    }
+    #arChatSend:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
 
     /* ============================================================
        ACCESSIBILITÀ
@@ -335,30 +445,7 @@
       text-decoration: underline;
       font-weight: 600;
     }
-    .ar-msg.bot a:hover {
-      color: #8A7024;
-    }
-
-    /* ============================================================
-       NASCONDI GOOGLE TRANSLATE UI
-    ============================================================ */
-    .goog-te-banner-frame,
-    .skiptranslate,
-    .goog-te-gadget-simple {
-      display: none !important;
-    }
-    body {
-      top: 0 !important;
-    }
-
-    /* ============================================================
-       RESPONSIVE
-    ============================================================ */
-    @media (max-width: 480px) {
-      #arChatWindow { right: 10px; bottom: 80px; width: calc(100vw - 20px); }
-      #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
-      #arChatBtn svg { width: 42px; height: 42px; }
-    }
+    .ar-msg.bot a:hover { color: #8A7024; }
 
     /* Riposiziona il tasto flottante di Cookiebot a sinistra */
     #CybotCookiebotDialogPoweredByText,
@@ -371,15 +458,32 @@
       top: auto !important;
       z-index: 9998 !important;
     }
+
+    @media (max-width: 480px) {
+      #arChatWindow {
+        right: 10px;
+        bottom: 80px;
+        width: calc(100vw - 20px);
+        height: 70vh;
+      }
+      #arChatBtn {
+        right: 15px;
+        bottom: 15px;
+        width: 60px;
+        height: 60px;
+      }
+      #arChatBtn svg { width: 46px; height: 46px; }
+      .ar-msg.user .user-avatar { width: 20px; height: 20px; font-size: 10px; }
+    }
   </style>
 </head>
 <body>
 
   <!-- ============================================================
-    SELEZIONE LINGUA CON BANDIERINE (FIXED)
+    SELEZIONE LINGUA - SOLO NOSTRO (Rilevamento automatico)
   ============================================================ -->
   <div class="language-selector" id="languageSelector">
-    <span class="flag-icon" id="currentFlag">🇮🇹</span>
+    <span class="flag-icon" id="currentFlag">🌐</span>
     <select id="languageSelect" onchange="changeLanguage(this.value)">
       <option value="it">🇮🇹 Italiano</option>
       <option value="en">🇬🇧 English</option>
@@ -397,7 +501,9 @@
   </div>
 
   <script>
-    // Mappa lingua → flag
+    // ============================================================
+    // SELEZIONE LINGUA - RILEVAMENTO AUTOMATICO
+    // ============================================================
     const flagMap = {
       'it': '🇮🇹',
       'en': '🇬🇧',
@@ -412,6 +518,12 @@
       'ko': '🇰🇷',
       'hi': '🇮🇳'
     };
+
+    function detectBrowserLanguage() {
+      const lang = navigator.language || navigator.languages?.[0] || 'it';
+      const langCode = lang.split('-')[0].toLowerCase();
+      return Object.keys(flagMap).includes(langCode) ? langCode : 'it';
+    }
 
     function changeLanguage(lang) {
       document.getElementById('currentFlag').textContent = flagMap[lang] || '🌐';
@@ -431,6 +543,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      const defaultLang = detectBrowserLanguage();
+      document.getElementById('currentFlag').textContent = flagMap[defaultLang] || '🇮🇹';
+      document.getElementById('languageSelect').value = defaultLang;
+
       const observer = new MutationObserver(function() {
         const gtCombo = document.querySelector('.goog-te-combo');
         if (gtCombo) {
@@ -448,6 +564,10 @@
         const gtCombo = document.querySelector('.goog-te-combo');
         if (gtCombo) {
           observer.observe(gtCombo, { attributes: true, attributeFilter: ['value'] });
+          if (gtCombo.value !== defaultLang) {
+            gtCombo.value = defaultLang;
+            gtCombo.dispatchEvent(new Event('change'));
+          }
           clearInterval(checkInterval);
         }
       }, 500);
@@ -517,9 +637,9 @@
     © 2026 Tutti i diritti riservati
   </footer>
 
-  <!-- ============ CHATBOT WIDGET ALAN & ROSE ============ -->
+  <!-- ============ CHATBOT "BLESS" ============ -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente">
-    <svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="55" height="55" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="48" fill="#4A3B2A" opacity="0.05"/>
       <circle cx="38" cy="40" r="13" fill="#C9A961" opacity="0.9"/>
       <path d="M25 60 Q28 43 38 40 Q48 43 51 60 Q43 66 33 66 Q27 64 25 60Z" fill="#C9A961" opacity="0.9"/>
@@ -543,12 +663,18 @@
 
   <div id="arChatWindow">
     <div id="arChatHeader">
-      <span>✨ Alan & Rose</span>
+      <div class="header-left">
+        <div class="avatar-small">✨</div>
+        <div class="chat-title">
+          <span class="name">BLESS</span>
+          <span class="sub">Assistente Virtuale A&amp;R</span>
+        </div>
+      </div>
       <span class="close" onclick="arToggleChat()">×</span>
     </div>
     <div id="arChatMessages">
       <div class="ar-msg bot">
-        👋 Ciao! Sono l'assistente virtuale di <strong>Alan & Rose</strong>.<br><br>
+        👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
         Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
         <em style="font-size:0.8rem;opacity:0.7;">🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;text-decoration:underline;">Privacy Policy</a>. La chat è gestita da un'intelligenza artificiale.</em>
       </div>
@@ -561,7 +687,7 @@
 
   <script>
     // ============================================================
-    // CHATBOT CON GROQ + CLOUDFLARE WORKER
+    // CHATBOT "BLESS" - CON GROQ + CLOUDFLARE WORKER
     // ============================================================
 
     const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
@@ -569,6 +695,14 @@
     let typingInterval = null;
     let isBotTyping = false;
     let currentBotMessage = null;
+
+    function cleanBotResponse(text) {
+      let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+      if (!cleaned) {
+        return "Mi dispiace, non ho capito. Puoi riformulare?";
+      }
+      return cleaned;
+    }
 
     function arToggleChat() {
       const w = document.getElementById('arChatWindow');
@@ -591,7 +725,7 @@
       if (cls === 'bot') {
         div.innerHTML = text;
       } else {
-        div.textContent = text;
+        div.innerHTML = `<span class="user-avatar">👤</span><span>${text}</span>`;
       }
       box.appendChild(div);
       box.scrollTop = box.scrollHeight;
@@ -603,6 +737,11 @@
         const box = document.getElementById('arChatMessages');
         const div = document.createElement('div');
         div.className = 'ar-msg ' + cls;
+        if (cls === 'bot') {
+          div.textContent = '';
+        } else {
+          div.innerHTML = `<span class="user-avatar">👤</span><span></span>`;
+        }
         box.appendChild(div);
         let i = 0;
         isBotTyping = true;
@@ -616,7 +755,12 @@
             return;
           }
           if (i < text.length) {
-            div.textContent += text.charAt(i);
+            if (cls === 'bot') {
+              div.textContent += text.charAt(i);
+            } else {
+              const span = div.querySelector('span:last-child');
+              if (span) span.textContent += text.charAt(i);
+            }
             i++;
             box.scrollTop = box.scrollHeight;
           } else {
@@ -672,20 +816,21 @@
             messages: [
               {
                 role: 'system',
-                content: `Sei l'assistente virtuale di "Alan & Rose" (A&R). 
+                content: `Sei l'assistente virtuale "BLESS" di "Alan & Rose" (A&R). 
 
                 REGOLE FEREE (rispettale sempre):
                 1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l'utente scrive.
                 2. **RISPOSTE BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.
-                3. Quando un utente chiede un servizio/preventivo (es. "voglio un servizio", "vorrei un preventivo"), chiedi: Nome, Email, Tipo di servizio (Grafica & Web, Musica & Produzione, Consulenza), Breve descrizione.
-                4. Dopo i dati, dai un riepilogo e il link al modulo.
-                5. Menziona la Privacy Policy solo se chiesto o se l'utente parla di dati personali.
+                3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero (es. "Here's a thinking process...", "I'll analyze...", "Let me check...") nella risposta. Rispondi solo con il messaggio finale destinato all'utente.
+                4. Quando un utente chiede un servizio/preventivo (es. "voglio un servizio", "vorrei un preventivo"), chiedi: Nome, Email, Tipo di servizio (Grafica & Web, Musica & Produzione, Consulenza), Breve descrizione.
+                5. Dopo i dati, dai un riepilogo e il link al modulo.
+                6. Menziona la Privacy Policy solo se chiesto o se l'utente parla di dati personali.
 
                 Servizi: Grafica & Web, Musica & Produzione, Consulenza.
                 Team: Alan (Alfio Ragusa) e Rose.
                 Sito: alanrose13.github.io | Email: alanrose.13@yahoo.com
 
-                Tono: professionale, amichevole. Usa "noi".`
+                Tono: professionale, amichevole, caloroso. Usa "noi" e "ti capiamo".`
               },
               {
                 role: 'user',
@@ -694,7 +839,7 @@
             ],
             stream: false,
             temperature: 0.7,
-            max_tokens: 300,
+            max_tokens: 100,
           }),
         });
 
@@ -712,7 +857,8 @@
           return;
         }
 
-        const reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
+        let reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
+        reply = cleanBotResponse(reply);
         await arTypeMessage(reply, 'bot', 20);
 
       } catch (err) {
