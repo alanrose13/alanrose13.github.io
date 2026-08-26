@@ -36,6 +36,7 @@
   <link rel="preconnect" href="https://consent.cookiebot.com">
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7/css/flag-icons.min.css">
 
   <style>
     :root {
@@ -54,6 +55,7 @@
       background-image: radial-gradient(circle, rgba(201,169,97,0.08) 1px, transparent 1px);
       background-size: 24px 24px;
       background-attachment: fixed;
+      overflow-x: hidden;
     }
 
     header { position: relative; }
@@ -186,7 +188,7 @@
       border-radius: 8px;
       display: block;
       overflow: visible;
-      min-height: 600px;
+      min-height: 1100px;
       height: auto;
     }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
@@ -302,7 +304,7 @@
       .donation-box { padding: 20px; }
       .donation-box img { max-width: 160px; }
       .transparent-box { padding: 12px; }
-      .transparent-box iframe { min-height: 500px; height: auto; }
+      .transparent-box iframe { min-height: 1300px; height: auto; }
     }
     @media (max-width: 480px) {
       .lo { width: 45px; height: 45px; top: 10px; left: 10px; }
@@ -315,7 +317,7 @@
       .gdpr-comment-consent { font-size: .85rem; padding: 12px; }
       .donation-box img { max-width: 140px; }
       .donation-box { padding: 16px; }
-      .transparent-box iframe { min-height: 400px; height: auto; }
+      .transparent-box iframe { min-height: 1300px; height: auto; }
     }
 
     /* ============================================================
@@ -559,8 +561,20 @@
       transform: none;
     }
 
+    @media (max-width: 480px) {
+      #arChatWindow {
+        right: 10px;
+        bottom: 80px;
+        width: calc(100vw - 20px);
+        height: 70vh;
+      }
+      #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
+      #arChatBtn svg { width: 46px; height: 46px; }
+      .ar-msg.user .user-avatar { width: 20px; height: 20px; font-size: 10px; }
+    }
+
     /* ============================================================
-       SELEZIONE LINGUA - CON BANDIERINE
+       SELEZIONE LINGUA
     ============================================================ */
     .language-selector {
       position: fixed;
@@ -578,11 +592,11 @@
       align-items: center;
       gap: 8px;
     }
-    .language-selector .flag-icon {
+    .language-selector .fi {
       font-size: 20px;
-      line-height: 1;
-      min-width: 28px;
-      text-align: center;
+      border-radius: 3px;
+      box-shadow: 0 0 1px rgba(0,0,0,.3);
+      flex-shrink: 0;
     }
     .language-selector select {
       border: none;
@@ -596,6 +610,7 @@
       font-weight: 600;
       appearance: auto;
       -webkit-appearance: auto;
+      max-width: 130px;
     }
     .language-selector select option {
       background: #fff;
@@ -627,17 +642,8 @@
         font-size: 12px;
         gap: 4px;
       }
-      .language-selector select { font-size: 12px; padding: 2px 4px; }
-      .language-selector .flag-icon { font-size: 16px; min-width: 22px; }
-      #arChatWindow {
-        right: 10px;
-        bottom: 80px;
-        width: calc(100vw - 20px);
-        height: 70vh;
-      }
-      #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
-      #arChatBtn svg { width: 46px; height: 46px; }
-      .ar-msg.user .user-avatar { width: 20px; height: 20px; font-size: 10px; }
+      .language-selector select { font-size: 12px; padding: 2px 4px; max-width: 90px; }
+      .language-selector .fi { font-size: 16px; }
     }
 
     /* ============================================================
@@ -690,53 +696,90 @@
 <body>
 
   <!-- ============================================================
-    SELEZIONE LINGUA - CON BANDIERINE
+    SELEZIONE LINGUA - CON BANDIERE VETTORIALI (flag-icons)
   ============================================================ -->
   <div class="language-selector" id="languageSelector">
-    <span class="flag-icon" id="currentFlag">🇮🇹</span>
-    <select id="languageSelect" onchange="changeLanguage(this.value)">
-      <option value="it">🇮🇹 Italiano</option>
-      <option value="en">🇬🇧 English</option>
-      <option value="es">🇪🇸 Español</option>
-      <option value="fr">🇫🇷 Français</option>
-      <option value="de">🇩🇪 Deutsch</option>
-      <option value="pt">🇵🇹 Português</option>
-      <option value="ar">🇸🇦 العربية</option>
-      <option value="ru">🇷🇺 Русский</option>
-      <option value="zh">🇨🇳 中文</option>
-      <option value="ja">🇯🇵 日本語</option>
-      <option value="ko">🇰🇷 한국어</option>
-      <option value="hi">🇮🇳 हिन्दी</option>
-    </select>
+    <span class="fi" id="currentFlag"></span>
+    <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
   <script>
     // ============================================================
-    // SELEZIONE LINGUA
+    // SELEZIONE LINGUA - codice Google Translate -> [codice bandiera ISO, nome lingua]
     // ============================================================
-    const flagMap = {
-      'it': '🇮🇹',
-      'en': '🇬🇧',
-      'es': '🇪🇸',
-      'fr': '🇫🇷',
-      'de': '🇩🇪',
-      'pt': '🇵🇹',
-      'ar': '🇸🇦',
-      'ru': '🇷🇺',
-      'zh': '🇨🇳',
-      'ja': '🇯🇵',
-      'ko': '🇰🇷',
-      'hi': '🇮🇳'
+    const langMap = {
+      it: ['it', 'Italiano'],
+      en: ['gb', 'English'],
+      es: ['es', 'Español'],
+      fr: ['fr', 'Français'],
+      de: ['de', 'Deutsch'],
+      pt: ['pt', 'Português'],
+      ar: ['sa', 'العربية'],
+      ru: ['ru', 'Русский'],
+      'zh-CN': ['cn', '中文'],
+      ja: ['jp', '日本語'],
+      ko: ['kr', '한국어'],
+      hi: ['in', 'हिन्दी'],
+      nl: ['nl', 'Nederlands'],
+      pl: ['pl', 'Polski'],
+      tr: ['tr', 'Türkçe'],
+      sv: ['se', 'Svenska'],
+      el: ['gr', 'Ελληνικά'],
+      cs: ['cz', 'Čeština'],
+      ro: ['ro', 'Română'],
+      hu: ['hu', 'Magyar'],
+      uk: ['ua', 'Українська'],
+      vi: ['vn', 'Tiếng Việt'],
+      th: ['th', 'ไทย'],
+      id: ['id', 'Bahasa Indonesia'],
+      he: ['il', 'עברית'],
+      fi: ['fi', 'Suomi'],
+      da: ['dk', 'Dansk'],
+      no: ['no', 'Norsk'],
+      sk: ['sk', 'Slovenčina'],
+      bg: ['bg', 'Български'],
+      hr: ['hr', 'Hrvatski'],
+      sr: ['rs', 'Српски'],
+      fa: ['ir', 'فارسی'],
+      ur: ['pk', 'اردو'],
+      bn: ['bd', 'বাংলা'],
+      ta: ['in', 'தமிழ்'],
+      sw: ['ke', 'Kiswahili'],
+      ms: ['my', 'Bahasa Melayu'],
+      fil: ['ph', 'Filipino'],
+      ca: ['es-ct', 'Català'],
+      lt: ['lt', 'Lietuvių'],
+      lv: ['lv', 'Latviešu'],
+      et: ['ee', 'Eesti'],
+      sl: ['si', 'Slovenščina']
     };
 
+    function buildLanguageOptions() {
+      const sel = document.getElementById('languageSelect');
+      sel.innerHTML = '';
+      Object.keys(langMap).forEach(function(code) {
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = langMap[code][1];
+        sel.appendChild(opt);
+      });
+    }
+
     function detectBrowserLanguage() {
-      const lang = navigator.language || navigator.languages?.[0] || 'it';
-      const langCode = lang.split('-')[0].toLowerCase();
-      return Object.keys(flagMap).includes(langCode) ? langCode : 'it';
+      const raw = (navigator.language || navigator.languages?.[0] || 'it').toLowerCase();
+      const base = raw.split('-')[0];
+      if (base === 'zh') return 'zh-CN';
+      return Object.keys(langMap).includes(base) ? base : 'it';
+    }
+
+    function setFlag(code) {
+      const info = langMap[code] || langMap['it'];
+      const flagEl = document.getElementById('currentFlag');
+      flagEl.className = 'fi fi-' + info[0];
     }
 
     function changeLanguage(lang) {
-      document.getElementById('currentFlag').textContent = flagMap[lang] || '🌐';
+      setFlag(lang);
       const gtCombo = document.querySelector('.goog-te-combo');
       if (gtCombo) {
         gtCombo.value = lang;
@@ -745,26 +788,24 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      buildLanguageOptions();
       const defaultLang = detectBrowserLanguage();
-      document.getElementById('currentFlag').textContent = flagMap[defaultLang] || '🇮🇹';
       document.getElementById('languageSelect').value = defaultLang;
+      setFlag(defaultLang);
 
-      const observer = new MutationObserver(function() {
-        const gtCombo = document.querySelector('.goog-te-combo');
-        if (gtCombo) {
-          const currentLang = gtCombo.value;
-          const flag = flagMap[currentLang] || '🌐';
-          document.getElementById('currentFlag').textContent = flag;
-          const ourSelect = document.getElementById('languageSelect');
-          if (ourSelect && ourSelect.value !== currentLang) {
-            ourSelect.value = currentLang;
-          }
-        }
-      });
-      
       const checkInterval = setInterval(() => {
         const gtCombo = document.querySelector('.goog-te-combo');
         if (gtCombo) {
+          const observer = new MutationObserver(function() {
+            const currentLang = gtCombo.value;
+            if (langMap[currentLang]) {
+              setFlag(currentLang);
+              const ourSelect = document.getElementById('languageSelect');
+              if (ourSelect && ourSelect.value !== currentLang) {
+                ourSelect.value = currentLang;
+              }
+            }
+          });
           observer.observe(gtCombo, { attributes: true, attributeFilter: ['value'] });
           if (gtCombo.value !== defaultLang) {
             gtCombo.value = defaultLang;
@@ -782,7 +823,7 @@
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'it',
-        includedLanguages: 'it,en,fr,de,es,pt,ar,ru,zh-CN,ja,ko,hi',
+        includedLanguages: 'it,en,es,fr,de,pt,ar,ru,zh-CN,ja,ko,hi,nl,pl,tr,sv,el,cs,ro,hu,uk,vi,th,id,he,fi,da,no,sk,bg,hr,sr,fa,ur,bn,ta,sw,ms,fil,ca,lt,lv,et,sl',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
         multilanguagePage: true
@@ -966,7 +1007,7 @@
       <div class="card" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1800" data-aos-easing="ease-out">
         <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
         <h3>SicilStreet</h3>
-        <p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell’isola. Uno stile urban e contemporaneo che unisce l’amore per la terra siciliana con la libertà della moda streetwear.</p>
+        <p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell'isola. Uno stile urban e contemporaneo che unisce l'amore per la terra siciliana con la libertà della moda streetwear.</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a>
       </div>
     </div>
@@ -983,7 +1024,7 @@
 
     <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
     <div class="transparent-box">
-      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:600px;height:auto;" onload="resizeIframe(this)"></iframe>
+      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:1100px;height:auto;" onload="resizeIframe(this)"></iframe>
     </div>
 
     <div class="btn-upload-wrap">
@@ -1058,7 +1099,7 @@
 
     <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
     <div class="transparent-box review-form">
-      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:600px;height:auto;" onload="resizeIframe(this)">Caricamento…</iframe>
+      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:1100px;height:auto;" onload="resizeIframe(this)">Caricamento…</iframe>
     </div>
   </section>
 
@@ -1228,7 +1269,7 @@
           <div class="card">
             <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
             <h3>SicilStreet</h3>
-            <p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell’isola. Uno stile urban e contemporaneo che unisce l’amore per la terra siciliana con la libertà della moda streetwear.</p>
+            <p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell'isola. Uno stile urban e contemporaneo che unisce l'amore per la terra siciliana con la libertà della moda streetwear.</p>
             <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a>
           </div>
         </div>
@@ -1246,7 +1287,7 @@
         </p>
         <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
         <div class="transparent-box">
-          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:600px;height:auto;" onload="resizeIframe(this)"></iframe>
+          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:1100px;height:auto;" onload="resizeIframe(this)"></iframe>
         </div>
         <div class="btn-upload-wrap">
           <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
@@ -1468,7 +1509,7 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     // ============================================================
-    // AOS INIT - CORRETTO
+    // AOS INIT
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof AOS !== 'undefined') {
@@ -1480,7 +1521,6 @@
           delay: 0
         });
       }
-      // Refresh AOS dopo il caricamento dinamico
       setTimeout(function() {
         if (typeof AOS !== 'undefined') {
           AOS.refresh();
@@ -1489,19 +1529,21 @@
     });
 
     // ============================================================
-    // RESIZE IFRAME - MODULI COMPLETI
+    // RESIZE IFRAME - fallback generoso per moduli cross-origin
     // ============================================================
     function resizeIframe(iframe) {
       try {
         iframe.style.height = 'auto';
         if (iframe.contentWindow && iframe.contentWindow.document) {
           var height = iframe.contentWindow.document.documentElement.scrollHeight;
-          iframe.style.height = Math.max(height + 50, 600) + 'px';
+          iframe.style.height = Math.max(height + 50, 1100) + 'px';
         } else {
-          iframe.style.height = '700px';
+          iframe.style.height = (window.innerWidth < 768 ? 1300 : 1100) + 'px';
         }
       } catch (e) {
-        iframe.style.height = '700px';
+        // cross-origin: impossibile leggere l'altezza reale del modulo Google,
+        // usiamo un'altezza generosa in base al dispositivo
+        iframe.style.height = (window.innerWidth < 768 ? 1300 : 1100) + 'px';
       }
     }
 
@@ -1570,18 +1612,21 @@
     });
 
     // ============================================================
-    // CHATBOT CON GROQ + CLOUDFLARE WORKER - DEFINITIVO
+    // CHATBOT CON GROQ + CLOUDFLARE WORKER
     // ============================================================
-    
+
     const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
-    
+
     var typingInterval = null;
     var isBotTyping = false;
     var currentBotMessage = null;
 
-    // Pulisce la risposta del bot (rimuove il "thinking" in italiano e inglese)
+    // Pulisce la risposta del bot (rimuove il "thinking" del modello)
     function cleanBotResponse(text) {
       var cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+      // rete di sicurezza: se il tag <think> non si è mai chiuso (risposta troncata),
+      // rimuove tutto da <think> in poi invece di mostrare il ragionamento grezzo
+      cleaned = cleaned.replace(/<think>[\s\S]*$/i, '').trim();
 
       var thinkPatterns = [
         /Here's a thinking process:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
@@ -1608,7 +1653,6 @@
 
       cleaned = cleaned.replace(/^\d+\.\s*[\*\*]+.*$/gm, '').trim();
       cleaned = cleaned.replace(/^-\s*(Language|Intent|Type|Constraints|Tone|Context|Lingua|Intento|Tipo|Vincoli|Tono|Contesto):.*$/gim, '').trim();
-      cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
 
       if (!cleaned) {
         return "Mi dispiace, non ho capito. Puoi riformulare?";
@@ -1658,7 +1702,7 @@
         var i = 0;
         isBotTyping = true;
         currentBotMessage = div;
-        
+
         typingInterval = setInterval(function() {
           if (!isBotTyping) {
             clearInterval(typingInterval);
@@ -1725,6 +1769,7 @@
           },
           body: JSON.stringify({
             model: 'qwen/qwen3.6-27b',
+            reasoning_format: 'hidden',
             messages: [
               {
                 role: 'system',
@@ -1737,7 +1782,7 @@
             ],
             stream: false,
             temperature: 0.7,
-            max_tokens: 100
+            max_tokens: 300
           })
         });
 
