@@ -672,6 +672,55 @@
         opacity: 1 !important;
         transform: none !important;
       }
+      .ambient-layer { display: none !important; }
+    }
+
+    /* ============================================================
+       SFONDO AMBIENT (soft, decorativo, dietro a tutti i contenuti)
+    ============================================================ */
+    .ambient-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .ambient-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.35;
+      background: radial-gradient(circle at 30% 30%, rgba(201,169,97,0.55), rgba(201,169,97,0) 70%);
+      animation: ambientDrift 34s ease-in-out infinite;
+      will-change: transform;
+    }
+    .ambient-blob.b1 { width: 420px; height: 420px; top: -8%; left: -8%; animation-duration: 38s; }
+    .ambient-blob.b2 {
+      width: 360px; height: 360px; top: 30%; right: -10%;
+      background: radial-gradient(circle at 60% 40%, rgba(74,59,42,0.30), rgba(74,59,42,0) 70%);
+      animation-duration: 44s; animation-delay: -6s;
+    }
+    .ambient-blob.b3 {
+      width: 320px; height: 320px; bottom: -10%; left: 18%;
+      background: radial-gradient(circle at 40% 60%, rgba(201,169,97,0.4), rgba(201,169,97,0) 70%);
+      animation-duration: 40s; animation-delay: -14s;
+    }
+    .ambient-blob.b4 {
+      width: 260px; height: 260px; bottom: 12%; right: 8%;
+      background: radial-gradient(circle at 50% 50%, rgba(74,59,42,0.22), rgba(74,59,42,0) 70%);
+      animation-duration: 30s; animation-delay: -20s;
+    }
+    @keyframes ambientDrift {
+      0%   { transform: translate(0, 0) scale(1); }
+      25%  { transform: translate(4%, 6%) scale(1.08); }
+      50%  { transform: translate(-3%, 3%) scale(0.96); }
+      75%  { transform: translate(-5%, -4%) scale(1.04); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    @media (max-width: 768px) {
+      .ambient-blob { filter: blur(40px); opacity: 0.28; }
+      .ambient-blob.b1, .ambient-blob.b2, .ambient-blob.b3 { width: 240px; height: 240px; }
+      .ambient-blob.b4 { width: 180px; height: 180px; }
     }
 
     .ar-msg.bot a {
@@ -694,6 +743,16 @@
   </style>
 </head>
 <body>
+
+  <!-- ============================================================
+    SFONDO AMBIENT SOFT (decorativo, non interattivo)
+  ============================================================ -->
+  <div class="ambient-layer" aria-hidden="true">
+    <div class="ambient-blob b1"></div>
+    <div class="ambient-blob b2"></div>
+    <div class="ambient-blob b3"></div>
+    <div class="ambient-blob b4"></div>
+  </div>
 
   <!-- ============================================================
     SELEZIONE LINGUA - CON BANDIERE VETTORIALI (flag-icons)
@@ -823,7 +882,7 @@
       }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script type="text/javascript" data-cookieconsent="preferences" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <!-- ============================================================
     HEADER
@@ -840,6 +899,7 @@
       <a href="javascript:void(0)" onclick="openPopup('portPopup')">Portfolio</a>
       <a href="javascript:void(0)" onclick="openPopup('musPopup')">Musica</a>
       <a href="javascript:void(0)" onclick="openPopup('shopPopup')">Shop</a>
+      <a href="javascript:void(0)" onclick="openPopup('newsletterPopup')">Iscriviti</a>
       <a href="javascript:void(0)" onclick="openPopup('contPopup')">Contatti</a>
       <a href="javascript:void(0)" onclick="openPopup('privacyPopup')">Privacy</a>
     </nav>
@@ -1290,6 +1350,42 @@
           <a onclick="closePopup('contPopup');document.getElementById('cont').scrollIntoView({behavior:'smooth'});" style="color:var(--o);cursor:pointer;font-weight:600;">"Contatti & Commenti"</a>
           più in basso nella pagina.
         </p>
+      </section>
+    </div>
+  </div>
+
+  <div id="newsletterPopup" class="popup-overlay" onclick="closePopup('newsletterPopup')">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <span class="popup-close" onclick="closePopup('newsletterPopup')">×</span>
+      <section>
+        <h2>Iscriviti alla Newsletter</h2>
+        <div class="newsletter-box" style="box-shadow:none;backdrop-filter:none;">
+          <p>Resta aggiornato su nuovi servizi, musica e progetti.</p>
+          <a href="https://alan-e-rose-13.voxmail.it/user/register_facebook" target="_blank" class="fb-subscribe">
+            <img width="157" height="22" src="https://alan-e-rose-13.voxmail.it/misc/icon_facebook_subscribe.png" alt="Iscriviti tramite Facebook">
+          </a>
+          <p class="or-divider">... oppure inserisci i tuoi dati:</p>
+          <form action="https://alan-e-rose-13.voxmail.it/user/register" accept-charset="UTF-8" method="post" class="newsletter-form">
+            <div class="form-item form-item-textfield">
+              <label for="nl-mail-popup">Indirizzo email:</label>
+              <input type="email" id="nl-mail-popup" maxlength="250" name="mail" value="" class="form-text required" required>
+              <p class="description">L'indirizzo al quale desideri ricevere le newsletter.</p>
+            </div>
+            <details class="privacy-details">
+              <summary>Informativa Privacy (art. 13 GDPR)</summary>
+              <div class="privacy_policy">
+                Il Titolare del trattamento dei dati personali raccolti tramite questo modulo è Alfio Ragusa, operante con il nome commerciale A&R - Email: alanrose.13@yahoo.com. Il conferimento dei dati per l'invio della newsletter è facoltativo e basato sul consenso; puoi revocarlo in ogni momento scrivendo a alanrose.13@yahoo.com o tramite il link di disiscrizione presente in ogni email. Per l'informativa completa consulta la <a href="#" onclick="closePopup('newsletterPopup');openPopup('privacyPopup');return false;">Privacy Policy</a>.
+              </div>
+            </details>
+            <div class="form-item form-item-checkbox">
+              <input type="checkbox" name="privacy" id="nl-privacy-popup" value="1" class="form-checkbox has-sibling-label" required>
+              <label class="option" for="nl-privacy-popup">Privacy</label>
+              <p class="description">Acconsento al trattamento dei miei dati personali (Regolamento 2016/679 - GDPR e d.lgs. n.196 del 30/6/2003)</p>
+            </div>
+            <input type="submit" name="submit" value="Iscriviti" class="form-submit btn">
+            <input type="hidden" name="form_id" value="user_register">
+          </form>
+        </div>
       </section>
     </div>
   </div>
