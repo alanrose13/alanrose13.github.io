@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Cookie Policy - Alan & Rose</title>
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7/css/flag-icons.min.css">
 
   <!-- Google Consent Mode v2 -->
   <script data-cookieconsent="ignore">
@@ -44,6 +45,7 @@
       color: var(--m);
       background-color: #F5F1E8;
       line-height: 1.6;
+      overflow-x: hidden;
     }
     header {
       background: var(--m);
@@ -86,7 +88,7 @@
     }
 
     /* ============================================================
-       SELEZIONE LINGUA - CON BANDIERINE
+       SELEZIONE LINGUA - CON BANDIERE VETTORIALI (flag-icons)
     ============================================================ */
     .language-selector {
       position: fixed;
@@ -104,11 +106,11 @@
       align-items: center;
       gap: 8px;
     }
-    .language-selector .flag-icon {
+    .language-selector .fi {
       font-size: 20px;
-      line-height: 1;
-      min-width: 28px;
-      text-align: center;
+      border-radius: 3px;
+      box-shadow: 0 0 1px rgba(0,0,0,.3);
+      flex-shrink: 0;
     }
     .language-selector select {
       border: none;
@@ -122,6 +124,7 @@
       font-weight: 600;
       appearance: auto;
       -webkit-appearance: auto;
+      max-width: 130px;
     }
     .language-selector select option {
       background: #fff;
@@ -153,8 +156,8 @@
         font-size: 12px;
         gap: 4px;
       }
-      .language-selector select { font-size: 12px; padding: 2px 4px; }
-      .language-selector .flag-icon { font-size: 16px; min-width: 22px; }
+      .language-selector select { font-size: 12px; padding: 2px 4px; max-width: 90px; }
+      .language-selector .fi { font-size: 16px; }
     }
 
     /* ============================================================
@@ -458,53 +461,90 @@
 <body>
 
   <!-- ============================================================
-    SELEZIONE LINGUA - CON BANDIERINE
+    SELEZIONE LINGUA - CON BANDIERE VETTORIALI (flag-icons)
   ============================================================ -->
   <div class="language-selector" id="languageSelector">
-    <span class="flag-icon" id="currentFlag">🇮🇹</span>
-    <select id="languageSelect" onchange="changeLanguage(this.value)">
-      <option value="it">🇮🇹 Italiano</option>
-      <option value="en">🇬🇧 English</option>
-      <option value="es">🇪🇸 Español</option>
-      <option value="fr">🇫🇷 Français</option>
-      <option value="de">🇩🇪 Deutsch</option>
-      <option value="pt">🇵🇹 Português</option>
-      <option value="ar">🇸🇦 العربية</option>
-      <option value="ru">🇷🇺 Русский</option>
-      <option value="zh">🇨🇳 中文</option>
-      <option value="ja">🇯🇵 日本語</option>
-      <option value="ko">🇰🇷 한국어</option>
-      <option value="hi">🇮🇳 हिन्दी</option>
-    </select>
+    <span class="fi" id="currentFlag"></span>
+    <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
   <script>
     // ============================================================
-    // SELEZIONE LINGUA
+    // SELEZIONE LINGUA - codice Google Translate -> [codice bandiera ISO, nome lingua]
     // ============================================================
-    const flagMap = {
-      'it': '🇮🇹',
-      'en': '🇬🇧',
-      'es': '🇪🇸',
-      'fr': '🇫🇷',
-      'de': '🇩🇪',
-      'pt': '🇵🇹',
-      'ar': '🇸🇦',
-      'ru': '🇷🇺',
-      'zh': '🇨🇳',
-      'ja': '🇯🇵',
-      'ko': '🇰🇷',
-      'hi': '🇮🇳'
+    const langMap = {
+      it: ['it', 'Italiano'],
+      en: ['gb', 'English'],
+      es: ['es', 'Español'],
+      fr: ['fr', 'Français'],
+      de: ['de', 'Deutsch'],
+      pt: ['pt', 'Português'],
+      ar: ['sa', 'العربية'],
+      ru: ['ru', 'Русский'],
+      'zh-CN': ['cn', '中文'],
+      ja: ['jp', '日本語'],
+      ko: ['kr', '한국어'],
+      hi: ['in', 'हिन्दी'],
+      nl: ['nl', 'Nederlands'],
+      pl: ['pl', 'Polski'],
+      tr: ['tr', 'Türkçe'],
+      sv: ['se', 'Svenska'],
+      el: ['gr', 'Ελληνικά'],
+      cs: ['cz', 'Čeština'],
+      ro: ['ro', 'Română'],
+      hu: ['hu', 'Magyar'],
+      uk: ['ua', 'Українська'],
+      vi: ['vn', 'Tiếng Việt'],
+      th: ['th', 'ไทย'],
+      id: ['id', 'Bahasa Indonesia'],
+      he: ['il', 'עברית'],
+      fi: ['fi', 'Suomi'],
+      da: ['dk', 'Dansk'],
+      no: ['no', 'Norsk'],
+      sk: ['sk', 'Slovenčina'],
+      bg: ['bg', 'Български'],
+      hr: ['hr', 'Hrvatski'],
+      sr: ['rs', 'Српски'],
+      fa: ['ir', 'فارسی'],
+      ur: ['pk', 'اردو'],
+      bn: ['bd', 'বাংলা'],
+      ta: ['in', 'தமிழ்'],
+      sw: ['ke', 'Kiswahili'],
+      ms: ['my', 'Bahasa Melayu'],
+      fil: ['ph', 'Filipino'],
+      ca: ['es-ct', 'Català'],
+      lt: ['lt', 'Lietuvių'],
+      lv: ['lv', 'Latviešu'],
+      et: ['ee', 'Eesti'],
+      sl: ['si', 'Slovenščina']
     };
 
+    function buildLanguageOptions() {
+      const sel = document.getElementById('languageSelect');
+      sel.innerHTML = '';
+      Object.keys(langMap).forEach(function(code) {
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = langMap[code][1];
+        sel.appendChild(opt);
+      });
+    }
+
     function detectBrowserLanguage() {
-      const lang = navigator.language || navigator.languages?.[0] || 'it';
-      const langCode = lang.split('-')[0].toLowerCase();
-      return Object.keys(flagMap).includes(langCode) ? langCode : 'it';
+      const raw = (navigator.language || navigator.languages?.[0] || 'it').toLowerCase();
+      const base = raw.split('-')[0];
+      if (base === 'zh') return 'zh-CN';
+      return Object.keys(langMap).includes(base) ? base : 'it';
+    }
+
+    function setFlag(code) {
+      const info = langMap[code] || langMap['it'];
+      const flagEl = document.getElementById('currentFlag');
+      flagEl.className = 'fi fi-' + info[0];
     }
 
     function changeLanguage(lang) {
-      document.getElementById('currentFlag').textContent = flagMap[lang] || '🌐';
+      setFlag(lang);
       const gtCombo = document.querySelector('.goog-te-combo');
       if (gtCombo) {
         gtCombo.value = lang;
@@ -513,26 +553,24 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      buildLanguageOptions();
       const defaultLang = detectBrowserLanguage();
-      document.getElementById('currentFlag').textContent = flagMap[defaultLang] || '🇮🇹';
       document.getElementById('languageSelect').value = defaultLang;
+      setFlag(defaultLang);
 
-      const observer = new MutationObserver(function() {
-        const gtCombo = document.querySelector('.goog-te-combo');
-        if (gtCombo) {
-          const currentLang = gtCombo.value;
-          const flag = flagMap[currentLang] || '🌐';
-          document.getElementById('currentFlag').textContent = flag;
-          const ourSelect = document.getElementById('languageSelect');
-          if (ourSelect && ourSelect.value !== currentLang) {
-            ourSelect.value = currentLang;
-          }
-        }
-      });
-      
       const checkInterval = setInterval(() => {
         const gtCombo = document.querySelector('.goog-te-combo');
         if (gtCombo) {
+          const observer = new MutationObserver(function() {
+            const currentLang = gtCombo.value;
+            if (langMap[currentLang]) {
+              setFlag(currentLang);
+              const ourSelect = document.getElementById('languageSelect');
+              if (ourSelect && ourSelect.value !== currentLang) {
+                ourSelect.value = currentLang;
+              }
+            }
+          });
           observer.observe(gtCombo, { attributes: true, attributeFilter: ['value'] });
           if (gtCombo.value !== defaultLang) {
             gtCombo.value = defaultLang;
@@ -550,7 +588,7 @@
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'it',
-        includedLanguages: 'it,en,fr,de,es,pt,ar,ru,zh-CN,ja,ko,hi',
+        includedLanguages: 'it,en,es,fr,de,pt,ar,ru,zh-CN,ja,ko,hi,nl,pl,tr,sv,el,cs,ro,hu,uk,vi,th,id,he,fi,da,no,sk,bg,hr,sr,fa,ur,bn,ta,sw,ms,fil,ca,lt,lv,et,sl',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
         multilanguagePage: true
@@ -666,9 +704,12 @@
     let isBotTyping = false;
     let currentBotMessage = null;
 
-    // Pulisce la risposta del bot (rimuove il "thinking" in italiano e inglese)
+    // Pulisce la risposta del bot (rimuove il "thinking" del modello)
     function cleanBotResponse(text) {
       let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+      // rete di sicurezza: se il tag <think> non si è mai chiuso (risposta troncata),
+      // rimuove tutto da <think> in poi invece di mostrare il ragionamento grezzo
+      cleaned = cleaned.replace(/<think>[\s\S]*$/i, '').trim();
 
       const thinkPatterns = [
         /Here's a thinking process:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
@@ -695,7 +736,6 @@
 
       cleaned = cleaned.replace(/^\d+\.\s*[\*\*]+.*$/gm, '').trim();
       cleaned = cleaned.replace(/^-\s*(Language|Intent|Type|Constraints|Tone|Context|Lingua|Intento|Tipo|Vincoli|Tono|Contesto):.*$/gim, '').trim();
-      cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
 
       if (!cleaned) {
         return "Mi dispiace, non ho capito. Puoi riformulare?";
@@ -745,7 +785,7 @@
         let i = 0;
         isBotTyping = true;
         currentBotMessage = div;
-        
+
         typingInterval = setInterval(() => {
           if (!isBotTyping) {
             clearInterval(typingInterval);
@@ -812,6 +852,7 @@
           },
           body: JSON.stringify({
             model: 'qwen/qwen3.6-27b',
+            reasoning_format: 'hidden',
             messages: [
               {
                 role: 'system',
@@ -838,7 +879,7 @@
             ],
             stream: false,
             temperature: 0.7,
-            max_tokens: 100,
+            max_tokens: 300,
           }),
         });
 
