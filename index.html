@@ -1710,43 +1710,16 @@
     var isBotTyping = false;
     var currentBotMessage = null;
 
-    // Pulisce la risposta del bot (rimuove il "thinking" del modello)
+    // Pulizia MINIMA e sicura lato client: rimuove solo eventuali tag
+    // <think> residui. La pulizia principale ora avviene nel Worker,
+    // con lo stesso approccio prudente (niente più regex aggressivi
+    // che rischiavano di cancellare risposte legittime, es. elenchi
+    // numerati in grassetto).
     function cleanBotResponse(text) {
+      if (!text) return "Mi dispiace, non ho capito. Puoi riformulare?";
       var cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
-      // rete di sicurezza: se il tag <think> non si è mai chiuso (risposta troncata),
-      // rimuove tutto da <think> in poi invece di mostrare il ragionamento grezzo
       cleaned = cleaned.replace(/<think>[\s\S]*$/i, '').trim();
-
-      var thinkPatterns = [
-        /Here's a thinking process:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Analyze User Input:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Analizza input utente:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Check Rules:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Verifica regole:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Determine Response Strategy:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Determina strategia di risposta:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Draft Response:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Check Against Constraints:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Final Output Generation:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /SELF[ -]CORRECTION:[\s\S]*?(?=(?:2\.\s*\*\*|3\.\s*\*\*|4\.\s*\*\*|5\.\s*\*\*|6\.\s*\*\*|$))/gi,
-        /Output matches/gi,
-        /Proceeds\./gi,
-        /Ready\./gi,
-        /Done\./gi,
-        /✅/g, /❌/g, /🔧/g, /🚀/g, /📄/g
-      ];
-
-      for (var i = 0; i < thinkPatterns.length; i++) {
-        cleaned = cleaned.replace(thinkPatterns[i], '').trim();
-      }
-
-      cleaned = cleaned.replace(/^\d+\.\s*[\*\*]+.*$/gm, '').trim();
-      cleaned = cleaned.replace(/^-\s*(Language|Intent|Type|Constraints|Tone|Context|Lingua|Intento|Tipo|Vincoli|Tono|Contesto):.*$/gim, '').trim();
-
-      if (!cleaned) {
-        return "Mi dispiace, non ho capito. Puoi riformulare?";
-      }
-      return cleaned;
+      return cleaned || "Mi dispiace, non ho capito. Puoi riformulare?";
     }
 
     function arToggleChat() {
@@ -1876,6 +1849,7 @@
         });
 
         var data = await response.json();
+        console.log('BLESS debug - risposta grezza del Worker:', data);
         arRemoveTyping();
 
         if (data.error) {
