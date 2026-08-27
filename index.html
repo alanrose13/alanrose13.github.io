@@ -326,6 +326,32 @@
       .transparent-box iframe { min-height: 1300px; height: auto; }
     }
 
+    /* ANIMAZIONI SOFT AMBIENT - Floating cards */
+    .card, .p-item {
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      will-change: transform;
+    }
+    .card.floating, .p-item.floating {
+      animation: softFloat 6s ease-in-out infinite;
+    }
+    .card.floating:nth-child(2n) { animation-delay: 0.8s; }
+    .card.floating:nth-child(3n) { animation-delay: 1.6s; }
+    .p-item.floating:nth-child(2n) { animation-delay: 0.6s; }
+    .p-item.floating:nth-child(3n) { animation-delay: 1.2s; }
+    @keyframes softFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    /* Micro parallax hover */
+    .card:hover, .p-item:hover {
+      transform: translateY(-4px) scale(1.01) rotate(0.3deg);
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    /* Animazione fade-in più morbida per le sezioni */
+    [data-aos] {
+      transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
     /* ============================================================
        CHATBOT
     ============================================================ */
@@ -1554,19 +1580,55 @@
   <!-- ============================================================
     CHATBOT - "BLESS" ASSISTENTE VIRTUALE A&R
   ============================================================ -->
-  <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente">
-    <svg width="55" height="55" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="48" fill="#4A3B2A" opacity="0.05"/>
-      <path d="M50 42 C36 26 14 30 8 50 C14 45 28 41 39 47 C35 56 31 69 39 80 C41 66 45 55 50 50 Z" fill="#C9A961" opacity="0.85"/>
-      <path d="M50 42 C64 26 86 30 92 50 C86 45 72 41 61 47 C65 56 69 69 61 80 C59 66 55 55 50 50 Z" fill="#C9A961" opacity="0.85"/>
-      <ellipse cx="50" cy="21" rx="13" ry="4.5" fill="none" stroke="#C9A961" stroke-width="2.5" opacity="0.9"/>
-      <circle cx="50" cy="34" r="11" fill="#4A3B2A" opacity="0.85"/>
-      <circle cx="46" cy="33" r="1.6" fill="#C9A961"/>
-      <circle cx="54" cy="33" r="1.6" fill="#C9A961"/>
-      <path d="M46.5 39 Q50 41.5 53.5 39" stroke="#C9A961" stroke-width="1.6" stroke-linecap="round"/>
-      <path d="M38 48 Q50 42 62 48 Q68 67 60 85 Q50 90 40 85 Q32 67 38 48Z" fill="#C9A961" opacity="0.95"/>
-      <path d="M50 48 L50 85" stroke="#4A3B2A" stroke-width="1.2" opacity="0.25"/>
-      <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A961" stroke-width="1" opacity="0.15"/>
+  <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS - Arcangelo">
+    <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Aura luminosa -->
+      <circle cx="50" cy="50" r="48" fill="#F5F1E8" opacity="0.15"/>
+      <circle cx="50" cy="50" r="46" fill="url(#angelGlow)" opacity="0.25"/>
+      <defs>
+        <radialGradient id="angelGlow" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#FFF8E7"/>
+          <stop offset="40%" stop-color="#C9A961"/>
+          <stop offset="100%" stop-color="#C9A961" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="angelFace" cx="50%" cy="35%" r="50%">
+          <stop offset="0%" stop-color="#FDEBD0"/>
+          <stop offset="60%" stop-color="#F5D6B8"/>
+          <stop offset="100%" stop-color="#E8C4A0"/>
+        </radialGradient>
+      </defs>
+      <!-- Capelli biondi -->
+      <ellipse cx="50" cy="32" rx="26" ry="18" fill="#E8C84A" opacity="0.95"/>
+      <ellipse cx="50" cy="28" rx="22" ry="15" fill="#F0D860" opacity="0.9"/>
+      <ellipse cx="44" cy="24" rx="8" ry="8" fill="#F5E06A" opacity="0.7"/>
+      <ellipse cx="56" cy="24" rx="8" ry="8" fill="#F5E06A" opacity="0.7"/>
+      <!-- Viso -->
+      <ellipse cx="50" cy="38" rx="22" ry="24" fill="url(#angelFace)"/>
+      <!-- Occhi azzurri -->
+      <ellipse cx="43" cy="36" rx="5" ry="5.5" fill="#FFFFFF"/>
+      <ellipse cx="57" cy="36" rx="5" ry="5.5" fill="#FFFFFF"/>
+      <circle cx="44" cy="36" r="3" fill="#4A9BD9"/>
+      <circle cx="58" cy="36" r="3" fill="#4A9BD9"/>
+      <circle cx="43" cy="35" r="1.2" fill="#1A3A5A"/>
+      <circle cx="57" cy="35" r="1.2" fill="#1A3A5A"/>
+      <circle cx="45.5" cy="35.5" r="0.6" fill="#FFFFFF" opacity="0.9"/>
+      <circle cx="59.5" cy="35.5" r="0.6" fill="#FFFFFF" opacity="0.9"/>
+      <!-- Sopracciglia -->
+      <path d="M39 31 Q43 29 47 31" stroke="#B8942A" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M53 31 Q57 29 61 31" stroke="#B8942A" stroke-width="1.2" stroke-linecap="round"/>
+      <!-- Sorriso sereno -->
+      <path d="M44 45 Q50 49 56 45" stroke="#C47A5A" stroke-width="1.4" stroke-linecap="round"/>
+      <!-- Guance rosate -->
+      <ellipse cx="38" cy="44" rx="4" ry="3" fill="#FFB6A0" opacity="0.3"/>
+      <ellipse cx="62" cy="44" rx="4" ry="3" fill="#FFB6A0" opacity="0.3"/>
+      <!-- Alone luminoso (aureola) -->
+      <ellipse cx="50" cy="14" rx="18" ry="5" fill="none" stroke="#C9A961" stroke-width="1.8" opacity="0.7"/>
+      <ellipse cx="50" cy="13" rx="14" ry="3.5" fill="none" stroke="#F5E06A" stroke-width="1.2" opacity="0.5"/>
+      <!-- Piccole stelle/luce intorno -->
+      <circle cx="26" cy="18" r="1.5" fill="#F5E06A" opacity="0.6"/>
+      <circle cx="74" cy="18" r="1.5" fill="#F5E06A" opacity="0.6"/>
+      <circle cx="20" cy="30" r="1" fill="#F5E06A" opacity="0.4"/>
+      <circle cx="80" cy="30" r="1" fill="#F5E06A" opacity="0.4"/>
     </svg>
   </button>
 
@@ -1602,13 +1664,21 @@
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof AOS !== 'undefined') {
         AOS.init({
-          once: true,
-          duration: 1800,
+          once: false,
+          duration: 2200,
           easing: 'ease-out',
-          offset: 80,
-          delay: 0
+          offset: 120,
+          delay: 0,
+          mirror: true,
+          anchorPlacement: 'top-bottom'
         });
       }
+      // Aggiunge classe floating alle card dopo il caricamento
+      setTimeout(function() {
+        document.querySelectorAll('.card, .p-item').forEach(function(el) {
+          el.classList.add('floating');
+        });
+      }, 600);
       setTimeout(function() {
         if (typeof AOS !== 'undefined') {
           AOS.refresh();
