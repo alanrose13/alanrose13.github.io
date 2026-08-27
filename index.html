@@ -421,12 +421,12 @@
     }
 
     /* --------------------------------------------------------------
-       TASTO ACCESSIBILITÀ ANIMAZIONI
+       TASTO ACCESSIBILITÀ ANIMAZIONI - SPOSTATO A SINISTRA
     -------------------------------------------------------------- */
     #arA11yToggle {
       position: fixed;
-      top: 12px;
-      right: 190px;
+      bottom: 100px; /* Posizionato sopra il pulsante chat */
+      left: 20px;   /* MODIFICA: allineato a sinistra */
       z-index: 9999;
       background: rgba(245, 241, 232, 0.92);
       border: 1px solid rgba(201,169,97,0.25);
@@ -446,20 +446,18 @@
     #arA11yToggle:hover { background: #fff; }
     @media (max-width: 900px) {
       #arA11yToggle {
-        top: auto;
-        bottom: 100px;
-        right: 12px;
-        left: auto;
+        bottom: 90px;
+        left: 12px;
       }
     }
     @media (max-width: 480px) {
-      #arA11yToggle { font-size: 11px; padding: 5px 10px; bottom: 90px; }
+      #arA11yToggle { font-size: 11px; padding: 5px 10px; bottom: 80px; left: 8px; }
     }
 
     #arChatBtn {
       position: fixed;
       bottom: 20px;
-      right: 20px;
+      left: 20px; /* MODIFICA: anche il pulsante chat è a sinistra */
       width: 70px;
       height: 70px;
       border-radius: 50%;
@@ -487,7 +485,7 @@
     #arChatWindow {
       position: fixed;
       bottom: 100px;
-      right: 20px;
+      left: 20px; /* MODIFICA: allineato a sinistra */
       width: 360px;
       max-width: 90vw;
       height: 500px;
@@ -699,12 +697,12 @@
 
     @media (max-width: 480px) {
       #arChatWindow {
-        right: 10px;
+        left: 10px; /* MODIFICA: allineato a sinistra */
         bottom: 80px;
         width: calc(100vw - 20px);
         height: 70vh;
       }
-      #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
+      #arChatBtn { left: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn svg { width: 46px; height: 46px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
@@ -919,6 +917,7 @@
     <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
+  <!-- MODIFICA: pulsante animazioni spostato a sinistra (visualizzato in basso a sinistra) -->
   <button id="arA11yToggle" onclick="arToggleAnimations()" aria-pressed="false">
     <span id="arA11yIcon">✦</span>
     <span id="arA11yLabel">Animazioni: ON</span>
@@ -1682,6 +1681,7 @@
     </form>
   </div>
 
+  <!-- MODIFICA: pulsante chat spostato a sinistra -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">
     <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -1753,6 +1753,7 @@
     </svg>
   </button>
 
+  <!-- MODIFICA: finestra chat allineata a sinistra -->
   <div id="arChatWindow">
     <div id="arChatHeader">
       <div class="header-left">
@@ -1784,9 +1785,8 @@
     // (li lascio nell'HTML per non dover riscrivere ogni sezione) e
     // aggiunge/rimuove la classe .reveal-in quando l'elemento entra
     // o esce dal viewport (comportamento "mirror" tipo AOS).
-    // Se per qualsiasi motivo IntersectionObserver non è disponibile
-    // o qualcosa va storto, un fallback rende comunque visibili gli
-    // elementi dopo poco: niente resta bloccato invisibile.
+    // Se per qualsiasi problema la classe no-animations è attiva,
+    // gli elementi saranno forzati a essere visibili.
     // ============================================================
     (function () {
       var els = Array.prototype.slice.call(document.querySelectorAll('[data-aos]'));
@@ -1799,12 +1799,25 @@
       }
       els.forEach(applyTiming);
 
+      // Se le animazioni sono disabilitate, forziamo la visibilità.
+      function checkNoAnimations() {
+        if (document.body.classList.contains('no-animations')) {
+          els.forEach(function (el) {
+            el.classList.add('reveal-in');
+          });
+          return true;
+        }
+        return false;
+      }
+
       if (!('IntersectionObserver' in window)) {
         els.forEach(function (el) { el.classList.add('reveal-in'); });
         return;
       }
 
       var io = new IntersectionObserver(function (entries) {
+        // Se le animazioni sono disattivate, non facciamo nulla (già forzate)
+        if (document.body.classList.contains('no-animations')) return;
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('reveal-in');
@@ -1820,6 +1833,7 @@
       // non sono ancora comparsi (mai dovrebbe succedere, ma meglio
       // prevenire), li rende visibili comunque.
       setTimeout(function () {
+        if (document.body.classList.contains('no-animations')) return;
         els.forEach(function (el) {
           var r = el.getBoundingClientRect();
           var inView = r.top < window.innerHeight && r.bottom > 0;
@@ -1828,6 +1842,14 @@
           }
         });
       }, 3000);
+
+      // Ascolta il cambiamento della classe no-animations per forzare la visibilità
+      var observer = new MutationObserver(function() {
+        if (document.body.classList.contains('no-animations')) {
+          els.forEach(function (el) { el.classList.add('reveal-in'); });
+        }
+      });
+      observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
       document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
