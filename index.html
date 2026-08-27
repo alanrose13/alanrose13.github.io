@@ -35,7 +35,6 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://consent.cookiebot.com">
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7/css/flag-icons.min.css">
 
   <style>
@@ -196,10 +195,6 @@
     }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
-    /* Moduli Google (Richiedi Servizio / Recensione): niente barra di scorrimento
-       interna, il box si allunga quanto serve per mostrare il modulo per intero.
-       Google Forms è cross-origin quindi non possiamo leggerne l'altezza reale:
-       usiamo un'altezza fissa generosa, tarata per dispositivo. */
     .transparent-box.form-box {
       overflow: visible;
     }
@@ -208,7 +203,6 @@
       height: 1500px;
     }
 
-    /* Box dei commenti: qui invece va bene lo scorrimento, ma più compatto */
     .transparent-box.comments-box {
       max-height: 480px;
       overflow-y: auto;
@@ -354,7 +348,6 @@
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
 
-    /* ANIMAZIONI SOFT AMBIENT - Floating cards */
     .card, .p-item {
       transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
       will-change: transform;
@@ -370,34 +363,99 @@
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-6px); }
     }
-    /* Micro parallax hover */
     .card:hover, .p-item:hover {
       transform: translateY(-4px) scale(1.01) rotate(0.3deg);
       transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     }
-    /* Animazione fade-in più morbida per le sezioni */
+    /* ============================================================
+       MOTORE DI RIVELAZIONE ALLO SCROLL (sostituisce AOS via CDN)
+       Nessuna dipendenza esterna: se questo file carica, l'effetto
+       carica. Stato iniziale + stato finale (.reveal-in) qui sotto;
+       la logica che li assegna è in fondo alla pagina.
+    ============================================================ */
     [data-aos] {
-      transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    /* Dissolvenza "soft" al passaggio/scrolling: leggero blur che si scioglie
-       insieme al fade, per dare un senso di relax/pace invece di uno scatto secco */
-    [data-aos^="fade"] {
+      opacity: 0;
       filter: blur(8px);
       transition-property: opacity, transform, filter;
+      transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+      transition-duration: 1.2s;
+      will-change: opacity, transform, filter;
     }
-    [data-aos^="fade"].aos-animate {
+    [data-aos="fade"] { transform: none; }
+    [data-aos="fade-up"] { transform: translateY(48px); }
+    [data-aos].reveal-in {
+      opacity: 1;
       filter: blur(0);
+      transform: translateY(0);
     }
     @media (max-width: 768px) {
-      [data-aos^="fade"] { filter: blur(4px); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      [data-aos^="fade"] { filter: none !important; }
+      [data-aos] { filter: blur(4px); }
     }
 
-    /* ============================================================
-       CHATBOT
-    ============================================================ */
+    /* Compatibilità: alias storico usato altrove nel foglio di stile */
+    [data-aos].aos-animate { opacity: 1; filter: blur(0); transform: translateY(0); }
+
+    /* --------------------------------------------------------------
+       MODALITÀ SENZA ANIMAZIONI (tasto accessibilità + prefers-reduced-motion)
+    -------------------------------------------------------------- */
+    body.no-animations * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    body.no-animations [data-aos] {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+    }
+    body.no-animations .ambient-layer,
+    body.no-animations #arChatBtn { animation: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-aos] {
+        opacity: 1 !important;
+        filter: none !important;
+        transform: none !important;
+      }
+    }
+
+    /* --------------------------------------------------------------
+       TASTO ACCESSIBILITÀ ANIMAZIONI
+    -------------------------------------------------------------- */
+    #arA11yToggle {
+      position: fixed;
+      top: 12px;
+      right: 190px;
+      z-index: 9999;
+      background: rgba(245, 241, 232, 0.92);
+      border: 1px solid rgba(201,169,97,0.25);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--m);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: .3s;
+    }
+    #arA11yToggle:hover { background: #fff; }
+    @media (max-width: 900px) {
+      #arA11yToggle {
+        top: auto;
+        bottom: 100px;
+        right: 12px;
+        left: auto;
+      }
+    }
+    @media (max-width: 480px) {
+      #arA11yToggle { font-size: 11px; padding: 5px 10px; bottom: 90px; }
+    }
+
     #arChatBtn {
       position: fixed;
       bottom: 20px;
@@ -651,9 +709,6 @@
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
 
-    /* ============================================================
-       NEWSLETTER LATERALE (compare a metà pagina durante lo scroll)
-    ============================================================ */
     #sideNewsletter {
       position: fixed;
       left: 0;
@@ -688,12 +743,9 @@
     }
     #sideNewsletter .side-nl-close:hover { opacity: 1; }
     @media (max-width: 768px) {
-      #sideNewsletter { display: none; } /* su mobile la newsletter resta solo in footer/popup, per non rubare spazio */
+      #sideNewsletter { display: none; }
     }
 
-    /* ============================================================
-       SELEZIONE LINGUA
-    ============================================================ */
     .language-selector {
       position: fixed;
       top: 12px;
@@ -737,7 +789,6 @@
       font-family: 'Segoe UI', sans-serif;
     }
 
-    /* NASCONDI SOLO GLI ELEMENTI DI GOOGLE TRANSLATE CHE DANNEGGIANO */
     .goog-te-banner-frame,
     .skiptranslate,
     .goog-te-gadget-simple,
@@ -764,9 +815,6 @@
       .language-selector .fi { font-size: 16px; }
     }
 
-    /* ============================================================
-       ACCESSIBILITÀ
-    ============================================================ */
     button:focus-visible,
     a:focus-visible,
     input:focus-visible,
@@ -793,9 +841,6 @@
       .ambient-layer { display: none !important; }
     }
 
-    /* ============================================================
-       SFONDO AMBIENT (soft, decorativo, dietro a tutti i contenuti)
-    ============================================================ */
     .ambient-layer {
       position: fixed;
       inset: 0;
@@ -862,9 +907,6 @@
 </head>
 <body>
 
-  <!-- ============================================================
-    SFONDO AMBIENT SOFT (decorativo, non interattivo)
-  ============================================================ -->
   <div class="ambient-layer" aria-hidden="true">
     <div class="ambient-blob b1"></div>
     <div class="ambient-blob b2"></div>
@@ -872,18 +914,17 @@
     <div class="ambient-blob b4"></div>
   </div>
 
-  <!-- ============================================================
-    SELEZIONE LINGUA - CON BANDIERE VETTORIALI (flag-icons)
-  ============================================================ -->
   <div class="language-selector" id="languageSelector">
     <span class="fi" id="currentFlag"></span>
     <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
+  <button id="arA11yToggle" onclick="arToggleAnimations()" aria-pressed="false">
+    <span id="arA11yIcon">✦</span>
+    <span id="arA11yLabel">Animazioni: ON</span>
+  </button>
+
   <script>
-    // ============================================================
-    // SELEZIONE LINGUA - codice Google Translate -> [codice bandiera ISO, nome lingua]
-    // ============================================================
     const langMap = {
       it: ['it', 'Italiano'],
       en: ['gb', 'English'],
@@ -987,7 +1028,6 @@
     });
   </script>
 
-  <!-- Google Translate (nascosto) -->
   <div id="google_translate_element" style="display:none;"></div>
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -1002,9 +1042,6 @@
   </script>
   <script type="text/javascript" data-cookieconsent="preferences" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- ============================================================
-    HEADER
-  ============================================================ -->
   <header data-aos="fade" data-aos-duration="1800" data-aos-easing="ease-out">
     <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="lo" alt="Alan & Rose">
     <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
@@ -1023,9 +1060,6 @@
     </nav>
   </header>
 
-  <!-- ============================================================
-    CHI SIAMO
-  ============================================================ -->
   <section id="chi" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <h2>Chi Siamo</h2>
     <p style="text-align:center;max-width:750px;margin:auto;">
@@ -1033,9 +1067,6 @@
     </p>
   </section>
 
-  <!-- ============================================================
-    SERVIZI
-  ============================================================ -->
   <section id="serv" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <h2>I NOSTRI SERVIZI</h2>
     <div class="g">
@@ -1068,9 +1099,6 @@
     </div>
   </section>
 
-  <!-- ============================================================
-    PORTFOLIO
-  ============================================================ -->
   <section id="port" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <h2>Portfolio</h2>
     <div class="p-grid">
@@ -1125,9 +1153,6 @@
     </div>
   </section>
 
-  <!-- ============================================================
-    MUSICA
-  ============================================================ -->
   <section id="mus" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <h2>Ascoltaci</h2>
     <div class="embed">
@@ -1152,9 +1177,6 @@
     </div>
   </section>
 
-  <!-- ============================================================
-    SHOP
-  ============================================================ -->
   <section id="shop" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <h2>Shop</h2>
     <div class="g">
@@ -1184,9 +1206,6 @@
     </div>
   </section>
 
-  <!-- ============================================================
-    CONTATTI
-  ============================================================ -->
   <section id="cont" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <h2>Contatti & Commenti</h2>
     <p style="text-align:center;margin-bottom:20px">
@@ -1263,7 +1282,6 @@
         })();
         /*-->*/
       </script>
-      <!-- Link rimosso su richiesta -->
     </div>
 
     <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
@@ -1272,9 +1290,6 @@
     </div>
   </section>
 
-  <!-- ============================================================
-    POPUP - TUTTI COMPLETI
-  ============================================================ -->
   <div id="chiPopup" class="popup-overlay" onclick="closePopup('chiPopup')">
     <div class="popup-box" onclick="event.stopPropagation()">
       <span class="popup-close" onclick="closePopup('chiPopup')">×</span>
@@ -1506,9 +1521,6 @@
     </div>
   </div>
 
-  <!-- ============================================================
-    DONAZIONE
-  ============================================================ -->
   <div class="donation-section" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
     <div class="donation-box">
       <p>
@@ -1520,9 +1532,6 @@
     </div>
   </div>
 
-  <!-- ============================================================
-    FOOTER
-  ============================================================ -->
   <footer data-aos="fade" data-aos-duration="1800" data-aos-easing="ease-out">
     <div class="newsletter-box" id="newsletter" data-aos="fade-up" data-aos-duration="1700" data-aos-easing="ease-out">
       <h3>Iscriviti alla Newsletter</h3>
@@ -1603,9 +1612,6 @@
     </p>
   </footer>
 
-  <!-- ============================================================
-    PRIVACY POPUP
-  ============================================================ -->
   <div id="privacyPopup" class="popup-overlay" onclick="closePopup('privacyPopup')">
     <div class="popup-box" onclick="event.stopPropagation()">
       <span class="popup-close" onclick="closePopup('privacyPopup')">×</span>
@@ -1661,9 +1667,6 @@
     </div>
   </div>
 
-  <!-- ============================================================
-    NEWSLETTER LATERALE - compare a metà pagina durante lo scroll
-  ============================================================ -->
   <div id="sideNewsletter">
     <span class="side-nl-close" onclick="dismissSideNewsletter()">×</span>
     <h4>Resta aggiornato</h4>
@@ -1679,104 +1682,81 @@
     </form>
   </div>
 
-  <!-- ============================================================
-    CHATBOT - "BLESS" ASSISTENTE VIRTUALE A&R
-  ============================================================ -->
-  <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS - Arcangelo">
+  <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">
     <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="angelGlow" cx="50%" cy="42%" r="62%">
-          <stop offset="0%" stop-color="#FFFBEF"/>
-          <stop offset="45%" stop-color="#E8C84A"/>
+        <radialGradient id="blessGlow" cx="50%" cy="46%" r="60%">
+          <stop offset="0%" stop-color="#FFFDF6"/>
+          <stop offset="55%" stop-color="#EACB56" stop-opacity="0.5"/>
           <stop offset="100%" stop-color="#C9A961" stop-opacity="0"/>
         </radialGradient>
-        <linearGradient id="angelWing" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFFDF5"/>
-          <stop offset="55%" stop-color="#F0E4C0"/>
-          <stop offset="100%" stop-color="#C9A961" stop-opacity="0.35"/>
-        </linearGradient>
-        <radialGradient id="angelFace" cx="50%" cy="32%" r="55%">
-          <stop offset="0%" stop-color="#FFF1DE"/>
-          <stop offset="55%" stop-color="#F7D9BC"/>
-          <stop offset="100%" stop-color="#E9C1A0"/>
+        <radialGradient id="blessFace" cx="50%" cy="34%" r="60%">
+          <stop offset="0%" stop-color="#FFF3E4"/>
+          <stop offset="55%" stop-color="#F5D3AE"/>
+          <stop offset="100%" stop-color="#E3B489"/>
         </radialGradient>
-        <linearGradient id="angelHair" x1="20%" y1="0%" x2="80%" y2="100%">
-          <stop offset="0%" stop-color="#FBEA9E"/>
-          <stop offset="50%" stop-color="#EACB56"/>
-          <stop offset="100%" stop-color="#D9AE32"/>
+        <linearGradient id="blessHair" x1="15%" y1="0%" x2="85%" y2="100%">
+          <stop offset="0%" stop-color="#5C4326"/>
+          <stop offset="55%" stop-color="#3E2C18"/>
+          <stop offset="100%" stop-color="#2A1D10"/>
+        </linearGradient>
+        <linearGradient id="blessCollar" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#C9A961"/>
+          <stop offset="100%" stop-color="#8A7024"/>
         </linearGradient>
       </defs>
 
-      <!-- Aura luminosa di fondo -->
-      <circle cx="50" cy="50" r="48" fill="url(#angelGlow)" opacity="0.35"/>
+      <!-- Bagliore diffuso, morbido, senza forma ad anello -->
+      <circle cx="50" cy="50" r="46" fill="url(#blessGlow)" opacity="0.55"/>
 
-      <!-- Ali, dietro l'aureola e la testa -->
-      <path d="M50 40 C34 30, 12 34, 6 52 C18 50, 30 52, 40 62 C42 52, 46 44, 50 40 Z"
-            fill="url(#angelWing)" opacity="0.85"/>
-      <path d="M50 40 C66 30, 88 34, 94 52 C82 50, 70 52, 60 62 C58 52, 54 44, 50 40 Z"
-            fill="url(#angelWing)" opacity="0.85"/>
-      <path d="M50 40 C38 33, 20 36, 15 48 C24 47, 33 49, 40 57" stroke="#C9A961" stroke-width="0.6" opacity="0.4" fill="none"/>
-      <path d="M50 40 C62 33, 80 36, 85 48 C76 47, 67 49, 60 57" stroke="#C9A961" stroke-width="0.6" opacity="0.4" fill="none"/>
+      <!-- Spalle / collo -->
+      <path d="M27 92 C27 76 37 66 50 66 C63 66 73 76 73 92 Z" fill="url(#blessCollar)" opacity="0.9"/>
+      <path d="M43 60 L43 71 Q50 76 57 71 L57 60 Z" fill="#E3B489"/>
 
-      <!-- Aureola raggiata -->
-      <g opacity="0.75">
-        <ellipse cx="50" cy="13" rx="17" ry="5" fill="none" stroke="#C9A961" stroke-width="2"/>
-        <ellipse cx="50" cy="12.5" rx="12.5" ry="3.4" fill="none" stroke="#FCEBA0" stroke-width="1.3"/>
-      </g>
-      <g stroke="#F5E06A" stroke-width="1" opacity="0.5" stroke-linecap="round">
-        <line x1="50" y1="6" x2="50" y2="1"/>
-        <line x1="37" y1="8" x2="34" y2="4"/>
-        <line x1="63" y1="8" x2="66" y2="4"/>
-      </g>
+      <!-- Capelli corti curati -->
+      <path d="M27 38 C25 20 36 8 50 8 C64 8 75 20 73 38
+               C73 32 69 26 63 24 C60 22 56 24 50 24
+               C44 24 40 22 37 24 C31 26 27 32 27 38 Z" fill="url(#blessHair)"/>
+      <path d="M29 33 C30 24 37 16 46 14" stroke="#6B4E2C" stroke-width="1.1" opacity="0.5" fill="none" stroke-linecap="round"/>
+      <path d="M71 33 C70 24 63 16 54 14" stroke="#6B4E2C" stroke-width="1.1" opacity="0.5" fill="none" stroke-linecap="round"/>
 
-      <!-- Chioma bionda mossa, più lunga e cinematica -->
-      <path d="M28 34 C24 20, 34 8, 50 8 C66 8, 76 20, 72 34
-               C74 42, 71 52, 65 56 C67 46, 63 36, 56 32
-               C58 40, 55 48, 50 50 C45 48, 42 40, 44 32
-               C37 36, 33 46, 35 56 C29 52, 26 42, 28 34 Z"
-            fill="url(#angelHair)"/>
-      <path d="M30 30 C29 20, 37 12, 46 11" stroke="#FFF6D2" stroke-width="1.4" opacity="0.55" fill="none" stroke-linecap="round"/>
-      <path d="M70 30 C71 20, 63 12, 54 11" stroke="#FFF6D2" stroke-width="1.4" opacity="0.55" fill="none" stroke-linecap="round"/>
-
-      <!-- Viso -->
-      <ellipse cx="50" cy="39" rx="20" ry="23" fill="url(#angelFace)"/>
+      <!-- Volto -->
+      <ellipse cx="50" cy="42" rx="19" ry="22" fill="url(#blessFace)"/>
 
       <!-- Sopracciglia -->
-      <path d="M40 32 Q44 29.5 48 31.5" stroke="#C7A03A" stroke-width="1.1" stroke-linecap="round" fill="none"/>
-      <path d="M52 31.5 Q56 29.5 60 32" stroke="#C7A03A" stroke-width="1.1" stroke-linecap="round" fill="none"/>
+      <path d="M40 36 Q44 33.5 48 35.5" stroke="#5C4326" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      <path d="M52 35.5 Q56 33.5 60 36" stroke="#5C4326" stroke-width="1.2" stroke-linecap="round" fill="none"/>
 
-      <!-- Occhi azzurri grandi ed espressivi -->
-      <path d="M39 35.5 Q43.5 32.5 48 35.5 Q43.5 38 39 35.5 Z" fill="#FFFFFF"/>
-      <path d="M52 35.5 Q56.5 32.5 61 35.5 Q56.5 38 52 35.5 Z" fill="#FFFFFF"/>
-      <circle cx="43.5" cy="35.3" r="2.6" fill="#3E8FCB"/>
-      <circle cx="56.5" cy="35.3" r="2.6" fill="#3E8FCB"/>
-      <circle cx="43.5" cy="35.3" r="1.1" fill="#122E45"/>
-      <circle cx="56.5" cy="35.3" r="1.1" fill="#122E45"/>
-      <circle cx="44.4" cy="34.4" r="0.55" fill="#FFFFFF"/>
-      <circle cx="57.4" cy="34.4" r="0.55" fill="#FFFFFF"/>
-      <path d="M39 35 Q43.5 32 48 35" stroke="#8A6A2A" stroke-width="0.9" fill="none" stroke-linecap="round"/>
-      <path d="M52 35 Q56.5 32 61 35" stroke="#8A6A2A" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <!-- Occhi -->
+      <path d="M40 39.5 Q44 37 48 39.5 Q44 41.5 40 39.5 Z" fill="#FFFFFF"/>
+      <path d="M52 39.5 Q56 37 60 39.5 Q56 41.5 52 39.5 Z" fill="#FFFFFF"/>
+      <circle cx="44" cy="39.4" r="2.3" fill="#5A3B22"/>
+      <circle cx="56" cy="39.4" r="2.3" fill="#5A3B22"/>
+      <circle cx="44" cy="39.4" r="0.9" fill="#150E08"/>
+      <circle cx="56" cy="39.4" r="0.9" fill="#150E08"/>
+      <circle cx="44.7" cy="38.6" r="0.45" fill="#FFFFFF"/>
+      <circle cx="56.7" cy="38.6" r="0.45" fill="#FFFFFF"/>
 
       <!-- Naso e sorriso sereno -->
-      <path d="M50 37 Q49 41 48.5 43" stroke="#D9A67E" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.6"/>
-      <path d="M43 46 Q50 50.5 57 46" stroke="#C06A4A" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      <path d="M50 41 Q49 45 48.3 47" stroke="#C99B72" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.6"/>
+      <path d="M43.5 50 Q50 54 56.5 50" stroke="#A5623F" stroke-width="1.3" stroke-linecap="round" fill="none"/>
 
-      <!-- Guance rosate -->
-      <ellipse cx="36.5" cy="43" rx="4" ry="3" fill="#FFAE95" opacity="0.28"/>
-      <ellipse cx="63.5" cy="43" rx="4" ry="3" fill="#FFAE95" opacity="0.28"/>
+      <!-- Guance -->
+      <ellipse cx="37" cy="47" rx="3.6" ry="2.8" fill="#FFA98C" opacity="0.25"/>
+      <ellipse cx="63" cy="47" rx="3.6" ry="2.8" fill="#FFA98C" opacity="0.25"/>
 
-      <!-- Piccole luci intorno -->
-      <circle cx="18" cy="22" r="1.4" fill="#F5E06A" opacity="0.6"/>
-      <circle cx="82" cy="22" r="1.4" fill="#F5E06A" opacity="0.6"/>
-      <circle cx="12" cy="40" r="1" fill="#F5E06A" opacity="0.4"/>
-      <circle cx="88" cy="40" r="1" fill="#F5E06A" opacity="0.4"/>
+      <!-- Piccoli riflessi di luce, morbidi, senza aureola -->
+      <circle cx="20" cy="20" r="1.3" fill="#F5E06A" opacity="0.55"/>
+      <circle cx="80" cy="20" r="1.3" fill="#F5E06A" opacity="0.55"/>
+      <circle cx="14" cy="42" r="1" fill="#F5E06A" opacity="0.35"/>
+      <circle cx="86" cy="42" r="1" fill="#F5E06A" opacity="0.35"/>
     </svg>
   </button>
 
   <div id="arChatWindow">
     <div id="arChatHeader">
       <div class="header-left">
-        <div class="avatar-small">👼</div>
+        <div class="avatar-small">✨</div>
         <div class="chat-title">
           <span class="name">BLESS</span>
           <span class="sub">Assistente Virtuale A&amp;R</span>
@@ -1797,76 +1777,100 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     // ============================================================
-    // AOS INIT
+    // MOTORE DI RIVELAZIONE ALLO SCROLL - autonomo, nessuna libreria
+    // esterna. Legge data-aos / data-aos-delay / data-aos-duration
+    // (li lascio nell'HTML per non dover riscrivere ogni sezione) e
+    // aggiunge/rimuove la classe .reveal-in quando l'elemento entra
+    // o esce dal viewport (comportamento "mirror" tipo AOS).
+    // Se per qualsiasi motivo IntersectionObserver non è disponibile
+    // o qualcosa va storto, un fallback rende comunque visibili gli
+    // elementi dopo poco: niente resta bloccato invisibile.
     // ============================================================
-    document.addEventListener('DOMContentLoaded', function() {
-      // Forza il caricamento di AOS
-      if (typeof AOS !== 'undefined') {
-        AOS.init({
-          once: false,
-          duration: window.innerWidth < 768 ? 1200 : 2200,
-          easing: 'ease-out',
-          offset: 80,
-          delay: 0,
-          mirror: true,
-          anchorPlacement: 'top-bottom',
-          disable: function () {
-            // Disabilita solo se l'utente ha richiesto meno animazioni nel sistema,
-            // non più bloccato su tutti i dispositivi mobili come prima
-            return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    (function () {
+      var els = Array.prototype.slice.call(document.querySelectorAll('[data-aos]'));
+
+      function applyTiming(el) {
+        var duration = el.getAttribute('data-aos-duration');
+        var delay = el.getAttribute('data-aos-delay');
+        if (duration) el.style.transitionDuration = (parseInt(duration, 10) / 1000) + 's';
+        if (delay) el.style.transitionDelay = (parseInt(delay, 10) / 1000) + 's';
+      }
+      els.forEach(applyTiming);
+
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('reveal-in'); });
+        return;
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-in');
+          } else {
+            entry.target.classList.remove('reveal-in');
           }
         });
-        
-        // Refresh dopo ogni caricamento di immagini/video
-        setTimeout(function() {
-          AOS.refresh();
-        }, 500);
-        
-        setTimeout(function() {
-          AOS.refresh();
-        }, 1500);
-      }
-      
-      // Aggiunge classe floating alle card dopo il caricamento
-      setTimeout(function() {
-        document.querySelectorAll('.card, .p-item').forEach(function(el) {
-          el.classList.add('floating');
+      }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
+
+      els.forEach(function (el) { io.observe(el); });
+
+      // Rete di sicurezza: se dopo 3s alcuni elementi in viewport
+      // non sono ancora comparsi (mai dovrebbe succedere, ma meglio
+      // prevenire), li rende visibili comunque.
+      setTimeout(function () {
+        els.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          var inView = r.top < window.innerHeight && r.bottom > 0;
+          if (inView && !el.classList.contains('reveal-in')) {
+            el.classList.add('reveal-in');
+          }
         });
-        // Refresh AOS dopo aver aggiunto le classi
-        if (typeof AOS !== 'undefined') {
-          AOS.refresh();
-        }
-      }, 600);
-    });
+      }, 3000);
 
-    // Refresh AOS anche quando la pagina è completamente caricata
-    window.addEventListener('load', function() {
-      if (typeof AOS !== 'undefined') {
-        setTimeout(function() {
-          AOS.refresh();
-        }, 300);
-      }
-    });
-
-    // Refresh AOS quando si ridimensiona la finestra
-    window.addEventListener('resize', function() {
-      if (typeof AOS !== 'undefined') {
-        setTimeout(function() {
-          AOS.refresh();
-        }, 200);
-      }
-    });
+      document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+          document.querySelectorAll('.card, .p-item').forEach(function (el) {
+            el.classList.add('floating');
+          });
+        }, 600);
+      });
+    })();
 
     // ============================================================
-    // RESIZE IFRAME - fallback generoso per moduli cross-origin
+    // TASTO ACCESSIBILITÀ - attiva/disattiva tutte le animazioni
     // ============================================================
+    function arApplyAnimationsPref(enabled) {
+      document.body.classList.toggle('no-animations', !enabled);
+      var label = document.getElementById('arA11yLabel');
+      var btn = document.getElementById('arA11yToggle');
+      if (label) label.textContent = 'Animazioni: ' + (enabled ? 'ON' : 'OFF');
+      if (btn) btn.setAttribute('aria-pressed', String(!enabled));
+      if (!enabled) {
+        // Rivela subito tutto, così nulla resta a metà o nascosto
+        document.querySelectorAll('[data-aos]').forEach(function (el) {
+          el.classList.add('reveal-in');
+        });
+      }
+    }
+
+    function arToggleAnimations() {
+      var current = localStorage.getItem('arAnimationsEnabled');
+      var enabled = current === null ? true : current === 'true';
+      var next = !enabled;
+      localStorage.setItem('arAnimationsEnabled', String(next));
+      arApplyAnimationsPref(next);
+    }
+
+    (function () {
+      var stored = localStorage.getItem('arAnimationsEnabled');
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var enabled = stored !== null ? stored === 'true' : !prefersReduced;
+      arApplyAnimationsPref(enabled);
+    })();
+
     function resizeIframe(iframe) {
-      // Altezza di fallback generosa per dispositivo: Google Forms è cross-origin
-      // quindi quasi sempre finiamo nel catch e non possiamo leggere l'altezza
-      // reale del modulo. Meglio abbondare che tagliare il tasto "Invia".
       var fallback = window.innerWidth < 480 ? 1150 : (window.innerWidth < 768 ? 1300 : 1500);
       try {
         if (iframe.contentWindow && iframe.contentWindow.document) {
@@ -1880,15 +1884,9 @@
       }
     }
 
-    // ============================================================
-    // POPUP
-    // ============================================================
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
 
-    // ============================================================
-    // NEWSLETTER LATERALE - compare quando l'utente arriva a metà pagina
-    // ============================================================
     function dismissSideNewsletter() {
       var panel = document.getElementById('sideNewsletter');
       if (panel) panel.classList.remove('visible');
@@ -1913,9 +1911,6 @@
       window.addEventListener('load', checkScroll);
     })();
 
-    // ============================================================
-    // GDPR COMMENT CHECKBOX
-    // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
       var checkbox = document.getElementById('gdprCommentConsent');
       if (!checkbox) return;
@@ -1971,21 +1966,12 @@
       }
     });
 
-    // ============================================================
-    // CHATBOT CON GROQ + CLOUDFLARE WORKER
-    // ============================================================
-
     const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
 
     var typingInterval = null;
     var isBotTyping = false;
     var currentBotMessage = null;
 
-    // Pulizia MINIMA e sicura lato client: rimuove solo eventuali tag
-    // <think> residui. La pulizia principale ora avviene nel Worker,
-    // con lo stesso approccio prudente (niente più regex aggressivi
-    // che rischiavano di cancellare risposte legittime, es. elenchi
-    // numerati in grassetto).
     function cleanBotResponse(text) {
       if (!text) return "Mi dispiace, non ho capito. Puoi riformulare?";
       var cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
