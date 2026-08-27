@@ -46,6 +46,7 @@
       --bg: rgba(245, 241, 232, 0.9);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Segoe UI', sans-serif;
       color: var(--m);
@@ -56,6 +57,11 @@
       background-size: 24px 24px;
       background-attachment: fixed;
       overflow-x: hidden;
+      animation: pageDissolve 1.6s ease both;
+    }
+    @keyframes pageDissolve {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     header { position: relative; }
@@ -688,27 +694,27 @@
     .ambient-blob {
       position: absolute;
       border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.35;
+      filter: blur(70px);
+      opacity: 0.28;
       background: radial-gradient(circle at 30% 30%, rgba(201,169,97,0.55), rgba(201,169,97,0) 70%);
-      animation: ambientDrift 34s ease-in-out infinite;
+      animation: ambientDrift 46s ease-in-out infinite;
       will-change: transform;
     }
-    .ambient-blob.b1 { width: 420px; height: 420px; top: -8%; left: -8%; animation-duration: 38s; }
+    .ambient-blob.b1 { width: 420px; height: 420px; top: -8%; left: -8%; animation-duration: 50s; }
     .ambient-blob.b2 {
       width: 360px; height: 360px; top: 30%; right: -10%;
       background: radial-gradient(circle at 60% 40%, rgba(74,59,42,0.30), rgba(74,59,42,0) 70%);
-      animation-duration: 44s; animation-delay: -6s;
+      animation-duration: 56s; animation-delay: -6s;
     }
     .ambient-blob.b3 {
       width: 320px; height: 320px; bottom: -10%; left: 18%;
       background: radial-gradient(circle at 40% 60%, rgba(201,169,97,0.4), rgba(201,169,97,0) 70%);
-      animation-duration: 40s; animation-delay: -14s;
+      animation-duration: 52s; animation-delay: -14s;
     }
     .ambient-blob.b4 {
       width: 260px; height: 260px; bottom: 12%; right: 8%;
       background: radial-gradient(circle at 50% 50%, rgba(74,59,42,0.22), rgba(74,59,42,0) 70%);
-      animation-duration: 30s; animation-delay: -20s;
+      animation-duration: 40s; animation-delay: -20s;
     }
     @keyframes ambientDrift {
       0%   { transform: translate(0, 0) scale(1); }
@@ -1551,30 +1557,23 @@
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente">
     <svg width="55" height="55" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="48" fill="#4A3B2A" opacity="0.05"/>
-      <circle cx="38" cy="40" r="13" fill="#C9A961" opacity="0.9"/>
-      <path d="M25 60 Q28 43 38 40 Q48 43 51 60 Q43 66 33 66 Q27 64 25 60Z" fill="#C9A961" opacity="0.9"/>
-      <circle cx="34" cy="38" r="2.5" fill="#4A3B2A"/>
-      <circle cx="42" cy="38" r="2.5" fill="#4A3B2A"/>
-      <path d="M35 44 Q38 47 41 44" stroke="#4A3B2A" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="62" cy="40" r="13" fill="#4A3B2A" opacity="0.8"/>
-      <path d="M49 60 Q52 43 62 40 Q72 43 75 60 Q67 66 57 66 Q51 64 49 60Z" fill="#4A3B2A" opacity="0.8"/>
-      <circle cx="58" cy="38" r="2.5" fill="#C9A961"/>
-      <circle cx="66" cy="38" r="2.5" fill="#C9A961"/>
-      <path d="M59 44 Q62 47 65 44" stroke="#C9A961" stroke-width="2" stroke-linecap="round"/>
-      <path d="M47 50 Q50 46 53 50 Q56 46 59 50 Q54 58 47 50Z" fill="#C9A961" opacity="0.7"/>
-      <path d="M22 70 Q35 64 48 70 Q60 76 72 70 Q82 64 88 70" stroke="#C9A961" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-      <path d="M22 78 Q38 72 50 78 Q62 84 75 78" stroke="#4A3B2A" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-      <circle cx="18" cy="28" r="2.5" fill="#C9A961" opacity="0.4"/>
-      <circle cx="82" cy="26" r="2.5" fill="#C9A961" opacity="0.4"/>
-      <circle cx="24" cy="18" r="2" fill="#4A3B2A" opacity="0.3"/>
-      <circle cx="78" cy="20" r="2" fill="#4A3B2A" opacity="0.3"/>
+      <path d="M50 42 C36 26 14 30 8 50 C14 45 28 41 39 47 C35 56 31 69 39 80 C41 66 45 55 50 50 Z" fill="#C9A961" opacity="0.85"/>
+      <path d="M50 42 C64 26 86 30 92 50 C86 45 72 41 61 47 C65 56 69 69 61 80 C59 66 55 55 50 50 Z" fill="#C9A961" opacity="0.85"/>
+      <ellipse cx="50" cy="21" rx="13" ry="4.5" fill="none" stroke="#C9A961" stroke-width="2.5" opacity="0.9"/>
+      <circle cx="50" cy="34" r="11" fill="#4A3B2A" opacity="0.85"/>
+      <circle cx="46" cy="33" r="1.6" fill="#C9A961"/>
+      <circle cx="54" cy="33" r="1.6" fill="#C9A961"/>
+      <path d="M46.5 39 Q50 41.5 53.5 39" stroke="#C9A961" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M38 48 Q50 42 62 48 Q68 67 60 85 Q50 90 40 85 Q32 67 38 48Z" fill="#C9A961" opacity="0.95"/>
+      <path d="M50 48 L50 85" stroke="#4A3B2A" stroke-width="1.2" opacity="0.25"/>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A961" stroke-width="1" opacity="0.15"/>
     </svg>
   </button>
 
   <div id="arChatWindow">
     <div id="arChatHeader">
       <div class="header-left">
-        <div class="avatar-small">✨</div>
+        <div class="avatar-small">👼</div>
         <div class="chat-title">
           <span class="name">BLESS</span>
           <span class="sub">Assistente Virtuale A&amp;R</span>
