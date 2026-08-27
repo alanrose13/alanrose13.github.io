@@ -185,17 +185,19 @@
 
     .transparent-box {
       padding: 20px;
-      overflow: visible;
+      overflow: auto;
       position: relative;
+      max-height: 85vh;
     }
     .transparent-box iframe {
       width: 100%;
       border: 0;
       border-radius: 8px;
       display: block;
-      overflow: visible;
-      min-height: 1100px;
-      height: auto;
+      overflow: auto;
+      min-height: 700px;
+      height: 600px;
+      max-height: 80vh;
     }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
@@ -310,7 +312,7 @@
       .donation-box { padding: 20px; }
       .donation-box img { max-width: 160px; }
       .transparent-box { padding: 12px; }
-      .transparent-box iframe { min-height: 1300px; height: auto; }
+      .transparent-box iframe { min-height: 700px; height: 500px; max-height: 70vh; }
     }
     @media (max-width: 480px) {
       .lo { width: 45px; height: 45px; top: 10px; left: 10px; }
@@ -323,7 +325,9 @@
       .gdpr-comment-consent { font-size: .85rem; padding: 12px; }
       .donation-box img { max-width: 140px; }
       .donation-box { padding: 16px; }
-      .transparent-box iframe { min-height: 1300px; height: auto; }
+      .transparent-box { padding: 10px; }
+      .transparent-box iframe { min-height: 600px; height: 450px; max-height: 70vh; }
+      .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
 
     /* ANIMAZIONI SOFT AMBIENT - Floating cards */
@@ -508,16 +512,19 @@
       gap: 8px;
     }
     .ar-msg.user .user-avatar {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.2);
+      background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 14px;
       flex-shrink: 0;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.3);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(201,169,97,0.4);
     }
     .ar-msg.typing {
       background: rgba(255,255,255,0.7);
@@ -602,7 +609,7 @@
       }
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn svg { width: 46px; height: 46px; }
-      .ar-msg.user .user-avatar { width: 20px; height: 20px; font-size: 10px; }
+      .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
 
     /* ============================================================
@@ -1109,7 +1116,7 @@
 
     <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
     <div class="transparent-box">
-      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:1100px;height:auto;" onload="resizeIframe(this)"></iframe>
+      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:auto;min-height:700px;height:600px;max-height:80vh;" onload="resizeIframe(this)"></iframe>
     </div>
 
     <div class="btn-upload-wrap">
@@ -1177,14 +1184,12 @@
         })();
         /*-->*/
       </script>
-      <p style="text-align:center;margin-top:15px;font-size:.9rem;">
-        <a href="https://www.htmlcommentbox.com/account/" target="_blank" style="color:var(--o);">Gestisci i commenti (modera / elimina)</a>
-      </p>
+      <!-- Link rimosso su richiesta -->
     </div>
 
     <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
     <div class="transparent-box review-form">
-      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:1100px;height:auto;" onload="resizeIframe(this)">Caricamento…</iframe>
+      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:auto;min-height:700px;height:600px;max-height:80vh;" onload="resizeIframe(this)">Caricamento…</iframe>
     </div>
   </section>
 
@@ -1372,7 +1377,7 @@
         </p>
         <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
         <div class="transparent-box">
-          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:visible;min-height:1100px;height:auto;" onload="resizeIframe(this)"></iframe>
+          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;overflow:auto;min-height:700px;height:600px;max-height:80vh;" onload="resizeIframe(this)"></iframe>
         </div>
         <div class="btn-upload-wrap">
           <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
@@ -1662,6 +1667,7 @@
     // AOS INIT
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
+      // Forza il caricamento di AOS
       if (typeof AOS !== 'undefined') {
         AOS.init({
           once: false,
@@ -1670,20 +1676,48 @@
           offset: 120,
           delay: 0,
           mirror: true,
-          anchorPlacement: 'top-bottom'
+          anchorPlacement: 'top-bottom',
+          disable: 'mobile' // Disabilita su mobile per performance
         });
+        
+        // Refresh dopo ogni caricamento di immagini/video
+        setTimeout(function() {
+          AOS.refresh();
+        }, 500);
+        
+        setTimeout(function() {
+          AOS.refresh();
+        }, 1500);
       }
+      
       // Aggiunge classe floating alle card dopo il caricamento
       setTimeout(function() {
         document.querySelectorAll('.card, .p-item').forEach(function(el) {
           el.classList.add('floating');
         });
-      }, 600);
-      setTimeout(function() {
+        // Refresh AOS dopo aver aggiunto le classi
         if (typeof AOS !== 'undefined') {
           AOS.refresh();
         }
-      }, 1000);
+      }, 600);
+    });
+
+    // Refresh AOS anche quando la pagina è completamente caricata
+    window.addEventListener('load', function() {
+      if (typeof AOS !== 'undefined') {
+        setTimeout(function() {
+          AOS.refresh();
+        }, 300);
+      }
+    });
+
+    // Refresh AOS quando si ridimensiona la finestra
+    window.addEventListener('resize', function() {
+      if (typeof AOS !== 'undefined') {
+        setTimeout(function() {
+          AOS.refresh();
+        }, 200);
+      }
     });
 
     // ============================================================
@@ -1694,14 +1728,14 @@
         iframe.style.height = 'auto';
         if (iframe.contentWindow && iframe.contentWindow.document) {
           var height = iframe.contentWindow.document.documentElement.scrollHeight;
-          iframe.style.height = Math.max(height + 50, 1100) + 'px';
+          iframe.style.height = Math.max(height + 50, 600) + 'px';
         } else {
-          iframe.style.height = (window.innerWidth < 768 ? 1300 : 1100) + 'px';
+          iframe.style.height = (window.innerWidth < 768 ? 500 : 600) + 'px';
         }
       } catch (e) {
         // cross-origin: impossibile leggere l'altezza reale del modulo Google,
         // usiamo un'altezza generosa in base al dispositivo
-        iframe.style.height = (window.innerWidth < 768 ? 1300 : 1100) + 'px';
+        iframe.style.height = (window.innerWidth < 768 ? 500 : 600) + 'px';
       }
     }
 
@@ -1811,7 +1845,7 @@
       if (cls === 'bot') {
         div.innerHTML = text;
       } else {
-        div.innerHTML = '<span class="user-avatar">👤</span><span>' + text + '</span>';
+        div.innerHTML = `<span class="user-avatar">💛</span><span>${text}</span>`;
       }
       box.appendChild(div);
       box.scrollTop = box.scrollHeight;
@@ -1827,7 +1861,7 @@
         if (cls === 'bot') {
           div.textContent = '';
         } else {
-          div.innerHTML = '<span class="user-avatar">👤</span><span></span>';
+          div.innerHTML = `<span class="user-avatar">💛</span><span></span>`;
         }
         box.appendChild(div);
         var i = 0;
