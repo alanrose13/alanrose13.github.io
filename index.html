@@ -421,12 +421,13 @@
     }
 
     /* --------------------------------------------------------------
-       TASTO ACCESSIBILITÀ ANIMAZIONI - SPOSTATO A SINISTRA
+       TASTO ACCESSIBILITÀ ANIMAZIONI - SPOSTATO A SINISTRA IN ALTO
+       (vicino al selettore lingua ma a sinistra)
     -------------------------------------------------------------- */
     #arA11yToggle {
       position: fixed;
-      bottom: 100px; /* Posizionato sopra il pulsante chat */
-      left: 20px;   /* MODIFICA: allineato a sinistra */
+      top: 12px;
+      left: 12px; /* MODIFICA: spostato a sinistra in alto */
       z-index: 9999;
       background: rgba(245, 241, 232, 0.92);
       border: 1px solid rgba(201,169,97,0.25);
@@ -444,20 +445,20 @@
       transition: .3s;
     }
     #arA11yToggle:hover { background: #fff; }
-    @media (max-width: 900px) {
+    @media (max-width: 480px) {
       #arA11yToggle {
-        bottom: 90px;
-        left: 12px;
+        top: 8px;
+        left: 8px;
+        font-size: 11px;
+        padding: 4px 10px;
       }
     }
-    @media (max-width: 480px) {
-      #arA11yToggle { font-size: 11px; padding: 5px 10px; bottom: 80px; left: 8px; }
-    }
 
+    /* CHATBOT - NON TOCCATA, rimane a destra come prima */
     #arChatBtn {
       position: fixed;
       bottom: 20px;
-      left: 20px; /* MODIFICA: anche il pulsante chat è a sinistra */
+      right: 20px; /* Rimane a destra */
       width: 70px;
       height: 70px;
       border-radius: 50%;
@@ -482,10 +483,11 @@
     }
     #arChatBtn svg { width: 55px; height: 55px; }
 
+    /* CHAT WINDOW - NON TOCCATA, rimane a destra */
     #arChatWindow {
       position: fixed;
       bottom: 100px;
-      left: 20px; /* MODIFICA: allineato a sinistra */
+      right: 20px; /* Rimane a destra */
       width: 360px;
       max-width: 90vw;
       height: 500px;
@@ -697,12 +699,12 @@
 
     @media (max-width: 480px) {
       #arChatWindow {
-        left: 10px; /* MODIFICA: allineato a sinistra */
+        right: 10px;
         bottom: 80px;
         width: calc(100vw - 20px);
         height: 70vh;
       }
-      #arChatBtn { left: 15px; bottom: 15px; width: 60px; height: 60px; }
+      #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn svg { width: 46px; height: 46px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
@@ -917,7 +919,7 @@
     <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
-  <!-- MODIFICA: pulsante animazioni spostato a sinistra (visualizzato in basso a sinistra) -->
+  <!-- MODIFICA: pulsante animazioni spostato a sinistra in alto -->
   <button id="arA11yToggle" onclick="arToggleAnimations()" aria-pressed="false">
     <span id="arA11yIcon">✦</span>
     <span id="arA11yLabel">Animazioni: ON</span>
@@ -1681,7 +1683,7 @@
     </form>
   </div>
 
-  <!-- MODIFICA: pulsante chat spostato a sinistra -->
+  <!-- CHATBOT - NON TOCCATA, rimane a destra -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">
     <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -1753,7 +1755,6 @@
     </svg>
   </button>
 
-  <!-- MODIFICA: finestra chat allineata a sinistra -->
   <div id="arChatWindow">
     <div id="arChatHeader">
       <div class="header-left">
