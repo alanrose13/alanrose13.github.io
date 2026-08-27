@@ -246,6 +246,72 @@
       100% { box-shadow: 0 8px 30px rgba(201,169,97,0.15); }
     }
 
+    /* --------------------------------------------------------------
+       MODALITÀ SENZA ANIMAZIONI (tasto accessibilità + prefers-reduced-motion)
+       Coerente con index.html: stessa classe, stesso comportamento.
+    -------------------------------------------------------------- */
+    body.no-animations * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    body.no-animations header,
+    body.no-animations main,
+    body.no-animations footer {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    body.no-animations .ambient-layer,
+    body.no-animations #arChatBtn { animation: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .ambient-layer { display: none !important; }
+    }
+
+    /* --------------------------------------------------------------
+       TASTO ACCESSIBILITÀ ANIMAZIONI - SPOSTATO A SINISTRA IN ALTO
+       (vicino al selettore lingua ma a sinistra)
+    -------------------------------------------------------------- */
+    #arA11yToggle {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 9999;
+      background: rgba(245, 241, 232, 0.92);
+      border: 1px solid rgba(201,169,97,0.25);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--m);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: .3s;
+    }
+    #arA11yToggle:hover { background: #fff; }
+    @media (max-width: 480px) {
+      #arA11yToggle {
+        top: 8px;
+        left: 8px;
+        font-size: 11px;
+        padding: 4px 10px;
+      }
+    }
+
+    /* CHATBOT - NON TOCCATA, rimane a destra come prima */
     #arChatBtn {
       position: fixed;
       bottom: 20px;
@@ -274,6 +340,7 @@
     }
     #arChatBtn svg { width: 55px; height: 55px; }
 
+    /* CHAT WINDOW - NON TOCCATA, rimane a destra */
     #arChatWindow {
       position: fixed;
       bottom: 100px;
@@ -504,73 +571,6 @@
       outline-offset: 2px;
     }
 
-    /* --------------------------------------------------------------
-       MODALITÀ SENZA ANIMAZIONI (tasto accessibilità + prefers-reduced-motion)
-       Coerente con index.html: stessa classe, stesso comportamento.
-    -------------------------------------------------------------- */
-    body.no-animations * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-    body.no-animations header,
-    body.no-animations main,
-    body.no-animations footer {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-    body.no-animations .ambient-layer,
-    body.no-animations #arChatBtn { animation: none !important; }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-      .ambient-layer { display: none !important; }
-    }
-
-    /* --------------------------------------------------------------
-       TASTO ACCESSIBILITÀ ANIMAZIONI
-    -------------------------------------------------------------- */
-    #arA11yToggle {
-      position: fixed;
-      top: 12px;
-      right: 190px;
-      z-index: 9999;
-      background: rgba(245, 241, 232, 0.92);
-      border: 1px solid rgba(201,169,97,0.25);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 6px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--m);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      transition: .3s;
-    }
-    #arA11yToggle:hover { background: #fff; }
-    @media (max-width: 900px) {
-      #arA11yToggle {
-        top: auto;
-        bottom: 100px;
-        right: 12px;
-        left: auto;
-      }
-    }
-    @media (max-width: 480px) {
-      #arA11yToggle { font-size: 11px; padding: 5px 10px; bottom: 90px; }
-    }
-
     .ar-msg.bot a {
       color: #B8962E;
       text-decoration: underline;
@@ -604,6 +604,7 @@
     <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
+  <!-- MODIFICA: pulsante animazioni spostato a sinistra in alto -->
   <button id="arA11yToggle" onclick="arToggleAnimations()" aria-pressed="false">
     <span id="arA11yIcon">✦</span>
     <span id="arA11yLabel">Animazioni: ON</span>
@@ -803,7 +804,7 @@
     © 2026 Tutti i diritti riservati
   </footer>
 
-  <!-- ============ CHATBOT WIDGET ALAN & ROSE ============ -->
+  <!-- CHATBOT - NON TOCCATA, rimane a destra -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">
     <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
