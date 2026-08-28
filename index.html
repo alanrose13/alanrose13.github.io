@@ -195,11 +195,6 @@
     }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
-    /* FIX #1: moduli Google Forms troncati.
-       I form sono cross-origin: leggere l'altezza reale via JS non è mai
-       possibile (SecurityError), quindi il fallback JS falliva sempre e
-       veniva usata un'altezza troppo bassa. Alziamo qui i valori di
-       default (usati anche prima che il JS giri) e nel fallback JS. */
     .transparent-box.form-box {
       overflow: visible;
     }
@@ -402,12 +397,6 @@
 
     /* --------------------------------------------------------------
        MODALITÀ SENZA ANIMAZIONI (tasto accessibilità + prefers-reduced-motion)
-       FIX #2: prima veniva azzerata solo animation/transition-duration,
-       ma i transition-delay impostati via JS (data-aos-delay) restavano
-       attivi, quindi certi elementi sembravano ancora "in ritardo" e il
-       toggle sembrava non fare nulla. Ora azzeriamo anche transition e
-       transition-delay in modo esplicito, con selettore molto specifico
-       così vince su qualsiasi regola precedente.
     -------------------------------------------------------------- */
     body.no-animations,
     body.no-animations * {
@@ -433,8 +422,7 @@
     }
 
     /* --------------------------------------------------------------
-       TASTO ACCESSIBILITÀ ANIMAZIONI - SPOSTATO A SINISTRA IN ALTO
-       (vicino al selettore lingua ma a sinistra)
+       TASTO ACCESSIBILITÀ ANIMAZIONI - logo A&R + testo + interruttore
     -------------------------------------------------------------- */
     #arA11yToggle {
       position: fixed;
@@ -445,25 +433,49 @@
       border: 1px solid rgba(201,169,97,0.25);
       backdrop-filter: blur(10px);
       border-radius: 24px;
-      padding: 6px 14px;
+      padding: 6px 12px;
       font-size: 13px;
       font-weight: 600;
       color: var(--m);
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       transition: .3s;
     }
     #arA11yToggle:hover { background: #fff; }
+    #arA11yToggle .a11y-logo {
+      width: 22px; height: 22px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+      border: 1px solid rgba(201,169,97,0.5);
+    }
+    #arA11yToggle .a11y-switch {
+      width: 34px; height: 18px; border-radius: 10px;
+      background: var(--o); position: relative; flex-shrink: 0;
+      transition: background .3s;
+    }
+    #arA11yToggle .a11y-switch.off { background: #c9c2b2; }
+    #arA11yToggle .a11y-switch-knob {
+      position: absolute; top: 2px; left: 2px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+      transform: translateX(16px);
+      transition: transform .3s;
+    }
+    #arA11yToggle .a11y-switch.off .a11y-switch-knob { transform: translateX(0); }
     @media (max-width: 480px) {
       #arA11yToggle {
         top: 8px;
         left: 8px;
         font-size: 11px;
         padding: 4px 10px;
+        gap: 6px;
       }
+      #arA11yToggle .a11y-logo { width: 18px; height: 18px; }
+      #arA11yToggle .a11y-switch { width: 28px; height: 15px; }
+      #arA11yToggle .a11y-switch-knob { width: 11px; height: 11px; transform: translateX(13px); }
+      #arA11yToggle .a11y-switch.off .a11y-switch-knob { transform: translateX(0); }
     }
 
     /* CHATBOT - rimane a destra */
@@ -931,8 +943,9 @@
   </div>
 
   <button id="arA11yToggle" onclick="arToggleAnimations()" aria-pressed="false">
-    <span id="arA11yIcon">✦</span>
+    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" alt="" class="a11y-logo">
     <span id="arA11yLabel">Animazioni: ON</span>
+    <span class="a11y-switch" id="arA11ySwitch"><span class="a11y-switch-knob"></span></span>
   </button>
 
   <script>
@@ -1028,12 +1041,6 @@
         return;
       }
       setLangCookie(lang);
-      // FIX #3 (performance): Google Translate viene caricato on-demand,
-      // solo quando serve davvero (cambio lingua diverso da IT), invece
-      // che sempre al caricamento della pagina. Se lo script non è ancora
-      // stato caricato lo iniettiamo ora e poi ricarichiamo la pagina;
-      // se la pagina viene ricaricata con un cookie lingua già impostato,
-      // il DOMContentLoaded più in basso lo carica automaticamente.
       window.location.reload();
     }
 
@@ -1044,7 +1051,6 @@
       document.getElementById('languageSelect').value = defaultLang;
       setFlag(defaultLang);
 
-      // Carica lo script di Google Translate solo se serve (lingua != it)
       if (cookieLang && cookieLang !== 'it') {
         loadGoogleTranslateScript();
       }
@@ -1073,12 +1079,6 @@
       }, 'google_translate_element');
     }
   </script>
-  <!-- FIX #3 (performance): rimosso il caricamento incondizionato dello
-       script Google Translate qui nel <head>-area. Ora viene iniettato
-       da loadGoogleTranslateScript() solo quando l'utente sceglie
-       davvero una lingua diversa dall'italiano, riducendo il peso e i
-       tempi di caricamento iniziale della pagina per la maggior parte
-       dei visitatori (che restano in italiano). -->
 
   <header data-aos="fade" data-aos-duration="1800" data-aos-easing="ease-out">
     <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="lo" alt="Alan & Rose">
@@ -1086,9 +1086,6 @@
       <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
     </video>
-    <!-- FIX #3: rimosso fetchpriority="high" dal video: forzava la massima
-         priorità di rete su un file pesante, competendo con il resto della
-         pagina e ritardando il primo rendering utile (LCP). -->
     <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1600" data-aos-easing="ease-out">
       <a href="javascript:void(0)" onclick="openPopup('chiPopup')">Chi Siamo</a>
       <a href="javascript:void(0)" onclick="openPopup('servPopup')">Servizi</a>
@@ -1814,8 +1811,10 @@
     // ============================================================
     // MOTORE DI RIVELAZIONE ALLO SCROLL - autonomo, nessuna libreria
     // esterna. Legge data-aos / data-aos-delay / data-aos-duration
-    // e aggiunge/rimuove la classe .reveal-in quando l'elemento entra
-    // o esce dal viewport.
+    // e aggiunge la classe .reveal-in quando l'elemento entra nel
+    // viewport UNA SOLA VOLTA (fix: prima veniva rimossa uscendo dal
+    // viewport, causando sfarfallio/sparizioni durante lo scroll che
+    // sembravano un'animazione "rotta").
     // ============================================================
     (function () {
       var els = Array.prototype.slice.call(document.querySelectorAll('[data-aos]'));
@@ -1828,16 +1827,6 @@
       }
       els.forEach(applyTiming);
 
-      function checkNoAnimations() {
-        if (document.body.classList.contains('no-animations')) {
-          els.forEach(function (el) {
-            el.classList.add('reveal-in');
-          });
-          return true;
-        }
-        return false;
-      }
-
       if (!('IntersectionObserver' in window)) {
         els.forEach(function (el) { el.classList.add('reveal-in'); });
         return;
@@ -1848,24 +1837,33 @@
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('reveal-in');
-          } else {
-            entry.target.classList.remove('reveal-in');
+            io.unobserve(entry.target);
           }
         });
       }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
 
       els.forEach(function (el) { io.observe(el); });
 
-      setTimeout(function () {
+      function revealVisible() {
         if (document.body.classList.contains('no-animations')) return;
         els.forEach(function (el) {
+          if (el.classList.contains('reveal-in')) return;
           var r = el.getBoundingClientRect();
           var inView = r.top < window.innerHeight && r.bottom > 0;
-          if (inView && !el.classList.contains('reveal-in')) {
+          if (inView) {
             el.classList.add('reveal-in');
+            io.unobserve(el);
           }
         });
-      }, 3000);
+      }
+
+      // rete di sicurezza: rilancia il check dopo il caricamento di
+      // immagini/video (che possono spostare il layout) e dopo un
+      // breve ritardo per catturare eventuali elementi già in vista
+      // prima che l'observer si fosse attaccato.
+      window.addEventListener('load', revealVisible);
+      setTimeout(revealVisible, 1200);
+      setTimeout(revealVisible, 3000);
 
       var observer = new MutationObserver(function() {
         if (document.body.classList.contains('no-animations')) {
@@ -1885,16 +1883,16 @@
 
     // ============================================================
     // TASTO ACCESSIBILITÀ - attiva/disattiva tutte le animazioni
-    // FIX #2: ora resettiamo esplicitamente anche transitionDelay
-    // inline (impostato sopra da applyTiming) quando disattiviamo,
-    // così nessun elemento resta "in coda" con un ritardo residuo.
+    // Ora aggiorna anche l'interruttore visivo accanto al logo A&R.
     // ============================================================
     function arApplyAnimationsPref(enabled) {
       document.body.classList.toggle('no-animations', !enabled);
       var label = document.getElementById('arA11yLabel');
       var btn = document.getElementById('arA11yToggle');
+      var sw = document.getElementById('arA11ySwitch');
       if (label) label.textContent = 'Animazioni: ' + (enabled ? 'ON' : 'OFF');
       if (btn) btn.setAttribute('aria-pressed', String(!enabled));
+      if (sw) sw.classList.toggle('off', !enabled);
       if (!enabled) {
         document.querySelectorAll('[data-aos]').forEach(function (el) {
           el.classList.add('reveal-in');
@@ -1902,7 +1900,6 @@
           el.style.transitionDuration = '0.01ms';
         });
       } else {
-        // Riattivando, ripristiniamo i tempi originali dagli attributi data-*
         document.querySelectorAll('[data-aos]').forEach(function (el) {
           var duration = el.getAttribute('data-aos-duration');
           var delay = el.getAttribute('data-aos-delay');
@@ -1927,13 +1924,6 @@
       arApplyAnimationsPref(enabled);
     })();
 
-    // FIX #1: i form di Google sono cross-origin, quindi non è mai
-    // possibile leggere l'altezza reale del loro contenuto via JS
-    // (contentWindow.document è bloccato dal browser). Il vecchio
-    // codice ci provava comunque, falliva sempre in silenzio (catch)
-    // e usava un'altezza fissa troppo bassa: il form restava tagliato
-    // prima del tasto "Invia". Ora usiamo direttamente un'altezza
-    // fissa generosa, coerente con quella già impostata via CSS.
     function resizeIframe(iframe) {
       var h = window.innerWidth < 480 ? 1500 : (window.innerWidth < 768 ? 1700 : 1900);
       iframe.style.height = h + 'px';
