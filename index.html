@@ -195,12 +195,17 @@
     }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
+    /* FIX #1: moduli Google Forms troncati.
+       I form sono cross-origin: leggere l'altezza reale via JS non è mai
+       possibile (SecurityError), quindi il fallback JS falliva sempre e
+       veniva usata un'altezza troppo bassa. Alziamo qui i valori di
+       default (usati anche prima che il JS giri) e nel fallback JS. */
     .transparent-box.form-box {
       overflow: visible;
     }
     .transparent-box.form-box iframe {
-      min-height: 1500px;
-      height: 1500px;
+      min-height: 1900px;
+      height: 1900px;
     }
 
     .transparent-box.comments-box {
@@ -328,7 +333,7 @@
       .donation-box { padding: 20px; }
       .donation-box img { max-width: 160px; }
       .transparent-box { padding: 12px; }
-      .transparent-box.form-box iframe { min-height: 1300px; height: 1300px; }
+      .transparent-box.form-box iframe { min-height: 1700px; height: 1700px; }
       .transparent-box.comments-box { max-height: 380px; }
     }
     @media (max-width: 480px) {
@@ -343,7 +348,7 @@
       .donation-box img { max-width: 140px; }
       .donation-box { padding: 16px; }
       .transparent-box { padding: 10px; }
-      .transparent-box.form-box iframe { min-height: 1150px; height: 1150px; }
+      .transparent-box.form-box iframe { min-height: 1500px; height: 1500px; }
       .transparent-box.comments-box { max-height: 320px; font-size: .8rem; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
@@ -397,11 +402,18 @@
 
     /* --------------------------------------------------------------
        MODALITÀ SENZA ANIMAZIONI (tasto accessibilità + prefers-reduced-motion)
+       FIX #2: prima veniva azzerata solo animation/transition-duration,
+       ma i transition-delay impostati via JS (data-aos-delay) restavano
+       attivi, quindi certi elementi sembravano ancora "in ritardo" e il
+       toggle sembrava non fare nulla. Ora azzeriamo anche transition e
+       transition-delay in modo esplicito, con selettore molto specifico
+       così vince su qualsiasi regola precedente.
     -------------------------------------------------------------- */
+    body.no-animations,
     body.no-animations * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+      animation: none !important;
+      transition: none !important;
+      transition-delay: 0s !important;
       scroll-behavior: auto !important;
     }
     body.no-animations [data-aos] {
@@ -427,7 +439,7 @@
     #arA11yToggle {
       position: fixed;
       top: 12px;
-      left: 12px; /* MODIFICA: spostato a sinistra in alto */
+      left: 12px;
       z-index: 9999;
       background: rgba(245, 241, 232, 0.92);
       border: 1px solid rgba(201,169,97,0.25);
@@ -454,11 +466,11 @@
       }
     }
 
-    /* CHATBOT - NON TOCCATA, rimane a destra come prima */
+    /* CHATBOT - rimane a destra */
     #arChatBtn {
       position: fixed;
       bottom: 20px;
-      right: 20px; /* Rimane a destra */
+      right: 20px;
       width: 70px;
       height: 70px;
       border-radius: 50%;
@@ -483,11 +495,10 @@
     }
     #arChatBtn svg { width: 55px; height: 55px; }
 
-    /* CHAT WINDOW - NON TOCCATA, rimane a destra */
     #arChatWindow {
       position: fixed;
       bottom: 100px;
-      right: 20px; /* Rimane a destra */
+      right: 20px;
       width: 360px;
       max-width: 90vw;
       height: 500px;
@@ -919,7 +930,6 @@
     <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
-  <!-- MODIFICA: pulsante animazioni spostato a sinistra in alto -->
   <button id="arA11yToggle" onclick="arToggleAnimations()" aria-pressed="false">
     <span id="arA11yIcon">✦</span>
     <span id="arA11yLabel">Animazioni: ON</span>
@@ -1014,9 +1024,16 @@
       if (lang === 'it') {
         document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
         document.cookie = 'googtrans=; path=/; domain=' + window.location.hostname + '; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
-      } else {
-        setLangCookie(lang);
+        window.location.reload();
+        return;
       }
+      setLangCookie(lang);
+      // FIX #3 (performance): Google Translate viene caricato on-demand,
+      // solo quando serve davvero (cambio lingua diverso da IT), invece
+      // che sempre al caricamento della pagina. Se lo script non è ancora
+      // stato caricato lo iniettiamo ora e poi ricarichiamo la pagina;
+      // se la pagina viene ricaricata con un cookie lingua già impostato,
+      // il DOMContentLoaded più in basso lo carica automaticamente.
       window.location.reload();
     }
 
@@ -1026,7 +1043,22 @@
       const defaultLang = (cookieLang && langMap[cookieLang]) ? cookieLang : detectBrowserLanguage();
       document.getElementById('languageSelect').value = defaultLang;
       setFlag(defaultLang);
+
+      // Carica lo script di Google Translate solo se serve (lingua != it)
+      if (cookieLang && cookieLang !== 'it') {
+        loadGoogleTranslateScript();
+      }
     });
+
+    function loadGoogleTranslateScript() {
+      if (window.__arTranslateLoaded) return;
+      window.__arTranslateLoaded = true;
+      const s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.setAttribute('data-cookieconsent', 'preferences');
+      s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      document.body.appendChild(s);
+    }
   </script>
 
   <div id="google_translate_element" style="display:none;"></div>
@@ -1041,14 +1073,22 @@
       }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" data-cookieconsent="preferences" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- FIX #3 (performance): rimosso il caricamento incondizionato dello
+       script Google Translate qui nel <head>-area. Ora viene iniettato
+       da loadGoogleTranslateScript() solo quando l'utente sceglie
+       davvero una lingua diversa dall'italiano, riducendo il peso e i
+       tempi di caricamento iniziale della pagina per la maggior parte
+       dei visitatori (che restano in italiano). -->
 
   <header data-aos="fade" data-aos-duration="1800" data-aos-easing="ease-out">
     <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="lo" alt="Alan & Rose">
-    <video autoplay muted loop playsinline preload="metadata" fetchpriority="high" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
+    <video autoplay muted loop playsinline preload="metadata" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
       <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
     </video>
+    <!-- FIX #3: rimosso fetchpriority="high" dal video: forzava la massima
+         priorità di rete su un file pesante, competendo con il resto della
+         pagina e ritardando il primo rendering utile (LCP). -->
     <nav data-aos="fade-up" data-aos-delay="500" data-aos-duration="1600" data-aos-easing="ease-out">
       <a href="javascript:void(0)" onclick="openPopup('chiPopup')">Chi Siamo</a>
       <a href="javascript:void(0)" onclick="openPopup('servPopup')">Servizi</a>
@@ -1683,7 +1723,7 @@
     </form>
   </div>
 
-  <!-- CHATBOT - NON TOCCATA, rimane a destra -->
+  <!-- CHATBOT -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">
     <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -1708,28 +1748,22 @@
         </linearGradient>
       </defs>
 
-      <!-- Bagliore diffuso, morbido, senza forma ad anello -->
       <circle cx="50" cy="50" r="46" fill="url(#blessGlow)" opacity="0.55"/>
 
-      <!-- Spalle / collo -->
       <path d="M27 92 C27 76 37 66 50 66 C63 66 73 76 73 92 Z" fill="url(#blessCollar)" opacity="0.9"/>
       <path d="M43 60 L43 71 Q50 76 57 71 L57 60 Z" fill="#E3B489"/>
 
-      <!-- Capelli corti curati -->
       <path d="M27 38 C25 20 36 8 50 8 C64 8 75 20 73 38
                C73 32 69 26 63 24 C60 22 56 24 50 24
                C44 24 40 22 37 24 C31 26 27 32 27 38 Z" fill="url(#blessHair)"/>
       <path d="M29 33 C30 24 37 16 46 14" stroke="#6B4E2C" stroke-width="1.1" opacity="0.5" fill="none" stroke-linecap="round"/>
       <path d="M71 33 C70 24 63 16 54 14" stroke="#6B4E2C" stroke-width="1.1" opacity="0.5" fill="none" stroke-linecap="round"/>
 
-      <!-- Volto -->
       <ellipse cx="50" cy="42" rx="19" ry="22" fill="url(#blessFace)"/>
 
-      <!-- Sopracciglia -->
       <path d="M40 36 Q44 33.5 48 35.5" stroke="#5C4326" stroke-width="1.2" stroke-linecap="round" fill="none"/>
       <path d="M52 35.5 Q56 33.5 60 36" stroke="#5C4326" stroke-width="1.2" stroke-linecap="round" fill="none"/>
 
-      <!-- Occhi -->
       <path d="M40 39.5 Q44 37 48 39.5 Q44 41.5 40 39.5 Z" fill="#FFFFFF"/>
       <path d="M52 39.5 Q56 37 60 39.5 Q56 41.5 52 39.5 Z" fill="#FFFFFF"/>
       <circle cx="44" cy="39.4" r="2.3" fill="#5A3B22"/>
@@ -1739,15 +1773,12 @@
       <circle cx="44.7" cy="38.6" r="0.45" fill="#FFFFFF"/>
       <circle cx="56.7" cy="38.6" r="0.45" fill="#FFFFFF"/>
 
-      <!-- Naso e sorriso sereno -->
       <path d="M50 41 Q49 45 48.3 47" stroke="#C99B72" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.6"/>
       <path d="M43.5 50 Q50 54 56.5 50" stroke="#A5623F" stroke-width="1.3" stroke-linecap="round" fill="none"/>
 
-      <!-- Guance -->
       <ellipse cx="37" cy="47" rx="3.6" ry="2.8" fill="#FFA98C" opacity="0.25"/>
       <ellipse cx="63" cy="47" rx="3.6" ry="2.8" fill="#FFA98C" opacity="0.25"/>
 
-      <!-- Piccoli riflessi di luce, morbidi, senza aureola -->
       <circle cx="20" cy="20" r="1.3" fill="#F5E06A" opacity="0.55"/>
       <circle cx="80" cy="20" r="1.3" fill="#F5E06A" opacity="0.55"/>
       <circle cx="14" cy="42" r="1" fill="#F5E06A" opacity="0.35"/>
@@ -1783,11 +1814,8 @@
     // ============================================================
     // MOTORE DI RIVELAZIONE ALLO SCROLL - autonomo, nessuna libreria
     // esterna. Legge data-aos / data-aos-delay / data-aos-duration
-    // (li lascio nell'HTML per non dover riscrivere ogni sezione) e
-    // aggiunge/rimuove la classe .reveal-in quando l'elemento entra
-    // o esce dal viewport (comportamento "mirror" tipo AOS).
-    // Se per qualsiasi problema la classe no-animations è attiva,
-    // gli elementi saranno forzati a essere visibili.
+    // e aggiunge/rimuove la classe .reveal-in quando l'elemento entra
+    // o esce dal viewport.
     // ============================================================
     (function () {
       var els = Array.prototype.slice.call(document.querySelectorAll('[data-aos]'));
@@ -1800,7 +1828,6 @@
       }
       els.forEach(applyTiming);
 
-      // Se le animazioni sono disabilitate, forziamo la visibilità.
       function checkNoAnimations() {
         if (document.body.classList.contains('no-animations')) {
           els.forEach(function (el) {
@@ -1817,7 +1844,6 @@
       }
 
       var io = new IntersectionObserver(function (entries) {
-        // Se le animazioni sono disattivate, non facciamo nulla (già forzate)
         if (document.body.classList.contains('no-animations')) return;
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
@@ -1830,9 +1856,6 @@
 
       els.forEach(function (el) { io.observe(el); });
 
-      // Rete di sicurezza: se dopo 3s alcuni elementi in viewport
-      // non sono ancora comparsi (mai dovrebbe succedere, ma meglio
-      // prevenire), li rende visibili comunque.
       setTimeout(function () {
         if (document.body.classList.contains('no-animations')) return;
         els.forEach(function (el) {
@@ -1844,7 +1867,6 @@
         });
       }, 3000);
 
-      // Ascolta il cambiamento della classe no-animations per forzare la visibilità
       var observer = new MutationObserver(function() {
         if (document.body.classList.contains('no-animations')) {
           els.forEach(function (el) { el.classList.add('reveal-in'); });
@@ -1863,6 +1885,9 @@
 
     // ============================================================
     // TASTO ACCESSIBILITÀ - attiva/disattiva tutte le animazioni
+    // FIX #2: ora resettiamo esplicitamente anche transitionDelay
+    // inline (impostato sopra da applyTiming) quando disattiviamo,
+    // così nessun elemento resta "in coda" con un ritardo residuo.
     // ============================================================
     function arApplyAnimationsPref(enabled) {
       document.body.classList.toggle('no-animations', !enabled);
@@ -1871,9 +1896,18 @@
       if (label) label.textContent = 'Animazioni: ' + (enabled ? 'ON' : 'OFF');
       if (btn) btn.setAttribute('aria-pressed', String(!enabled));
       if (!enabled) {
-        // Rivela subito tutto, così nulla resta a metà o nascosto
         document.querySelectorAll('[data-aos]').forEach(function (el) {
           el.classList.add('reveal-in');
+          el.style.transitionDelay = '0s';
+          el.style.transitionDuration = '0.01ms';
+        });
+      } else {
+        // Riattivando, ripristiniamo i tempi originali dagli attributi data-*
+        document.querySelectorAll('[data-aos]').forEach(function (el) {
+          var duration = el.getAttribute('data-aos-duration');
+          var delay = el.getAttribute('data-aos-delay');
+          el.style.transitionDuration = duration ? (parseInt(duration, 10) / 1000) + 's' : '';
+          el.style.transitionDelay = delay ? (parseInt(delay, 10) / 1000) + 's' : '';
         });
       }
     }
@@ -1893,18 +1927,16 @@
       arApplyAnimationsPref(enabled);
     })();
 
+    // FIX #1: i form di Google sono cross-origin, quindi non è mai
+    // possibile leggere l'altezza reale del loro contenuto via JS
+    // (contentWindow.document è bloccato dal browser). Il vecchio
+    // codice ci provava comunque, falliva sempre in silenzio (catch)
+    // e usava un'altezza fissa troppo bassa: il form restava tagliato
+    // prima del tasto "Invia". Ora usiamo direttamente un'altezza
+    // fissa generosa, coerente con quella già impostata via CSS.
     function resizeIframe(iframe) {
-      var fallback = window.innerWidth < 480 ? 1150 : (window.innerWidth < 768 ? 1300 : 1500);
-      try {
-        if (iframe.contentWindow && iframe.contentWindow.document) {
-          var height = iframe.contentWindow.document.documentElement.scrollHeight;
-          iframe.style.height = Math.max(height + 50, fallback) + 'px';
-        } else {
-          iframe.style.height = fallback + 'px';
-        }
-      } catch (e) {
-        iframe.style.height = fallback + 'px';
-      }
+      var h = window.innerWidth < 480 ? 1500 : (window.innerWidth < 768 ? 1700 : 1900);
+      iframe.style.height = h + 'px';
     }
 
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
