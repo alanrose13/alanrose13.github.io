@@ -65,12 +65,6 @@
 
     header { position: relative; }
     .bv { width: 100%; height: 55vh; object-fit: cover; display: block; }
-    .lo {
-      position: absolute; top: 15px; left: 15px;
-      width: 70px; height: 70px; object-fit: cover;
-      border-radius: 50%; z-index: 10;
-      border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.3);
-    }
     nav {
       display: flex; flex-wrap: wrap; justify-content: center;
       gap: 12px; padding: 14px;
@@ -195,8 +189,21 @@
     }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
+    /* I moduli Google Form sono cross-origin: non è possibile leggere
+       la loro altezza reale via JS, quindi indovinare un'altezza fissa
+       tagliava il fondo del modulo su schermi piccoli. Ora il box si
+       comporta come quello dei commenti: altezza massima limitata e
+       scorrimento interno con barra sottile, così il modulo si vede
+       sempre per intero scorrendo dentro il riquadro. */
     .transparent-box.form-box {
-      overflow: visible;
+      max-height: 620px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .transparent-box.form-box::-webkit-scrollbar { width: 5px; display: block; }
+    .transparent-box.form-box::-webkit-scrollbar-thumb {
+      background: rgba(201,169,97,0.35);
+      border-radius: 10px;
     }
     .transparent-box.form-box iframe {
       min-height: 1900px;
@@ -317,7 +324,6 @@
 
     @media (max-width: 768px) {
       .bv { height: auto; aspect-ratio: 16/9; }
-      .lo { width: 55px; height: 55px; }
       section { padding: 40px 15px; }
       h2 { font-size: 1.5rem; }
       body { background-attachment: scroll; }
@@ -328,11 +334,11 @@
       .donation-box { padding: 20px; }
       .donation-box img { max-width: 160px; }
       .transparent-box { padding: 12px; }
+      .transparent-box.form-box { max-height: 520px; }
       .transparent-box.form-box iframe { min-height: 1700px; height: 1700px; }
       .transparent-box.comments-box { max-height: 380px; }
     }
     @media (max-width: 480px) {
-      .lo { width: 45px; height: 45px; top: 10px; left: 10px; }
       h2 { font-size: 1.3rem; }
       section { padding: 30px 12px; }
       .btn { padding: 8px 14px; font-size: .88rem; }
@@ -343,6 +349,7 @@
       .donation-box img { max-width: 140px; }
       .donation-box { padding: 16px; }
       .transparent-box { padding: 10px; }
+      .transparent-box.form-box { max-height: 440px; }
       .transparent-box.form-box iframe { min-height: 1500px; height: 1500px; }
       .transparent-box.comments-box { max-height: 320px; font-size: .8rem; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
@@ -433,7 +440,7 @@
       border: 1px solid rgba(201,169,97,0.25);
       backdrop-filter: blur(10px);
       border-radius: 24px;
-      padding: 6px 12px;
+      padding: 6px 14px 6px 6px;
       font-size: 13px;
       font-weight: 600;
       color: var(--m);
@@ -446,9 +453,10 @@
     }
     #arA11yToggle:hover { background: #fff; }
     #arA11yToggle .a11y-logo {
-      width: 22px; height: 22px; border-radius: 50%;
+      width: 38px; height: 38px; border-radius: 50%;
       object-fit: cover; flex-shrink: 0;
-      border: 1px solid rgba(201,169,97,0.5);
+      border: 2px solid rgba(201,169,97,0.6);
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
     }
     #arA11yToggle .a11y-switch {
       width: 34px; height: 18px; border-radius: 10px;
@@ -469,10 +477,10 @@
         top: 8px;
         left: 8px;
         font-size: 11px;
-        padding: 4px 10px;
+        padding: 4px 10px 4px 4px;
         gap: 6px;
       }
-      #arA11yToggle .a11y-logo { width: 18px; height: 18px; }
+      #arA11yToggle .a11y-logo { width: 30px; height: 30px; }
       #arA11yToggle .a11y-switch { width: 28px; height: 15px; }
       #arA11yToggle .a11y-switch-knob { width: 11px; height: 11px; transform: translateX(13px); }
       #arA11yToggle .a11y-switch.off .a11y-switch-knob { transform: translateX(0); }
@@ -1081,7 +1089,6 @@
   </script>
 
   <header data-aos="fade" data-aos-duration="1800" data-aos-easing="ease-out">
-    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" class="lo" alt="Alan & Rose">
     <video autoplay muted loop playsinline preload="metadata" poster="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" class="bv">
       <source src="https://github.com/alanrose13/site/raw/refs/heads/main/img/Banner.mp4" type="video/mp4">
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
