@@ -73,7 +73,9 @@
     nav a {
       color: #fff; text-decoration: none; font-weight: 600;
       padding: 6px 12px; border-radius: 5px; font-size: .95rem;
-      cursor: pointer; transition: .3s;
+      cursor: pointer;
+      transition: background-color .5s cubic-bezier(0.25,0.46,0.45,0.94),
+                  color .5s cubic-bezier(0.25,0.46,0.45,0.94);
     }
     nav a:hover { background: var(--o); color: var(--m); }
 
@@ -100,7 +102,7 @@
         linear-gradient(135deg, rgba(201,169,97,.8), rgba(201,169,97,.1));
       background-origin: border-box;
       background-clip: padding-box, border-box;
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     .card { padding: 22px; }
     .card:hover, .p-item:hover {
@@ -110,8 +112,11 @@
     .btn {
       display: inline-block; background: var(--o); color: var(--m);
       padding: 10px 20px; border-radius: 6px; text-decoration: none;
-      font-weight: 700; font-size: .95rem; transition: .3s;
+      font-weight: 700; font-size: .95rem;
       margin: 5px; border: none; cursor: pointer;
+      transition: background-color .5s cubic-bezier(0.25,0.46,0.45,0.94),
+                  color .5s cubic-bezier(0.25,0.46,0.45,0.94),
+                  box-shadow .5s cubic-bezier(0.25,0.46,0.45,0.94);
     }
     .btn:hover { background: var(--m); color: #fff; box-shadow: 0 0 20px rgba(201,169,97,0.3); }
     .btn:active, nav a:active, .soc a:active {
@@ -192,15 +197,6 @@
     }
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
-    /* I moduli Google Form sono cross-origin: non è possibile leggere
-       la loro altezza reale via JS. Prima lo scroll era sul contenitore
-       esterno (overflow-y:auto) con un iframe altissimo dentro: su PC il
-       mouse scrolla il contenitore e funziona, ma su smartphone il tocco
-       che parte sopra un iframe con scrolling disattivato spesso non
-       viene "passato" al contenitore esterno, quindi il modulo restava
-       tagliato e non scrollabile col dito. Ora il riquadro ha un'altezza
-       fissa e lo scroll avviene DENTRO l'iframe stesso (un solo livello
-       di scroll, niente conflitti col touch). */
     .transparent-box.form-box {
       height: 620px;
       overflow: hidden;
@@ -361,13 +357,14 @@
        NOTA: niente più filter:blur() qui. Animare il blur è pesante
        per la GPU dei telefoni: causava scatti nello scroll e residui
        di sfocatura durante le interazioni. Resta solo un fade +
-       leggera risalita, fluido su qualsiasi dispositivo.
+       leggera risalita, fluido su qualsiasi dispositivo. Durata
+       uniformata a 2s per una dissolvenza leggera e coerente ovunque.
     ============================================================ */
     [data-aos] {
       opacity: 0;
       transition-property: opacity, transform;
       transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-      transition-duration: 1.2s;
+      transition-duration: 2s;
       will-change: opacity, transform;
     }
     [data-aos="fade"] { transform: none; }
@@ -1797,10 +1794,6 @@
         });
       }
 
-      // rete di sicurezza: rilancia il check dopo il caricamento di
-      // immagini/video (che possono spostare il layout) e dopo un
-      // breve ritardo per catturare eventuali elementi già in vista
-      // prima che l'observer si fosse attaccato.
       window.addEventListener('load', revealVisible);
       setTimeout(revealVisible, 1200);
       setTimeout(revealVisible, 3000);
