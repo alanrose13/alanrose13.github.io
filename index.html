@@ -190,24 +190,21 @@
     .transparent-box * { font-family: 'Segoe UI', sans-serif !important; }
 
     /* I moduli Google Form sono cross-origin: non è possibile leggere
-       la loro altezza reale via JS, quindi indovinare un'altezza fissa
-       tagliava il fondo del modulo su schermi piccoli. Ora il box si
-       comporta come quello dei commenti: altezza massima limitata e
-       scorrimento interno con barra sottile, così il modulo si vede
-       sempre per intero scorrendo dentro il riquadro. */
+       la loro altezza reale via JS. Prima lo scroll era sul contenitore
+       esterno (overflow-y:auto) con un iframe altissimo dentro: su PC il
+       mouse scrolla il contenitore e funziona, ma su smartphone il tocco
+       che parte sopra un iframe con scrolling disattivato spesso non
+       viene "passato" al contenitore esterno, quindi il modulo restava
+       tagliato e non scrollabile col dito. Ora il riquadro ha un'altezza
+       fissa e lo scroll avviene DENTRO l'iframe stesso (un solo livello
+       di scroll, niente conflitti col touch). */
     .transparent-box.form-box {
-      max-height: 620px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-    .transparent-box.form-box::-webkit-scrollbar { width: 5px; display: block; }
-    .transparent-box.form-box::-webkit-scrollbar-thumb {
-      background: rgba(201,169,97,0.35);
-      border-radius: 10px;
+      height: 620px;
+      overflow: hidden;
     }
     .transparent-box.form-box iframe {
-      min-height: 1900px;
-      height: 1900px;
+      height: 100%;
+      min-height: 0;
     }
 
     .transparent-box.comments-box {
@@ -334,8 +331,7 @@
       .donation-box { padding: 20px; }
       .donation-box img { max-width: 160px; }
       .transparent-box { padding: 12px; }
-      .transparent-box.form-box { max-height: 520px; }
-      .transparent-box.form-box iframe { min-height: 1700px; height: 1700px; }
+      .transparent-box.form-box { height: 520px; }
       .transparent-box.comments-box { max-height: 380px; }
     }
     @media (max-width: 480px) {
@@ -349,8 +345,7 @@
       .donation-box img { max-width: 140px; }
       .donation-box { padding: 16px; }
       .transparent-box { padding: 10px; }
-      .transparent-box.form-box { max-height: 440px; }
-      .transparent-box.form-box iframe { min-height: 1500px; height: 1500px; }
+      .transparent-box.form-box { height: 440px; }
       .transparent-box.comments-box { max-height: 320px; font-size: .8rem; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
@@ -1259,7 +1254,7 @@
 
     <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
     <div class="transparent-box form-box">
-      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;" onload="resizeIframe(this)"></iframe>
+      <iframe id="formServizio" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="yes" style="width:100%;border:0;border-radius:8px;" onload="resizeIframe(this)"></iframe>
     </div>
 
     <div class="btn-upload-wrap">
@@ -1331,7 +1326,7 @@
 
     <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
     <div class="transparent-box form-box review-form">
-      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;" onload="resizeIframe(this)">Caricamento…</iframe>
+      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="yes" style="width:100%;border:0;border-radius:8px;" onload="resizeIframe(this)">Caricamento…</iframe>
     </div>
   </section>
 
@@ -1516,7 +1511,7 @@
         </p>
         <h3 style="text-align:center;margin-bottom:15px">Richiedi un Servizio</h3>
         <div class="transparent-box form-box">
-          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="no" style="width:100%;border:0;border-radius:8px;" onload="resizeIframe(this)"></iframe>
+          <iframe loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true" scrolling="yes" style="width:100%;border:0;border-radius:8px;" onload="resizeIframe(this)"></iframe>
         </div>
         <div class="btn-upload-wrap">
           <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
@@ -1932,8 +1927,9 @@
     })();
 
     function resizeIframe(iframe) {
-      var h = window.innerWidth < 480 ? 1500 : (window.innerWidth < 768 ? 1700 : 1900);
-      iframe.style.height = h + 'px';
+      // Il CSS ora gestisce l'altezza dell'iframe (100% del riquadro,
+      // con scroll interno gestito dal browser). Non serve più
+      // impostare qui un'altezza fissa via JS.
     }
 
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
@@ -2145,7 +2141,7 @@
             messages: [
               {
                 role: 'system',
-                content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FEREE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **RISPOSTE BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. Quando un utente chiede un servizio/preventivo (es. "voglio un servizio", "vorrei un preventivo"), chiedi: Nome, Email, Tipo di servizio (Grafica & Web, Musica & Produzione, Consulenza), Breve descrizione.\n5. Dopo i dati, dai un riepilogo e il link al modulo.\n6. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n7. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- Él es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso. Usa "noi" e "ti capiamo".'
+                content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati in chat (nome, email, descrizione, ecc.): la conversazione non viene conservata da nessuna parte, quindi raccoglierli sarebbe inutile. Accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruita al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".'
               },
               {
                 role: 'user',
