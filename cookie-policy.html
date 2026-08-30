@@ -67,7 +67,9 @@
       text-decoration: none;
       font-weight: 700;
       font-size: 1.1rem;
+      transition: opacity .5s cubic-bezier(0.25,0.46,0.45,0.94);
     }
+    header a:hover { opacity: .75; }
     main {
       max-width: 800px;
       margin: 40px auto;
@@ -96,7 +98,8 @@
       color: #B8962E;
     }
     p { margin-bottom: 12px; }
-    a.inline { color: var(--o); }
+    a.inline { color: var(--o); transition: opacity .5s cubic-bezier(0.25,0.46,0.45,0.94); }
+    a.inline:hover { opacity: .75; }
     #CookieDeclaration {
       margin-top: 20px;
       background: #fff;
