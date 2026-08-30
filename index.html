@@ -104,7 +104,6 @@
     }
     .card { padding: 22px; }
     .card:hover, .p-item:hover {
-      transform: translateY(-6px) scale(1.01);
       box-shadow: 0 12px 40px rgba(201,169,97,0.25), 0 0 30px rgba(201,169,97,0.08);
       border-color: rgba(201,169,97,0.4);
     }
@@ -354,25 +353,6 @@
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
 
-    .card, .p-item {
-      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-      will-change: transform;
-    }
-    .card.floating, .p-item.floating {
-      animation: softFloat 6s ease-in-out infinite;
-    }
-    .card.floating:nth-child(2n) { animation-delay: 0.8s; }
-    .card.floating:nth-child(3n) { animation-delay: 1.6s; }
-    .p-item.floating:nth-child(2n) { animation-delay: 0.6s; }
-    .p-item.floating:nth-child(3n) { animation-delay: 1.2s; }
-    @keyframes softFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
-    }
-    .card:hover, .p-item:hover {
-      transform: translateY(-4px) scale(1.01) rotate(0.3deg);
-      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    }
     /* ============================================================
        MOTORE DI RIVELAZIONE ALLO SCROLL (sostituisce AOS via CDN)
        Nessuna dipendenza esterna: se questo file carica, l'effetto
@@ -1824,14 +1804,6 @@
       window.addEventListener('load', revealVisible);
       setTimeout(revealVisible, 1200);
       setTimeout(revealVisible, 3000);
-
-      document.addEventListener('DOMContentLoaded', function () {
-        setTimeout(function () {
-          document.querySelectorAll('.card, .p-item').forEach(function (el) {
-            el.classList.add('floating');
-          });
-        }, 600);
-      });
     })();
 
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
