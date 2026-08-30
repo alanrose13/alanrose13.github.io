@@ -115,6 +115,10 @@
       margin: 5px; border: none; cursor: pointer;
     }
     .btn:hover { background: var(--m); color: #fff; box-shadow: 0 0 20px rgba(201,169,97,0.3); }
+    .btn:active, nav a:active, .soc a:active {
+      opacity: .7;
+      transition: opacity .15s ease;
+    }
     .btn-upload-wrap { text-align: center; margin-top: 18px; }
 
     .p-grid {
@@ -374,112 +378,57 @@
        Nessuna dipendenza esterna: se questo file carica, l'effetto
        carica. Stato iniziale + stato finale (.reveal-in) qui sotto;
        la logica che li assegna è in fondo alla pagina.
+       NOTA: niente più filter:blur() qui. Animare il blur è pesante
+       per la GPU dei telefoni: causava scatti nello scroll e residui
+       di sfocatura durante le interazioni. Resta solo un fade +
+       leggera risalita, fluido su qualsiasi dispositivo.
     ============================================================ */
     [data-aos] {
       opacity: 0;
-      filter: blur(8px);
-      transition-property: opacity, transform, filter;
+      transition-property: opacity, transform;
       transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
       transition-duration: 1.2s;
-      will-change: opacity, transform, filter;
+      will-change: opacity, transform;
     }
     [data-aos="fade"] { transform: none; }
     [data-aos="fade-up"] { transform: translateY(48px); }
     [data-aos].reveal-in {
       opacity: 1;
-      filter: blur(0);
       transform: translateY(0);
-    }
-    @media (max-width: 768px) {
-      [data-aos] { filter: blur(4px); }
     }
 
     /* Compatibilità: alias storico usato altrove nel foglio di stile */
-    [data-aos].aos-animate { opacity: 1; filter: blur(0); transform: translateY(0); }
-
-    /* --------------------------------------------------------------
-       MODALITÀ SENZA ANIMAZIONI (tasto accessibilità + prefers-reduced-motion)
-    -------------------------------------------------------------- */
-    body.no-animations,
-    body.no-animations * {
-      animation: none !important;
-      transition: none !important;
-      transition-delay: 0s !important;
-      scroll-behavior: auto !important;
-    }
-    body.no-animations [data-aos] {
-      opacity: 1 !important;
-      filter: none !important;
-      transform: none !important;
-    }
-    body.no-animations .ambient-layer,
-    body.no-animations #arChatBtn { animation: none !important; }
+    [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
 
     @media (prefers-reduced-motion: reduce) {
       [data-aos] {
         opacity: 1 !important;
-        filter: none !important;
         transform: none !important;
       }
     }
 
     /* --------------------------------------------------------------
-       TASTO ACCESSIBILITÀ ANIMAZIONI - logo A&R + testo + interruttore
+       LOGO FISSO IN ALTO A SINISTRA - resta visibile durante lo
+       scorrimento. Le animazioni sono sempre attive per l'utente,
+       niente più tasto per disattivarle.
     -------------------------------------------------------------- */
-    #arA11yToggle {
+    #arFixedLogo {
       position: fixed;
       top: 12px;
       left: 12px;
       z-index: 9999;
-      background: rgba(245, 241, 232, 0.92);
-      border: 1px solid rgba(201,169,97,0.25);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 6px 14px 6px 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--m);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      transition: .3s;
     }
-    #arA11yToggle:hover { background: #fff; }
-    #arA11yToggle .a11y-logo {
+    #arFixedLogo img {
       width: 38px; height: 38px; border-radius: 50%;
-      object-fit: cover; flex-shrink: 0;
+      object-fit: cover; display: block;
       border: 2px solid rgba(201,169,97,0.6);
       box-shadow: 0 2px 6px rgba(0,0,0,.15);
     }
-    #arA11yToggle .a11y-switch {
-      width: 34px; height: 18px; border-radius: 10px;
-      background: var(--o); position: relative; flex-shrink: 0;
-      transition: background .3s;
-    }
-    #arA11yToggle .a11y-switch.off { background: #c9c2b2; }
-    #arA11yToggle .a11y-switch-knob {
-      position: absolute; top: 2px; left: 2px;
-      width: 14px; height: 14px; border-radius: 50%;
-      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3);
-      transform: translateX(16px);
-      transition: transform .3s;
-    }
-    #arA11yToggle .a11y-switch.off .a11y-switch-knob { transform: translateX(0); }
     @media (max-width: 480px) {
-      #arA11yToggle {
-        top: 8px;
-        left: 8px;
-        font-size: 11px;
-        padding: 4px 10px 4px 4px;
-        gap: 6px;
-      }
-      #arA11yToggle .a11y-logo { width: 30px; height: 30px; }
-      #arA11yToggle .a11y-switch { width: 28px; height: 15px; }
-      #arA11yToggle .a11y-switch-knob { width: 11px; height: 11px; transform: translateX(13px); }
-      #arA11yToggle .a11y-switch.off .a11y-switch-knob { transform: translateX(0); }
+      #arFixedLogo { top: 8px; left: 8px; }
+      #arFixedLogo img { width: 30px; height: 30px; }
     }
+
 
     /* CHATBOT - rimane a destra */
     #arChatBtn {
@@ -957,11 +906,9 @@
     <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
   </div>
 
-  <button id="arA11yToggle" onclick="arToggleAnimations()" aria-pressed="false">
-    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" alt="" class="a11y-logo">
-    <span id="arA11yLabel">Animazioni: ON</span>
-    <span class="a11y-switch" id="arA11ySwitch"><span class="a11y-switch-knob"></span></span>
-  </button>
+  <div id="arFixedLogo">
+    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" alt="Alan & Rose">
+  </div>
 
   <script>
     const langMap = {
@@ -1859,7 +1806,6 @@
       els.forEach(function (el) { io.observe(el); });
 
       function revealVisible() {
-        if (document.body.classList.contains('no-animations')) return;
         els.forEach(function (el) {
           if (el.classList.contains('reveal-in')) return;
           var r = el.getBoundingClientRect();
@@ -1879,13 +1825,6 @@
       setTimeout(revealVisible, 1200);
       setTimeout(revealVisible, 3000);
 
-      var observer = new MutationObserver(function() {
-        if (document.body.classList.contains('no-animations')) {
-          els.forEach(function (el) { el.classList.add('reveal-in'); });
-        }
-      });
-      observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-
       document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
           document.querySelectorAll('.card, .p-item').forEach(function (el) {
@@ -1893,49 +1832,6 @@
           });
         }, 600);
       });
-    })();
-
-    // ============================================================
-    // TASTO ACCESSIBILITÀ - attiva/disattiva tutte le animazioni
-    // Ora aggiorna anche l'interruttore visivo accanto al logo A&R.
-    // ============================================================
-    function arApplyAnimationsPref(enabled) {
-      document.body.classList.toggle('no-animations', !enabled);
-      var label = document.getElementById('arA11yLabel');
-      var btn = document.getElementById('arA11yToggle');
-      var sw = document.getElementById('arA11ySwitch');
-      if (label) label.textContent = 'Animazioni: ' + (enabled ? 'ON' : 'OFF');
-      if (btn) btn.setAttribute('aria-pressed', String(!enabled));
-      if (sw) sw.classList.toggle('off', !enabled);
-      if (!enabled) {
-        document.querySelectorAll('[data-aos]').forEach(function (el) {
-          el.classList.add('reveal-in');
-          el.style.transitionDelay = '0s';
-          el.style.transitionDuration = '0.01ms';
-        });
-      } else {
-        document.querySelectorAll('[data-aos]').forEach(function (el) {
-          var duration = el.getAttribute('data-aos-duration');
-          var delay = el.getAttribute('data-aos-delay');
-          el.style.transitionDuration = duration ? (parseInt(duration, 10) / 1000) + 's' : '';
-          el.style.transitionDelay = delay ? (parseInt(delay, 10) / 1000) + 's' : '';
-        });
-      }
-    }
-
-    function arToggleAnimations() {
-      var current = localStorage.getItem('arAnimationsEnabled');
-      var enabled = current === null ? true : current === 'true';
-      var next = !enabled;
-      localStorage.setItem('arAnimationsEnabled', String(next));
-      arApplyAnimationsPref(next);
-    }
-
-    (function () {
-      var stored = localStorage.getItem('arAnimationsEnabled');
-      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var enabled = stored !== null ? stored === 'true' : !prefersReduced;
-      arApplyAnimationsPref(enabled);
     })();
 
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
