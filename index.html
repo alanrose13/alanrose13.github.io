@@ -933,6 +933,18 @@
 </head>
 <body>
 
+  <script>
+    // Definita subito (non in fondo alla pagina) perché gli iframe dei
+    // moduli con onload="resizeIframe(this)" possono scattare il loro
+    // primo evento "load" (pagina vuota iniziale) prima che il browser
+    // arrivi allo script in fondo al body, generando altrimenti un
+    // errore "resizeIframe is not defined".
+    function resizeIframe(iframe) {
+      // Il CSS gestisce l'altezza dell'iframe (100% del riquadro, con
+      // scroll interno gestito dal browser): qui non serve più fare nulla.
+    }
+  </script>
+
   <div class="ambient-layer" aria-hidden="true">
     <div class="ambient-blob b1"></div>
     <div class="ambient-blob b2"></div>
@@ -1925,12 +1937,6 @@
       var enabled = stored !== null ? stored === 'true' : !prefersReduced;
       arApplyAnimationsPref(enabled);
     })();
-
-    function resizeIframe(iframe) {
-      // Il CSS ora gestisce l'altezza dell'iframe (100% del riquadro,
-      // con scroll interno gestito dal browser). Non serve più
-      // impostare qui un'altezza fissa via JS.
-    }
 
     function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
