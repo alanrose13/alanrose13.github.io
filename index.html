@@ -68,7 +68,7 @@
     nav {
       display: flex; flex-wrap: wrap; justify-content: center;
       gap: 12px; padding: 14px;
-      background: rgba(0,0,0,.6); backdrop-filter: blur(5px);
+      background: rgba(0,0,0,.72);
     }
     nav a {
       color: #fff; text-decoration: none; font-weight: 600;
@@ -96,7 +96,6 @@
       background: var(--bg);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,.05);
-      backdrop-filter: blur(10px);
       border: 1px solid transparent;
       background-image: linear-gradient(var(--bg), var(--bg)),
         linear-gradient(135deg, rgba(201,169,97,.8), rgba(201,169,97,.1));
@@ -147,7 +146,6 @@
       background: var(--bg);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,.05);
-      backdrop-filter: blur(10px);
       border: 1px solid transparent;
       background-image: linear-gradient(var(--bg), var(--bg)),
         linear-gradient(135deg, rgba(201,169,97,.8), rgba(201,169,97,.1));
@@ -350,15 +348,12 @@
     }
 
     /* ============================================================
-       MOTORE DI RIVELAZIONE ALLO SCROLL (sostituisce AOS via CDN)
-       Nessuna dipendenza esterna: se questo file carica, l'effetto
-       carica. Stato iniziale + stato finale (.reveal-in) qui sotto;
-       la logica che li assegna è in fondo alla pagina.
-       NOTA: niente più filter:blur() qui. Animare il blur è pesante
-       per la GPU dei telefoni: causava scatti nello scroll e residui
-       di sfocatura durante le interazioni. Resta solo un fade +
-       leggera risalita, fluido su qualsiasi dispositivo. Durata
-       uniformata a 2s per una dissolvenza leggera e coerente ovunque.
+       MOTORE DI RIVELAZIONE ALLO SCROLL
+       Su mobile: fade + leggera risalita (comportamento originale).
+       Su desktop: solo dissolvenza pura, più leggera per la GPU,
+       niente translateY (vedi media query sotto), perché su schermi
+       grandi il traslare + comporre più elementi contemporaneamente
+       è più pesante e si nota come "scattoso".
     ============================================================ */
     [data-aos] {
       opacity: 0;
@@ -376,6 +371,18 @@
 
     /* Compatibilità: alias storico usato altrove nel foglio di stile */
     [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
+
+    /* Su desktop: niente traslazione (per non pesare sulla GPU su
+       schermi grandi), ma dissolvenza lenta e morbida — non un
+       semplice "appare/scompare" a scatto. Durata più lunga della
+       versione precedente e curva più dolce in coda. */
+    @media (min-width: 900px) {
+      [data-aos="fade-up"] { transform: none; }
+      [data-aos] {
+        transition-duration: 2.4s;
+        transition-timing-function: ease-out;
+      }
+    }
 
     @media (prefers-reduced-motion: reduce) {
       [data-aos] {
@@ -396,14 +403,14 @@
       z-index: 9999;
     }
     #arFixedLogo img {
-      width: 38px; height: 38px; border-radius: 50%;
+      width: 62px; height: 62px; border-radius: 50%;
       object-fit: cover; display: block;
       border: 2px solid rgba(201,169,97,0.6);
       box-shadow: 0 2px 6px rgba(0,0,0,.15);
     }
     @media (max-width: 480px) {
       #arFixedLogo { top: 8px; left: 8px; }
-      #arFixedLogo img { width: 30px; height: 30px; }
+      #arFixedLogo img { width: 44px; height: 44px; }
     }
 
 
@@ -434,7 +441,87 @@
       transform: scale(1.1) rotate(-3deg);
       box-shadow: 0 12px 40px rgba(201, 169, 97, 0.4), 0 0 80px rgba(201, 169, 97, 0.15);
     }
-    #arChatBtn svg { width: 55px; height: 55px; }
+    #arChatBtn img {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Badge di notifica "1" sull'icona della chat */
+    #arChatBadge {
+      position: fixed;
+      bottom: 66px;
+      right: 14px;
+      width: 22px;
+      height: 22px;
+      background: #E24C4C;
+      color: #fff;
+      border-radius: 50%;
+      font-size: .75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+      animation: badgePop .4s cubic-bezier(0.23,1,0.32,1) both;
+      pointer-events: none;
+    }
+    @keyframes badgePop {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    #arChatBadge.hidden { display: none; }
+
+    /* Fumetto "Chatta con noi" sopra l'icona */
+    #arChatTooltip {
+      position: fixed;
+      bottom: 96px;
+      right: 14px;
+      max-width: 190px;
+      background: #fff;
+      color: var(--m);
+      font-family: 'Segoe UI', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      z-index: 10001;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+      transition: opacity .4s cubic-bezier(0.23,1,0.32,1), transform .4s cubic-bezier(0.23,1,0.32,1);
+      pointer-events: none;
+    }
+    #arChatTooltip.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    #arChatTooltip .tt-close {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      background: var(--m);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      #arChatTooltip { right: 10px; bottom: 86px; max-width: 160px; font-size: .8rem; }
+      #arChatBadge { right: 12px; bottom: 58px; width: 20px; height: 20px; font-size: .7rem; }
+    }
 
     #arChatWindow {
       position: fixed;
@@ -444,8 +531,7 @@
       max-width: 90vw;
       height: 500px;
       max-height: 75vh;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.92);
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 80px rgba(201,169,97,0.05);
       display: flex;
@@ -587,7 +673,6 @@
       padding: 12px 16px;
       border-radius: 20px;
       border-top-left-radius: 4px;
-      backdrop-filter: blur(10px);
     }
     .ar-msg.typing .dot {
       display: inline-block;
@@ -610,7 +695,6 @@
       padding: 10px 12px;
       gap: 8px;
       background: rgba(255,255,255,0.5);
-      backdrop-filter: blur(10px);
     }
     #arChatInput {
       flex: 1;
@@ -620,7 +704,6 @@
       font-family: 'Segoe UI', sans-serif;
       font-size: .9rem;
       background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(10px);
       transition: .3s;
     }
     #arChatInput:focus {
@@ -657,7 +740,7 @@
         height: 70vh;
       }
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
-      #arChatBtn svg { width: 46px; height: 46px; }
+      #arChatBtn img { width: 48px; height: 48px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
 
@@ -670,7 +753,6 @@
       width: 280px;
       max-width: 80vw;
       background: rgba(245, 241, 232, 0.95);
-      backdrop-filter: blur(14px);
       border: 1px solid rgba(201,169,97,0.35);
       border-left: none;
       border-radius: 0 16px 16px 0;
@@ -708,7 +790,6 @@
       border-radius: 24px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       border: 1px solid rgba(201,169,97,0.25);
-      backdrop-filter: blur(10px);
       font-size: 14px;
       display: flex;
       align-items: center;
@@ -793,6 +874,16 @@
       .ambient-layer { display: none !important; }
     }
 
+    /* ============================================================
+       AMBIENT LAYER (blob di sfondo)
+       - blur ridotto da 70px a 40px: il costo del blur cresce con
+         l'area sfocata, quindi su schermi grandi (desktop) 70px
+         era molto più pesante che su un piccolo schermo mobile.
+       - opacità leggermente ridotta per compensare il minor blur.
+       - su schermi molto larghi (>=1400px) il layer viene
+         disattivato del tutto: il guadagno estetico è minimo,
+         il costo prestazionale no.
+    ============================================================ */
     .ambient-layer {
       position: fixed;
       inset: 0;
@@ -803,8 +894,8 @@
     .ambient-blob {
       position: absolute;
       border-radius: 50%;
-      filter: blur(70px);
-      opacity: 0.28;
+      filter: blur(40px);
+      opacity: 0.22;
       background: radial-gradient(circle at 30% 30%, rgba(201,169,97,0.55), rgba(201,169,97,0) 70%);
       animation: ambientDrift 46s ease-in-out infinite;
       will-change: transform;
@@ -833,9 +924,12 @@
       100% { transform: translate(0, 0) scale(1); }
     }
     @media (max-width: 768px) {
-      .ambient-blob { filter: blur(40px); opacity: 0.28; }
+      .ambient-blob { filter: blur(28px); opacity: 0.22; }
       .ambient-blob.b1, .ambient-blob.b2, .ambient-blob.b3 { width: 240px; height: 240px; }
       .ambient-blob.b4 { width: 180px; height: 180px; }
+    }
+    @media (min-width: 1400px) {
+      .ambient-layer { display: none; }
     }
 
     .ar-msg.bot a {
@@ -1315,65 +1409,6 @@
     </div>
   </div>
 
-  <div id="portPopup" class="popup-overlay" onclick="closePopup('portPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('portPopup')">×</span>
-      <section>
-        <h2>Portfolio</h2>
-        <div class="p-grid">
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
-            <div class="p-c">
-              <h3>Dj Marcello Morf</h3>
-              <p>Un sito realizzato per un deejay che offre principalmente i suoi servizi in Campania tra le zone marittime di Portici (NA) ma che a volte va in trasferta per i suoi clienti. All'interno oltre il suo portfolio troverai una radio web attiva h24 con stanze di chat pubbliche e private, ma non solo! Tanto intrattenimento ti attende, cosa aspetti?</p>
-              <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
-            <div class="p-c">
-              <h3>Donna Proverbiale</h3>
-              <p>Blog per donne e fede in Cristo...</p>
-              <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
-            <div class="p-c">
-              <h3>Detercoop</h3>
-              <p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale, dedito ad attività, aziende e privati. Accedi al sito per trovare un'alternativa ai prodotti che usi quotidianamente risparmiando ed ottenendo materiali professionali.</p>
-              <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
-            <div class="p-c">
-              <h3>3Fase</h3>
-              <p>Un sito realizzato per questo gruppo musicale dove si trovano canzoni molto carine e orecchiabili. Dentro troverete il repertorio di ogni artista quasi come fosse una playlist.</p>
-              <a href="https://sites.google.com/view/trefase" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
-            <div class="p-c">
-              <h3>Colorlab</h3>
-              <p>Un sito realizzato per un laboratorio fotografico di stampa professionale e realizzazione di album. Troverete molte illustrazioni demo con modelli e la chat operatori per i professionisti del settore della fotografia.</p>
-              <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
-            <div class="p-c">
-              <h3>A Viso Scoperto</h3>
-              <p>Un Canale YouTube della Chiesa dove Alan guidato dalla forza dello Spirito Santo realizzò l'arrangiamento di questi cantici e ne partecipò in uno anche vocalmente (Via Verità e Vita) per innalzare il nome di Dio.</p>
-              <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-
   <div id="musPopup" class="popup-overlay" onclick="closePopup('musPopup')">
     <div class="popup-box" onclick="event.stopPropagation()">
       <span class="popup-close" onclick="closePopup('musPopup')">×</span>
@@ -1466,7 +1501,7 @@
       <span class="popup-close" onclick="closePopup('newsletterPopup')">×</span>
       <section>
         <h2>Iscriviti alla Newsletter</h2>
-        <div class="newsletter-box" style="box-shadow:none;backdrop-filter:none;">
+        <div class="newsletter-box" style="box-shadow:none;">
           <p>Resta aggiornato su nuovi servizi, musica e progetti.</p>
           <a href="https://alan-e-rose-13.voxmail.it/user/register_facebook" target="_blank" class="fb-subscribe">
             <img width="157" height="22" src="https://alan-e-rose-13.voxmail.it/misc/icon_facebook_subscribe.png" alt="Iscriviti tramite Facebook">
@@ -1658,67 +1693,18 @@
     </form>
   </div>
 
+  <!-- Fumetto "Chatta con noi" sopra l'icona chat -->
+  <div id="arChatTooltip" onclick="arOpenFromTooltip()">
+    <span class="tt-close" onclick="event.stopPropagation();arDismissTooltip()">×</span>
+    💬 Chatta con noi!
+  </div>
+
+  <!-- Badge notifica "1" -->
+  <div id="arChatBadge">1</div>
+
   <!-- CHATBOT -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">
-    <svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="blessGlow" cx="50%" cy="46%" r="60%">
-          <stop offset="0%" stop-color="#FFFDF6"/>
-          <stop offset="55%" stop-color="#EACB56" stop-opacity="0.5"/>
-          <stop offset="100%" stop-color="#C9A961" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="blessFace" cx="50%" cy="34%" r="60%">
-          <stop offset="0%" stop-color="#FFF3E4"/>
-          <stop offset="55%" stop-color="#F5D3AE"/>
-          <stop offset="100%" stop-color="#E3B489"/>
-        </radialGradient>
-        <linearGradient id="blessHair" x1="15%" y1="0%" x2="85%" y2="100%">
-          <stop offset="0%" stop-color="#5C4326"/>
-          <stop offset="55%" stop-color="#3E2C18"/>
-          <stop offset="100%" stop-color="#2A1D10"/>
-        </linearGradient>
-        <linearGradient id="blessCollar" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#C9A961"/>
-          <stop offset="100%" stop-color="#8A7024"/>
-        </linearGradient>
-      </defs>
-
-      <circle cx="50" cy="50" r="46" fill="url(#blessGlow)" opacity="0.55"/>
-
-      <path d="M27 92 C27 76 37 66 50 66 C63 66 73 76 73 92 Z" fill="url(#blessCollar)" opacity="0.9"/>
-      <path d="M43 60 L43 71 Q50 76 57 71 L57 60 Z" fill="#E3B489"/>
-
-      <path d="M27 38 C25 20 36 8 50 8 C64 8 75 20 73 38
-               C73 32 69 26 63 24 C60 22 56 24 50 24
-               C44 24 40 22 37 24 C31 26 27 32 27 38 Z" fill="url(#blessHair)"/>
-      <path d="M29 33 C30 24 37 16 46 14" stroke="#6B4E2C" stroke-width="1.1" opacity="0.5" fill="none" stroke-linecap="round"/>
-      <path d="M71 33 C70 24 63 16 54 14" stroke="#6B4E2C" stroke-width="1.1" opacity="0.5" fill="none" stroke-linecap="round"/>
-
-      <ellipse cx="50" cy="42" rx="19" ry="22" fill="url(#blessFace)"/>
-
-      <path d="M40 36 Q44 33.5 48 35.5" stroke="#5C4326" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-      <path d="M52 35.5 Q56 33.5 60 36" stroke="#5C4326" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-
-      <path d="M40 39.5 Q44 37 48 39.5 Q44 41.5 40 39.5 Z" fill="#FFFFFF"/>
-      <path d="M52 39.5 Q56 37 60 39.5 Q56 41.5 52 39.5 Z" fill="#FFFFFF"/>
-      <circle cx="44" cy="39.4" r="2.3" fill="#5A3B22"/>
-      <circle cx="56" cy="39.4" r="2.3" fill="#5A3B22"/>
-      <circle cx="44" cy="39.4" r="0.9" fill="#150E08"/>
-      <circle cx="56" cy="39.4" r="0.9" fill="#150E08"/>
-      <circle cx="44.7" cy="38.6" r="0.45" fill="#FFFFFF"/>
-      <circle cx="56.7" cy="38.6" r="0.45" fill="#FFFFFF"/>
-
-      <path d="M50 41 Q49 45 48.3 47" stroke="#C99B72" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.6"/>
-      <path d="M43.5 50 Q50 54 56.5 50" stroke="#A5623F" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-
-      <ellipse cx="37" cy="47" rx="3.6" ry="2.8" fill="#FFA98C" opacity="0.25"/>
-      <ellipse cx="63" cy="47" rx="3.6" ry="2.8" fill="#FFA98C" opacity="0.25"/>
-
-      <circle cx="20" cy="20" r="1.3" fill="#F5E06A" opacity="0.55"/>
-      <circle cx="80" cy="20" r="1.3" fill="#F5E06A" opacity="0.55"/>
-      <circle cx="14" cy="42" r="1" fill="#F5E06A" opacity="0.35"/>
-      <circle cx="86" cy="42" r="1" fill="#F5E06A" opacity="0.35"/>
-    </svg>
+    <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/AI%20CHAT.png" alt="BLESS" id="arChatBtnImg">
   </button>
 
   <div id="arChatWindow">
@@ -1758,9 +1744,13 @@
       var els = Array.prototype.slice.call(document.querySelectorAll('[data-aos]'));
 
       function applyTiming(el) {
+        var isDesktop = window.matchMedia('(min-width: 900px)').matches;
         var duration = el.getAttribute('data-aos-duration');
         var delay = el.getAttribute('data-aos-delay');
-        if (duration) el.style.transitionDuration = (parseInt(duration, 10) / 1000) + 's';
+        // Su desktop lasciamo che sia il CSS (2.4s, ease-out) a
+        // decidere la durata: qui impostiamo solo il ritardo, così
+        // la dissolvenza resta lenta e morbida invece che a scatto.
+        if (!isDesktop && duration) el.style.transitionDuration = (parseInt(duration, 10) / 1000) + 's';
         if (delay) el.style.transitionDelay = (parseInt(delay, 10) / 1000) + 's';
       }
       els.forEach(applyTiming);
@@ -1896,6 +1886,115 @@
 
     function arToggleChat() {
       document.getElementById('arChatWindow').classList.toggle('open');
+      // aprendo la chat, il "richiamo" (tooltip + badge) non serve più
+      arDismissTooltip();
+      arHideBadge();
+    }
+
+    function arOpenFromTooltip() {
+      document.getElementById('arChatWindow').classList.add('open');
+      arDismissTooltip();
+      arHideBadge();
+    }
+
+    function arDismissTooltip() {
+      var tt = document.getElementById('arChatTooltip');
+      if (tt) tt.classList.remove('visible');
+      sessionStorage.setItem('arChatTooltipDismissed', '1');
+    }
+
+    function arHideBadge() {
+      var badge = document.getElementById('arChatBadge');
+      if (badge) badge.classList.add('hidden');
+      sessionStorage.setItem('arChatBadgeDismissed', '1');
+    }
+
+    // Al posto dell'apertura automatica della finestra di chat,
+    // mostriamo dopo un breve istante un fumetto "Chatta con noi!"
+    // e un badge di notifica "1" sopra l'icona, senza aprire nulla:
+    // meno lavoro per il browser al caricamento, stesso invito
+    // visivo per l'utente.
+    setTimeout(function() {
+      if (!sessionStorage.getItem('arChatTooltipDismissed')) {
+        var tt = document.getElementById('arChatTooltip');
+        if (tt) tt.classList.add('visible');
+      }
+      if (sessionStorage.getItem('arChatBadgeDismissed')) {
+        var badge = document.getElementById('arChatBadge');
+        if (badge) badge.classList.add('hidden');
+      }
+    }, 1200);
+
+    async function arSendMessage() {
+      var input = document.getElementById('arChatInput');
+      var msg = input.value.trim();
+      if (!msg) return;
+
+      if (isBotTyping) {
+        arStopTyping();
+      }
+
+      input.disabled = true;
+      document.getElementById('arChatSend').disabled = true;
+
+      arAddMessage(msg, 'user');
+      input.value = '';
+      arShowTyping();
+
+      try {
+        var response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'qwen/qwen3.6-27b',
+            reasoning_format: 'hidden',
+            reasoning_effort: 'none',
+            messages: [
+              {
+                role: 'system',
+                content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati in chat (nome, email, descrizione, ecc.): la conversazione non viene conservata da nessuna parte, quindi raccoglierli sarebbe inutile. Accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruita al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".'
+              },
+              {
+                role: 'user',
+                content: msg
+              }
+            ],
+            stream: false,
+            temperature: 0.7,
+            max_tokens: 600
+          })
+        });
+
+        var data = await response.json();
+        console.log('BLESS debug - risposta grezza del Worker:', data);
+        arRemoveTyping();
+
+        if (data.error) {
+          var errorMsg = 'Si è verificato un errore. Riprova più tardi.';
+          if (data.error.message && data.error.message.toLowerCase().includes('rate')) {
+            errorMsg = 'Il servizio è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, contattaci a alanrose.13@yahoo.com.';
+          } else if (data.error.message) {
+            errorMsg = 'Errore: ' + data.error.message;
+          }
+          await arTypeMessage(errorMsg, 'bot', 20);
+          return;
+        }
+
+        var reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
+        reply = cleanBotResponse(reply);
+        await arTypeMessage(reply, 'bot', 20);
+
+      } catch (err) {
+        arRemoveTyping();
+        arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
+        console.error('Errore chatbot:', err);
+      } finally {
+        input.disabled = false;
+        document.getElementById('arChatSend').disabled = false;
+        input.focus();
+      }
     }
 
     function arStopTyping() {
@@ -1978,82 +2077,6 @@
       var el = document.getElementById('arTypingIndicator');
       if (el) el.remove();
     }
-
-    async function arSendMessage() {
-      var input = document.getElementById('arChatInput');
-      var msg = input.value.trim();
-      if (!msg) return;
-
-      if (isBotTyping) {
-        arStopTyping();
-      }
-
-      input.disabled = true;
-      document.getElementById('arChatSend').disabled = true;
-
-      arAddMessage(msg, 'user');
-      input.value = '';
-      arShowTyping();
-
-      try {
-        var response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'qwen/qwen3.6-27b',
-            reasoning_format: 'hidden',
-            reasoning_effort: 'none',
-            messages: [
-              {
-                role: 'system',
-                content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati in chat (nome, email, descrizione, ecc.): la conversazione non viene conservata da nessuna parte, quindi raccoglierli sarebbe inutile. Accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruita al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".'
-              },
-              {
-                role: 'user',
-                content: msg
-              }
-            ],
-            stream: false,
-            temperature: 0.7,
-            max_tokens: 600
-          })
-        });
-
-        var data = await response.json();
-        console.log('BLESS debug - risposta grezza del Worker:', data);
-        arRemoveTyping();
-
-        if (data.error) {
-          var errorMsg = 'Si è verificato un errore. Riprova più tardi.';
-          if (data.error.message && data.error.message.toLowerCase().includes('rate')) {
-            errorMsg = 'Il servizio è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, contattaci a alanrose.13@yahoo.com.';
-          } else if (data.error.message) {
-            errorMsg = 'Errore: ' + data.error.message;
-          }
-          await arTypeMessage(errorMsg, 'bot', 20);
-          return;
-        }
-
-        var reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
-        reply = cleanBotResponse(reply);
-        await arTypeMessage(reply, 'bot', 20);
-
-      } catch (err) {
-        arRemoveTyping();
-        arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
-        console.error('Errore chatbot:', err);
-      } finally {
-        input.disabled = false;
-        document.getElementById('arChatSend').disabled = false;
-        input.focus();
-      }
-    }
-
-    setTimeout(function() {
-      document.getElementById('arChatWindow').classList.add('open');
-    }, 800);
   </script>
 
 </body>
