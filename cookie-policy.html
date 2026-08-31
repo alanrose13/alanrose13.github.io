@@ -98,6 +98,8 @@
       color: #B8962E;
     }
     p { margin-bottom: 12px; }
+    ul { margin: 10px 0 16px 20px; }
+    li { margin-bottom: 6px; }
     a.inline { color: var(--o); transition: opacity .5s cubic-bezier(0.25,0.46,0.45,0.94); }
     a.inline:hover { opacity: .75; }
     #CookieDeclaration {
@@ -794,14 +796,24 @@
   </header>
 
   <main>
-    <h1>Cookie Policy</h1>
-    <p><strong>Ultimo aggiornamento: 23 Agosto 2026</strong></p>
+    <h1>🍪 Cookie Policy</h1>
+    <p><strong>Ultimo aggiornamento: 31 Agosto 2026</strong></p>
 
     <h2>Cosa sono i cookie</h2>
     <p>
-      I cookie sono piccoli file di testo che i siti visitati inviano al dispositivo dell'utente,
-      dove vengono memorizzati per essere poi ritrasmessi agli stessi siti alla successiva visita.
+      I cookie sono piccoli file di testo che i siti web visitati inviano al browser dell'utente,
+      dove vengono memorizzati per essere poi ritrasmessi agli stessi siti alla visita successiva.
+      I cookie permettono di riconoscere il dispositivo dell'utente e di ricordare alcune informazioni
+      utili per migliorare l'esperienza di navigazione.
     </p>
+
+    <h2>Tipologie di cookie utilizzati</h2>
+    <p>Questo sito utilizza le seguenti categorie di cookie:</p>
+    <ul>
+      <li><strong>Cookie tecnici (necessari):</strong> essenziali per il funzionamento del sito. Consentono la navigazione e l'accesso alle funzionalità di base. Non richiedono il consenso dell'utente.</li>
+      <li><strong>Cookie statistici:</strong> raccolgono informazioni in forma aggregata su come gli utenti utilizzano il sito (numero di visitatori, pagine visitate, ecc.). Sono attivati solo previo consenso.</li>
+      <li><strong>Cookie di marketing:</strong> utilizzati per integrare contenuti multimediali di terze parti (YouTube, Spotify, SoundCloud) e per mostrare contenuti personalizzati. Sono attivati solo previo consenso.</li>
+    </ul>
 
     <h2>Cookie utilizzati su questo sito</h2>
     <p>
@@ -818,17 +830,47 @@
       async>
     </script>
 
-    <h2>Come gestire le preferenze cookie</h2>
+    <h2>Come gestire le preferenze sui cookie</h2>
     <p>
-      Puoi modificare in qualsiasi momento le tue preferenze sui cookie cliccando sul pulsante
-      <strong>Cookiebot</strong> visibile in basso a sinistra su ogni pagina del sito, oppure
-      tornando a questa pagina.
+      Puoi modificare in qualsiasi momento le tue preferenze sui cookie in uno dei seguenti modi:
     </p>
+    <ul>
+      <li>
+        <strong>Dal banner di consenso:</strong> al primo accesso al sito, puoi scegliere quali categorie di cookie accettare.
+      </li>
+      <li>
+        <strong>Dal pulsante Cookiebot:</strong> cliccando sul tasto <strong>"Impostazioni Cookie"</strong> visibile in basso a sinistra su ogni pagina del sito (o cliccando su <a href="javascript:Cookiebot.renew()" class="inline">questo link</a>).
+      </li>
+      <li>
+        <strong>Dalle impostazioni del browser:</strong> puoi configurare il tuo browser per accettare o rifiutare tutti i cookie, o per ricevere un avviso quando un cookie viene inviato.
+      </li>
+    </ul>
+
+    <h2>Diritti degli utenti</h2>
+    <p>
+      Ai sensi del GDPR (artt. 15-21), l'utente ha il diritto di:
+    </p>
+    <ul>
+      <li><strong>Accesso:</strong> ottenere la conferma del trattamento dei propri dati</li>
+      <li><strong>Rettifica:</strong> correggere dati inesatti o incompleti</li>
+      <li><strong>Cancellazione:</strong> ottenere la cancellazione dei propri dati</li>
+      <li><strong>Limitazione:</strong> ottenere la limitazione del trattamento</li>
+      <li><strong>Portabilità:</strong> ricevere i dati in formato strutturato</li>
+      <li><strong>Opposizione:</strong> opporsi al trattamento</li>
+      <li><strong>Reclamo:</strong> presentare un reclamo al Garante Privacy</li>
+    </ul>
+    <p>Per esercitare questi diritti, contattaci a <a href="mailto:alanrose.13@yahoo.com" class="inline">alanrose.13@yahoo.com</a>.</p>
 
     <h2>Titolare del trattamento</h2>
     <p>
-      <strong>Alfio Ragusa</strong>, operante con il nome commerciale "Alan & Rose" — Email:
-      <a class="inline" href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
+      <strong>Alfio Ragusa</strong>, operante con il nome commerciale "Alan & Rose" (A&R) —
+      Email: <a href="mailto:alanrose.13@yahoo.com" class="inline">alanrose.13@yahoo.com</a>
+    </p>
+
+    <h2>Modifiche alla Cookie Policy</h2>
+    <p>
+      La presente Cookie Policy può essere soggetta a modifiche. Ti invitiamo a consultarla periodicamente.
+      La data dell'ultimo aggiornamento è indicata in cima alla pagina.
     </p>
   </main>
 
@@ -892,7 +934,6 @@
     function arToggleChat() {
       const w = document.getElementById('arChatWindow');
       w.classList.toggle('open');
-      // aprendo la chat, il "richiamo" (tooltip + badge) non serve più
       arDismissTooltip();
       arHideBadge();
     }
@@ -915,9 +956,6 @@
       sessionStorage.setItem('arChatBadgeDismissed', '1');
     }
 
-    // Al posto dell'apertura automatica della finestra di chat,
-    // mostriamo dopo un breve istante un fumetto "Chatta con noi!"
-    // e un badge di notifica "1" sopra l'icona, senza aprire nulla.
     setTimeout(() => {
       if (!sessionStorage.getItem('arChatTooltipDismissed')) {
         const tt = document.getElementById('arChatTooltip');
