@@ -349,11 +349,6 @@
 
     /* ============================================================
        MOTORE DI RIVELAZIONE ALLO SCROLL
-       Su mobile: fade + leggera risalita (comportamento originale).
-       Su desktop: dissolvenza + leggera risalita più rapida e
-       reattiva, per dare un senso di fluidità immediata anche su
-       schermi grandi (durata ridotta rispetto alla versione
-       precedente, che risultava troppo lenta/statica).
     ============================================================ */
     [data-aos] {
       opacity: 0;
@@ -369,12 +364,8 @@
       transform: translateY(0);
     }
 
-    /* Compatibilità: alias storico usato altrove nel foglio di stile */
     [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
 
-    /* Su desktop: dissolvenza + risalita più leggera (24px anziché
-       48px, meno lavoro per la GPU su schermi grandi), con una
-       durata più breve e reattiva rispetto a prima. */
     @media (min-width: 900px) {
       [data-aos="fade-up"] { transform: translateY(24px); }
       [data-aos] {
@@ -390,11 +381,7 @@
       }
     }
 
-    /* --------------------------------------------------------------
-       LOGO FISSO IN ALTO A SINISTRA - resta visibile durante lo
-       scorrimento. Le animazioni sono sempre attive per l'utente,
-       niente più tasto per disattivarle.
-    -------------------------------------------------------------- */
+    /* LOGO FISSO */
     #arFixedLogo {
       position: fixed;
       top: 12px;
@@ -412,8 +399,7 @@
       #arFixedLogo img { width: 44px; height: 44px; }
     }
 
-
-    /* CHATBOT - rimane a destra */
+    /* CHATBOT */
     #arChatBtn {
       position: fixed;
       bottom: 20px;
@@ -448,7 +434,6 @@
       display: block;
     }
 
-    /* Badge di notifica "1" sull'icona della chat */
     #arChatBadge {
       position: fixed;
       bottom: 66px;
@@ -475,7 +460,6 @@
     }
     #arChatBadge.hidden { display: none; }
 
-    /* Fumetto "Chatta con noi" sopra l'icona */
     #arChatTooltip {
       position: fixed;
       bottom: 96px;
@@ -1894,11 +1878,7 @@
       <span class="close" onclick="arToggleChat()">×</span>
     </div>
     <div id="arChatMessages">
-      <div class="ar-msg bot">
-        👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
-        Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
-        <em style="font-size:0.8rem;opacity:0.7;">🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;text-decoration:underline;">Privacy Policy</a>. La chat è gestita da un'intelligenza artificiale.</em>
-      </div>
+      <!-- Il messaggio di benvenuto verrà inserito da JavaScript -->
     </div>
     <div id="arChatInputRow">
       <input type="text" id="arChatInput" placeholder="Scrivi un messaggio..." onkeydown="if(event.key==='Enter')arSendMessage()">
@@ -2048,13 +2028,22 @@
     }
 
     function arToggleChat() {
-      document.getElementById('arChatWindow').classList.toggle('open');
+      var window = document.getElementById('arChatWindow');
+      var isOpen = window.classList.contains('open');
+      
+      if (!isOpen) {
+        // Carica la cronologia quando si apre la chat
+        loadChatHistory();
+      }
+      
+      window.classList.toggle('open');
       arDismissTooltip();
       arHideBadge();
     }
 
     function arOpenFromTooltip() {
       document.getElementById('arChatWindow').classList.add('open');
+      loadChatHistory();
       arDismissTooltip();
       arHideBadge();
     }
@@ -2071,6 +2060,161 @@
       sessionStorage.setItem('arChatBadgeDismissed', '1');
     }
 
+    // ============================================================
+    // CRONOLOGIA CHAT - localStorage
+    // ============================================================
+    
+    function getChatHistory() {
+      try {
+        var data = localStorage.getItem('arChatHistory');
+        return data ? JSON.parse(data) : null;
+      } catch(e) {
+        return null;
+      }
+    }
+
+    function saveChatHistory(history) {
+      try {
+        localStorage.setItem('arChatHistory', JSON.stringify(history));
+      } catch(e) {
+        console.warn('Impossibile salvare la cronologia:', e);
+      }
+    }
+
+    function addMessageToHistory(role, content) {
+      var history = getChatHistory();
+      if (!history) {
+        history = {
+          userId: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+          userName: null,
+          messages: [],
+          created: Date.now()
+        };
+      }
+      
+      history.messages.push({
+        role: role,
+        content: content,
+        timestamp: Date.now()
+      });
+      
+      // Limita a 200 messaggi
+      if (history.messages.length > 200) {
+        history.messages = history.messages.slice(-200);
+      }
+      
+      saveChatHistory(history);
+    }
+
+    function saveUserName(name) {
+      var history = getChatHistory();
+      if (history) {
+        history.userName = name;
+        saveChatHistory(history);
+      }
+    }
+
+    function getUserName() {
+      var history = getChatHistory();
+      return history ? history.userName : null;
+    }
+
+    function loadChatHistory() {
+      var box = document.getElementById('arChatMessages');
+      var history = getChatHistory();
+      
+      // Pulisce tutti i messaggi eccetto il benvenuto se esiste
+      var welcomeMsg = box.querySelector('.ar-msg.bot.welcome-msg');
+      box.innerHTML = '';
+      
+      if (history && history.messages.length > 0) {
+        // Mostra gli ultimi 20 messaggi
+        var messages = history.messages.slice(-20);
+        messages.forEach(function(msg) {
+          arAddMessage(msg.content, msg.role, false);
+        });
+        
+        // Se c'è un nome utente, aggiungi un messaggio di benvenuto personalizzato
+        if (history.userName) {
+          var welcomeDiv = document.createElement('div');
+          welcomeDiv.className = 'ar-msg bot welcome-msg';
+          welcomeDiv.innerHTML = '👋 Bentornato/a <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?';
+          box.appendChild(welcomeDiv);
+        }
+      } else {
+        // Nessuna cronologia: messaggio di benvenuto standard
+        var welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'ar-msg bot welcome-msg';
+        welcomeDiv.innerHTML = `
+          👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
+          Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
+          <em style="font-size:0.8rem;opacity:0.7;">🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;text-decoration:underline;">Privacy Policy</a>.</em>
+        `;
+        box.appendChild(welcomeDiv);
+        
+        // Chiedi il nome se non c'è
+        if (!history || !history.userName) {
+          setTimeout(function() {
+            arAddMessage('Come ti chiami? Così possiamo darti un trattamento personalizzato.', 'bot', false);
+          }, 800);
+        }
+      }
+      
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // Override di arAddMessage per includere la cronologia
+    var originalArAddMessage = window.arAddMessage || function() {};
+    
+    function arAddMessage(text, cls, saveToHistory) {
+      if (saveToHistory === undefined) saveToHistory = true;
+      
+      var box = document.getElementById('arChatMessages');
+      var div = document.createElement('div');
+      div.className = 'ar-msg ' + cls;
+      if (cls === 'bot') {
+        div.innerHTML = text;
+      } else {
+        div.innerHTML = `<span class="user-avatar">💛</span><span>${text}</span>`;
+      }
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      
+      // Salva nella cronologia (esclusi i messaggi di benvenuto duplicati)
+      if (saveToHistory && cls === 'user') {
+        addMessageToHistory('user', text);
+        
+        // Rilevazione del nome dell'utente
+        var nameMatch = text.match(/^(mi chiamo|sono|io sono)\s+([A-Za-zÀ-ÖØ-öø-ÿ\s]+)$/i);
+        if (nameMatch) {
+          var name = nameMatch[2].trim();
+          saveUserName(name);
+          // Rimuovi l'ultimo messaggio del bot che chiedeva il nome
+          var msgs = box.querySelectorAll('.ar-msg.bot');
+          if (msgs.length > 0) {
+            var lastBot = msgs[msgs.length - 1];
+            if (lastBot.textContent.includes('Come ti chiami')) {
+              lastBot.remove();
+            }
+          }
+          // Aggiungi risposta personalizzata
+          setTimeout(function() {
+            arAddMessage('Piacere di conoscerti <strong>' + name + '</strong>! Sono qui per aiutarti. Cosa ti serve?', 'bot', false);
+          }, 300);
+        }
+      } else if (saveToHistory && cls === 'bot') {
+        // Non salvare i messaggi di benvenuto nella cronologia
+        if (!text.includes('Bentornato') && !text.includes('Piacere di conoscerti') && !text.includes('Come ti chiami')) {
+          addMessageToHistory('bot', text);
+        }
+      }
+      
+      return div;
+    }
+
+    // Esponi la funzione globalmente
+    window.arAddMessage = arAddMessage;
+
     setTimeout(function() {
       if (!sessionStorage.getItem('arChatTooltipDismissed')) {
         var tt = document.getElementById('arChatTooltip');
@@ -2082,11 +2226,13 @@
       }
     }, 1200);
 
+    // Nuova funzione per inviare messaggio con supporto alla cronologia
     async function arSendMessage() {
       var input = document.getElementById('arChatInput');
       var msg = input.value.trim();
       if (!msg) return;
 
+      // Interrompe la digitazione del bot se in corso
       if (isBotTyping) {
         arStopTyping();
       }
@@ -2094,7 +2240,9 @@
       input.disabled = true;
       document.getElementById('arChatSend').disabled = true;
 
+      // Aggiunge il messaggio utente con salvataggio in cronologia
       arAddMessage(msg, 'user');
+
       input.value = '';
       arShowTyping();
 
@@ -2160,10 +2308,12 @@
         typingInterval = null;
       }
       isBotTyping = false;
+      currentBotMessage = null;
       arRemoveTyping();
     }
 
-    function arAddMessage(text, cls) {
+    // Funzione per aggiungere messaggio senza salvare in cronologia (usata internamente)
+    function arAddMessageNoSave(text, cls) {
       var box = document.getElementById('arChatMessages');
       var div = document.createElement('div');
       div.className = 'ar-msg ' + cls;
@@ -2193,19 +2343,30 @@
         isBotTyping = true;
         currentBotMessage = div;
 
+        // Accumula il testo finale per salvarlo dopo
+        var fullText = '';
+
         typingInterval = setInterval(function() {
           if (!isBotTyping) {
             clearInterval(typingInterval);
             typingInterval = null;
+            // Salva il messaggio del bot nella cronologia (se non è un messaggio di benvenuto)
+            if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
+              addMessageToHistory('bot', fullText);
+            }
             resolve();
             return;
           }
           if (i < text.length) {
             if (cls === 'bot') {
               div.textContent += text.charAt(i);
+              fullText += text.charAt(i);
             } else {
               var span = div.querySelector('span:last-child');
-              if (span) span.textContent += text.charAt(i);
+              if (span) {
+                span.textContent += text.charAt(i);
+                fullText += text.charAt(i);
+              }
             }
             i++;
             box.scrollTop = box.scrollHeight;
@@ -2214,6 +2375,10 @@
             typingInterval = null;
             isBotTyping = false;
             currentBotMessage = null;
+            // Salva il messaggio del bot nella cronologia
+            if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
+              addMessageToHistory('bot', fullText);
+            }
             resolve();
           }
         }, speed);
@@ -2234,6 +2399,23 @@
       var el = document.getElementById('arTypingIndicator');
       if (el) el.remove();
     }
+
+    // Carica la cronologia all'avvio della pagina se la chat è già aperta
+    document.addEventListener('DOMContentLoaded', function() {
+      // Se la chat non è aperta, il messaggio di benvenuto verrà caricato all'apertura
+      // Se invece è aperta per qualche motivo, carica subito
+      if (document.getElementById('arChatWindow').classList.contains('open')) {
+        loadChatHistory();
+      }
+    });
+
+    // Esponi le funzioni globalmente
+    window.arSendMessage = arSendMessage;
+    window.arToggleChat = arToggleChat;
+    window.arOpenFromTooltip = arOpenFromTooltip;
+    window.arDismissTooltip = arDismissTooltip;
+    window.arHideBadge = arHideBadge;
+    window.loadChatHistory = loadChatHistory;
   </script>
 
 </body>
