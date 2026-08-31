@@ -465,6 +465,30 @@
       opacity: 0.7;
       font-weight: 400;
     }
+    #arChatHeader .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #arChatHeader .voice-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.65rem;
+      cursor: pointer;
+      color: rgba(255,255,255,0.7);
+      user-select: none;
+    }
+    #arChatHeader .voice-toggle input[type="checkbox"] {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      accent-color: #C9A961;
+      margin: 0;
+    }
+    #arChatHeader .voice-toggle:hover {
+      color: #fff;
+    }
     #arChatHeader span.close {
       cursor: pointer;
       font-size: 22px;
@@ -681,6 +705,8 @@
       #arChatBtn img { width: 48px; height: 48px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
       .ar-msg.bot .ar-inline-form iframe { height: 300px; }
+      #arChatHeader .voice-toggle { font-size: 0.55rem; }
+      #arChatHeader .voice-toggle input[type="checkbox"] { width: 14px; height: 14px; }
     }
 
     button:focus-visible,
@@ -957,7 +983,13 @@
           <span class="sub">Assistente Virtuale A&amp;R</span>
         </div>
       </div>
-      <span class="close" onclick="arToggleChat()">×</span>
+      <div class="header-right">
+        <label class="voice-toggle" title="Attiva/disattiva la voce del bot">
+          🔊
+          <input type="checkbox" id="arVoiceToggle" checked>
+        </label>
+        <span class="close" onclick="arToggleChat()">×</span>
+      </div>
     </div>
     <div id="arChatMessages">
       <!-- Il messaggio di benvenuto verrà inserito da JavaScript -->
@@ -972,46 +1004,72 @@
   <script>
     (function () {
       // ============================================================
-      // SINTESI VOCALE (Text-to-Speech) - VOCE MASCHILE CALDA E ANGELICA
+      // SINTESI VOCALE - VOICE TOGGLE + VOCE UMANA CALDA E PROFONDA
       // ============================================================
-      function arSpeak(text) {
+      
+      var arVoiceEnabled = true;
+      var arVoicesLoaded = false;
+      var arItalianMaleVoice = null;
+      
+      function arLoadVoices() {
         if (!('speechSynthesis' in window)) return;
+        var voices = window.speechSynthesis.getVoices();
+        
+        var maleVoices = voices.filter(function(v) { 
+          return v.lang.startsWith('it') && 
+                 (v.name.toLowerCase().includes('male') || 
+                  v.name.toLowerCase().includes('giorgio') ||
+                  v.name.toLowerCase().includes('alberto') ||
+                  v.name.toLowerCase().includes('massimo') ||
+                  v.name.toLowerCase().includes('standard-a'));
+        });
+        
+        if (maleVoices.length > 0) {
+          arItalianMaleVoice = maleVoices[0];
+        } else {
+          var anyItalian = voices.find(function(v) { return v.lang.startsWith('it'); });
+          if (anyItalian) arItalianMaleVoice = anyItalian;
+        }
+        
+        arVoicesLoaded = true;
+      }
+      
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = function() {
+          arLoadVoices();
+        };
+        setTimeout(arLoadVoices, 300);
+      }
+      
+      function arSpeak(text) {
+        var toggle = document.getElementById('arVoiceToggle');
+        if (toggle) {
+          arVoiceEnabled = toggle.checked;
+        }
+        
+        if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
+        
         window.speechSynthesis.cancel();
         
         var utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'it-IT';
-        utterance.rate = 0.85; // Leggermente più lento per un tono più calmo
-        utterance.pitch = 0.75; // Più profondo per una voce maschile
-        utterance.volume = 1;
+        utterance.rate = 0.8;
+        utterance.pitch = 0.65;
+        utterance.volume = 1.0;
         
-        // Cerca una voce maschile italiana
-        var voices = window.speechSynthesis.getVoices();
-        var italianVoices = voices.filter(function(v) { 
-          return v.lang.startsWith('it') && v.name.toLowerCase().includes('male');
-        });
-        
-        // Se trova una voce maschile italiana, la usa, altrimenti la prima italiana disponibile
-        if (italianVoices.length > 0) {
-          utterance.voice = italianVoices[0];
+        if (arItalianMaleVoice) {
+          utterance.voice = arItalianMaleVoice;
         } else {
-          var anyItalian = voices.find(function(v) { return v.lang.startsWith('it'); });
-          if (anyItalian) utterance.voice = anyItalian;
+          if (!arVoicesLoaded) arLoadVoices();
+          if (arItalianMaleVoice) utterance.voice = arItalianMaleVoice;
         }
         
-        // Se non trova voci italiane, usa la voce di default ma con pitch più basso
         window.speechSynthesis.speak(utterance);
       }
 
-      // Carica le voci all'avvio
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.getVoices();
-        window.speechSynthesis.onvoiceschanged = function() {
-          window.speechSynthesis.getVoices();
-        };
-      }
-
       // ============================================================
-      // TRASCRIZIONE VOCALE CON WEB SPEECH API (Google Speech Recognition)
+      // TRASCRIZIONE VOCALE CON WEB SPEECH API
       // ============================================================
       var arRecognition = null;
       var arIsRecording = false;
@@ -1052,7 +1110,6 @@
             }
           }
           
-          // Mostra il testo in tempo reale nell'input
           var input = document.getElementById('arChatInput');
           if (arFinalTranscript) {
             input.value = arFinalTranscript + interimTranscript;
@@ -1060,7 +1117,6 @@
             input.value = interimTranscript;
           }
           
-          // Scorri il cursore alla fine
           input.selectionStart = input.selectionEnd = input.value.length;
         };
 
@@ -1077,13 +1133,10 @@
         };
 
         arRecognition.onend = function() {
-          // Se la registrazione è terminata automaticamente ma siamo ancora in stato di registrazione
           if (arIsRecording) {
-            // Riavvia automaticamente per continuità
             try {
               arRecognition.start();
             } catch(e) {
-              // Se non si può riavviare, ferma tutto
               arStopRecordingUI();
             }
           }
@@ -1096,7 +1149,6 @@
           btn.textContent = '⏹';
           btn.classList.add('recording');
           
-          // Pulisci l'input
           document.getElementById('arChatInput').value = '';
           arAddMessage('🎤 Sto ascoltando... Parla ora!', 'bot');
         } catch(e) {
@@ -1118,7 +1170,6 @@
         
         arStopRecordingUI();
         
-        // Se c'è del testo riconosciuto, invia automaticamente il messaggio
         if (text) {
           arSendMessage();
         } else {
@@ -1270,7 +1321,6 @@
           `;
           box.appendChild(welcomeDiv);
           
-          // Pulsanti azione rapida
           arAddActionButtons([
             { label: '📋 Servizi', action: 'mostraServizi' },
             { label: '🎵 Musica', action: 'mostraMusica' },
@@ -1385,7 +1435,6 @@
         if (saveToHistory && cls === 'user') {
           addMessageToHistory('user', text);
           
-          // Rilevazione del nome
           var nameMatch = text.match(/^(mi chiamo|sono|io sono)\s+([A-Za-zÀ-ÖØ-öø-ÿ\s]+)$/i);
           if (nameMatch) {
             var name = nameMatch[2].trim();
@@ -1409,7 +1458,6 @@
         } else if (saveToHistory && cls === 'bot') {
           if (!text.includes('Bentornato') && !text.includes('Piacere di conoscerti') && !text.includes('Come ti chiami')) {
             addMessageToHistory('bot', text);
-            // Sintesi vocale per i messaggi del bot (esclusi quelli con link o form)
             if (!text.includes('<a') && !text.includes('iframe')) {
               var cleanText = text.replace(/<[^>]*>/g, '');
               arSpeak(cleanText);
@@ -1420,7 +1468,6 @@
         return div;
       }
 
-      // Esponi le funzioni globalmente
       window.arAddMessage = arAddMessage;
       window.arAddActionButtons = arAddActionButtons;
       window.arHandleAction = arHandleAction;
@@ -1438,7 +1485,7 @@
       }, 1200);
 
       // ============================================================
-      // INVIO MESSAGGIO CON INTERRUZIONE - L'UTENTE PUÒ SCRIVERE MENTRE IL BOT DIGITA
+      // INVIO MESSAGGIO CON INTERRUZIONE
       // ============================================================
       
       function arStopTyping() {
@@ -1470,11 +1517,9 @@
           var fullText = '';
 
           typingInterval = setInterval(function() {
-            // Se non è più in fase di digitazione (interrotto dall'utente), ferma
             if (!isBotTyping) {
               clearInterval(typingInterval);
               typingInterval = null;
-              // Salva comunque il testo parziale se c'è
               if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
                 addMessageToHistory('bot', fullText);
                 var cleanText = fullText.replace(/<[^>]*>/g, '');
@@ -1532,17 +1577,14 @@
         var msg = input.value.trim();
         if (!msg) return;
 
-        // Se il bot sta ancora digitando, INTERROMPI la digitazione e procedi
         if (isBotTyping) {
           arStopTyping();
-          // Rimuovi il messaggio parziale del bot che stava digitando
           if (currentBotMessage) {
             currentBotMessage.remove();
             currentBotMessage = null;
           }
         }
 
-        // Se stava registrando, ferma la registrazione
         if (arIsRecording) {
           arStopRecordingUI();
         }
@@ -1598,10 +1640,8 @@
           var reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
           reply = cleanBotResponse(reply);
           
-          // Forza la correzione di eventuali femminili rimasti
           reply = reply.replace(/sono pronta/gi, 'sono pronto');
-          reply = reply.replace(/sono disponibile/gi, 'sono disponibile'); // già maschile
-          reply = reply.replace(/disponibile a/gi, 'disponibile a');
+          reply = reply.replace(/sono disponibile/gi, 'sono disponibile');
           
           await arTypeMessage(reply, 'bot', 20);
 
@@ -1616,14 +1656,12 @@
         }
       }
 
-      // Carica la cronologia all'avvio
       document.addEventListener('DOMContentLoaded', function() {
         if (document.getElementById('arChatWindow').classList.contains('open')) {
           loadChatHistory();
         }
       });
 
-      // Esponi le funzioni globalmente
       window.arSendMessage = arSendMessage;
       window.arToggleChat = arToggleChat;
       window.arOpenFromTooltip = arOpenFromTooltip;
