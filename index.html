@@ -350,16 +350,16 @@
     /* ============================================================
        MOTORE DI RIVELAZIONE ALLO SCROLL
        Su mobile: fade + leggera risalita (comportamento originale).
-       Su desktop: solo dissolvenza pura, più leggera per la GPU,
-       niente translateY (vedi media query sotto), perché su schermi
-       grandi il traslare + comporre più elementi contemporaneamente
-       è più pesante e si nota come "scattoso".
+       Su desktop: dissolvenza + leggera risalita più rapida e
+       reattiva, per dare un senso di fluidità immediata anche su
+       schermi grandi (durata ridotta rispetto alla versione
+       precedente, che risultava troppo lenta/statica).
     ============================================================ */
     [data-aos] {
       opacity: 0;
       transition-property: opacity, transform;
       transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-      transition-duration: 2s;
+      transition-duration: 1.1s;
       will-change: opacity, transform;
     }
     [data-aos="fade"] { transform: none; }
@@ -372,15 +372,14 @@
     /* Compatibilità: alias storico usato altrove nel foglio di stile */
     [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
 
-    /* Su desktop: niente traslazione (per non pesare sulla GPU su
-       schermi grandi), ma dissolvenza lenta e morbida — non un
-       semplice "appare/scompare" a scatto. Durata più lunga della
-       versione precedente e curva più dolce in coda. */
+    /* Su desktop: dissolvenza + risalita più leggera (24px anziché
+       48px, meno lavoro per la GPU su schermi grandi), con una
+       durata più breve e reattiva rispetto a prima. */
     @media (min-width: 900px) {
-      [data-aos="fade-up"] { transform: none; }
+      [data-aos="fade-up"] { transform: translateY(24px); }
       [data-aos] {
-        transition-duration: 2.4s;
-        transition-timing-function: ease-out;
+        transition-duration: 0.9s;
+        transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
       }
     }
 
@@ -876,13 +875,6 @@
 
     /* ============================================================
        AMBIENT LAYER (blob di sfondo)
-       - blur ridotto da 70px a 40px: il costo del blur cresce con
-         l'area sfocata, quindi su schermi grandi (desktop) 70px
-         era molto più pesante che su un piccolo schermo mobile.
-       - opacità leggermente ridotta per compensare il minor blur.
-       - su schermi molto larghi (>=1400px) il layer viene
-         disattivato del tutto: il guadagno estetico è minimo,
-         il costo prestazionale no.
     ============================================================ */
     .ambient-layer {
       position: fixed;
@@ -954,14 +946,8 @@
 <body>
 
   <script>
-    // Definita subito (non in fondo alla pagina) perché gli iframe dei
-    // moduli con onload="resizeIframe(this)" possono scattare il loro
-    // primo evento "load" (pagina vuota iniziale) prima che il browser
-    // arrivi allo script in fondo al body, generando altrimenti un
-    // errore "resizeIframe is not defined".
     function resizeIframe(iframe) {
-      // Il CSS gestisce l'altezza dell'iframe (100% del riquadro, con
-      // scroll interno gestito dal browser): qui non serve più fare nulla.
+      // Il CSS gestisce l'altezza dell'iframe.
     }
   </script>
 
@@ -1409,6 +1395,65 @@
     </div>
   </div>
 
+  <div id="portPopup" class="popup-overlay" onclick="closePopup('portPopup')">
+    <div class="popup-box" onclick="event.stopPropagation()">
+      <span class="popup-close" onclick="closePopup('portPopup')">×</span>
+      <section>
+        <h2>Portfolio</h2>
+        <div class="p-grid">
+          <div class="p-item">
+            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
+            <div class="p-c">
+              <h3>Dj Marcello Morf</h3>
+              <p>Un sito realizzato per un deejay che offre principalmente i suoi servizi in Campania tra le zone marittime di Portici (NA) ma che a volte va in trasferta per i suoi clienti. All'interno oltre il suo portfolio troverai una radio web attiva h24 con stanze di chat pubbliche e private, ma non solo! Tanto intrattenimento ti attende, cosa aspetti?</p>
+              <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
+            </div>
+          </div>
+          <div class="p-item">
+            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
+            <div class="p-c">
+              <h3>Donna Proverbiale</h3>
+              <p>Blog per donne e fede in Cristo...</p>
+              <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
+            </div>
+          </div>
+          <div class="p-item">
+            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
+            <div class="p-c">
+              <h3>Detercoop</h3>
+              <p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale, dedito ad attività, aziende e privati. Accedi al sito per trovare un'alternativa ai prodotti che usi quotidianamente risparmiando ed ottenendo materiali professionali.</p>
+              <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
+            </div>
+          </div>
+          <div class="p-item">
+            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
+            <div class="p-c">
+              <h3>3Fase</h3>
+              <p>Un sito realizzato per questo gruppo musicale dove si trovano canzoni molto carine e orecchiabili. Dentro troverete il repertorio di ogni artista quasi come fosse una playlist.</p>
+              <a href="https://3fase.github.io/" target="_blank" class="btn">Visita</a>
+            </div>
+          </div>
+          <div class="p-item">
+            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
+            <div class="p-c">
+              <h3>Colorlab</h3>
+              <p>Un sito realizzato per un laboratorio fotografico di stampa professionale e realizzazione di album. Troverete molte illustrazioni demo con modelli e la chat operatori per i professionisti del settore della fotografia.</p>
+              <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
+            </div>
+          </div>
+          <div class="p-item">
+            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
+            <div class="p-c">
+              <h3>A Viso Scoperto</h3>
+              <p>Un Canale YouTube della Chiesa dove Alan guidato dalla forza dello Spirito Santo realizzò l'arrangiamento di questi cantici e ne partecipò in uno anche vocalmente (Via Verità e Vita) per innalzare il nome di Dio.</p>
+              <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
   <div id="musPopup" class="popup-overlay" onclick="closePopup('musPopup')">
     <div class="popup-box" onclick="event.stopPropagation()">
       <span class="popup-close" onclick="closePopup('musPopup')">×</span>
@@ -1732,25 +1777,13 @@
   </div>
 
   <script>
-    // ============================================================
-    // MOTORE DI RIVELAZIONE ALLO SCROLL - autonomo, nessuna libreria
-    // esterna. Legge data-aos / data-aos-delay / data-aos-duration
-    // e aggiunge la classe .reveal-in quando l'elemento entra nel
-    // viewport UNA SOLA VOLTA (fix: prima veniva rimossa uscendo dal
-    // viewport, causando sfarfallio/sparizioni durante lo scroll che
-    // sembravano un'animazione "rotta").
-    // ============================================================
     (function () {
       var els = Array.prototype.slice.call(document.querySelectorAll('[data-aos]'));
 
       function applyTiming(el) {
-        var isDesktop = window.matchMedia('(min-width: 900px)').matches;
         var duration = el.getAttribute('data-aos-duration');
         var delay = el.getAttribute('data-aos-delay');
-        // Su desktop lasciamo che sia il CSS (2.4s, ease-out) a
-        // decidere la durata: qui impostiamo solo il ritardo, così
-        // la dissolvenza resta lenta e morbida invece che a scatto.
-        if (!isDesktop && duration) el.style.transitionDuration = (parseInt(duration, 10) / 1000) + 's';
+        if (duration) el.style.transitionDuration = (parseInt(duration, 10) / 1000) + 's';
         if (delay) el.style.transitionDelay = (parseInt(delay, 10) / 1000) + 's';
       }
       els.forEach(applyTiming);
@@ -1886,7 +1919,6 @@
 
     function arToggleChat() {
       document.getElementById('arChatWindow').classList.toggle('open');
-      // aprendo la chat, il "richiamo" (tooltip + badge) non serve più
       arDismissTooltip();
       arHideBadge();
     }
@@ -1909,11 +1941,6 @@
       sessionStorage.setItem('arChatBadgeDismissed', '1');
     }
 
-    // Al posto dell'apertura automatica della finestra di chat,
-    // mostriamo dopo un breve istante un fumetto "Chatta con noi!"
-    // e un badge di notifica "1" sopra l'icona, senza aprire nulla:
-    // meno lavoro per il browser al caricamento, stesso invito
-    // visivo per l'utente.
     setTimeout(function() {
       if (!sessionStorage.getItem('arChatTooltipDismissed')) {
         var tt = document.getElementById('arChatTooltip');
