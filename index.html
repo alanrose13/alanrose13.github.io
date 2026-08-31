@@ -714,6 +714,7 @@
       cursor: not-allowed;
       transform: none;
     }
+
     /* Pulsante microfono */
     #arChatVoiceBtn {
       background: transparent;
@@ -1942,730 +1943,656 @@
     </div>
     <div id="arChatInputRow">
       <input type="text" id="arChatInput" placeholder="Scrivi o parla..." onkeydown="if(event.key==='Enter')arSendMessage()">
-      <button id="arChatVoiceBtn" onclick="arToggleVoiceRecording()" title="Registra audio (beta)">🎤</button>
+      <button id="arChatVoiceBtn" onclick="arToggleVoiceRecording()" title="Registra audio (riconoscimento vocale)">🎤</button>
       <button id="arChatSend" onclick="arSendMessage()">Invia</button>
     </div>
   </div>
 
   <script>
     (function () {
-      var els = Array.prototype.slice.call(document.querySelectorAll('[data-aos]'));
-
-      function applyTiming(el) {
-        var duration = el.getAttribute('data-aos-duration');
-        var delay = el.getAttribute('data-aos-delay');
-        if (duration) el.style.transitionDuration = (parseInt(duration, 10) / 1000) + 's';
-        if (delay) el.style.transitionDelay = (parseInt(delay, 10) / 1000) + 's';
-      }
-      els.forEach(applyTiming);
-
-      if (!('IntersectionObserver' in window)) {
-        els.forEach(function (el) { el.classList.add('reveal-in'); });
-        return;
-      }
-
-      var io = new IntersectionObserver(function (entries) {
-        if (document.body.classList.contains('no-animations')) return;
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-in');
-            io.unobserve(entry.target);
-          }
+      // ============================================================
+      // SINTESI VOCALE (Text-to-Speech) - VOCE MASCHILE CALDA E ANGELICA
+      // ============================================================
+      function arSpeak(text) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        
+        var utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'it-IT';
+        utterance.rate = 0.85;
+        utterance.pitch = 0.75;
+        utterance.volume = 1;
+        
+        var voices = window.speechSynthesis.getVoices();
+        var italianVoices = voices.filter(function(v) { 
+          return v.lang.startsWith('it') && v.name.toLowerCase().includes('male');
         });
-      }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
-
-      els.forEach(function (el) { io.observe(el); });
-
-      function revealVisible() {
-        els.forEach(function (el) {
-          if (el.classList.contains('reveal-in')) return;
-          var r = el.getBoundingClientRect();
-          var inView = r.top < window.innerHeight && r.bottom > 0;
-          if (inView) {
-            el.classList.add('reveal-in');
-            io.unobserve(el);
-          }
-        });
-      }
-
-      window.addEventListener('load', revealVisible);
-      setTimeout(revealVisible, 1200);
-      setTimeout(revealVisible, 3000);
-    })();
-
-    function openPopup(id) { document.getElementById(id).style.display = 'flex'; }
-    function closePopup(id) { document.getElementById(id).style.display = 'none'; }
-
-    function dismissSideNewsletter() {
-      var panel = document.getElementById('sideNewsletter');
-      if (panel) panel.classList.remove('visible');
-      sessionStorage.setItem('arSideNlDismissed', '1');
-    }
-
-    (function () {
-      var panel = document.getElementById('sideNewsletter');
-      if (!panel) return;
-      var shown = false;
-
-      function checkScroll() {
-        if (shown || sessionStorage.getItem('arSideNlDismissed')) return;
-        var scrollPos = window.scrollY + window.innerHeight / 2;
-        var pageMiddle = document.documentElement.scrollHeight / 2;
-        if (scrollPos >= pageMiddle) {
-          panel.classList.add('visible');
-          shown = true;
+        
+        if (italianVoices.length > 0) {
+          utterance.voice = italianVoices[0];
+        } else {
+          var anyItalian = voices.find(function(v) { return v.lang.startsWith('it'); });
+          if (anyItalian) utterance.voice = anyItalian;
         }
-      }
-      window.addEventListener('scroll', checkScroll, { passive: true });
-      window.addEventListener('load', checkScroll);
-    })();
-
-    document.addEventListener('DOMContentLoaded', function() {
-      var checkbox = document.getElementById('gdprCommentConsent');
-      if (!checkbox) return;
-
-      function findCommentSubmit() {
-        return document.querySelector('#HCB_comment_box #hcb_submit, #HCB_comment_box .submit');
+        
+        window.speechSynthesis.speak(utterance);
       }
 
-      function toggleSubmit() {
-        var btn = findCommentSubmit();
-        if (btn) {
-          btn.style.display = checkbox.checked ? '' : 'none';
-        }
-      }
-
-      function spostaCheckbox() {
-        var checkboxDiv = document.querySelector('.gdpr-comment-consent');
-        if (!checkboxDiv) return;
-
-        var container = document.querySelector('#HCB_comment_box .hcb-form-submit, #HCB_comment_box .hcb-form-actions');
-        if (!container) {
-          var submitBtn = findCommentSubmit();
-          if (!submitBtn) return;
-          container = submitBtn.parentNode;
-        }
-
-        if (checkboxDiv.closest('#HCB_comment_box')) return;
-        container.parentNode.insertBefore(checkboxDiv, container);
-      }
-
-      checkbox.addEventListener('change', toggleSubmit);
-
-      var observer = new MutationObserver(function() {
-        var btn = findCommentSubmit();
-        if (btn) {
-          toggleSubmit();
-          spostaCheckbox();
-          observer.disconnect();
-        }
-      });
-
-      var commentBox = document.getElementById('HCB_comment_box');
-      if (commentBox) {
-        observer.observe(commentBox, { childList: true, subtree: true });
-        setTimeout(function() {
-          var btn = findCommentSubmit();
-          if (btn) {
-            toggleSubmit();
-            spostaCheckbox();
-            observer.disconnect();
-          }
-        }, 3000);
-      }
-    });
-
-    const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
-
-    var typingInterval = null;
-    var isBotTyping = false;
-    var currentBotMessage = null;
-
-    // ============================================================
-    // SINTESI VOCALE (Text-to-Speech)
-    // ============================================================
-    function arSpeak(text) {
-      if (!('speechSynthesis' in window)) return;
-      // Annulla qualsiasi sintesi in corso
-      window.speechSynthesis.cancel();
-      
-      var utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'it-IT';
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      
-      // Prova a trovare una voce italiana
-      var voices = window.speechSynthesis.getVoices();
-      var italianVoice = voices.find(function(v) { return v.lang.startsWith('it'); });
-      if (italianVoice) utterance.voice = italianVoice;
-      
-      window.speechSynthesis.speak(utterance);
-    }
-
-    // Carica le voci all'avvio
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = function() {
+      if ('speechSynthesis' in window) {
         window.speechSynthesis.getVoices();
-      };
-    }
-
-    // ============================================================
-    // REGISTRAZIONE VOCALE (beta - solo client side)
-    // ============================================================
-    var arMediaRecorder = null;
-    var arAudioChunks = [];
-    var arIsRecording = false;
-
-    function arToggleVoiceRecording() {
-      if (arIsRecording) {
-        arStopRecording();
-      } else {
-        arStartRecording();
-      }
-    }
-
-    function arStartRecording() {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        arAddMessage('Il tuo browser non supporta la registrazione audio.', 'bot');
-        return;
-      }
-
-      var btn = document.getElementById('arChatVoiceBtn');
-      btn.textContent = '⏹';
-      btn.classList.add('recording');
-      arIsRecording = true;
-
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(function(stream) {
-          arMediaRecorder = new MediaRecorder(stream);
-          arAudioChunks = [];
-
-          arMediaRecorder.ondataavailable = function(event) {
-            if (event.data.size > 0) {
-              arAudioChunks.push(event.data);
-            }
-          };
-
-          arMediaRecorder.onstop = function() {
-            // Ferma tutti i track
-            stream.getTracks().forEach(function(track) { track.stop(); });
-            
-            // Crea un blob audio
-            var audioBlob = new Blob(arAudioChunks, { type: 'audio/webm' });
-            
-            // Per ora, inserisci un messaggio che indica che l'audio è stato registrato
-            // In futuro, qui si può chiamare un API di trascrizione (Whisper)
-            arAddMessage('🎤 Audio registrato (' + (audioBlob.size / 1024).toFixed(0) + ' KB). La trascrizione arriverà presto!', 'user');
-            
-            // Messaggio del bot
-            setTimeout(function() {
-              arAddMessage('Grazie per aver registrato l\'audio! 🎵 Sto lavorando per trascriverlo. Per ora, puoi scrivermi il tuo messaggio.', 'bot');
-            }, 500);
-            
-            arAudioChunks = [];
-            arMediaRecorder = null;
-          };
-
-          arMediaRecorder.start();
-        })
-        .catch(function(err) {
-          console.error('Errore registrazione:', err);
-          arAddMessage('Impossibile accedere al microfono. Verifica i permessi.', 'bot');
-          arStopRecordingUI();
-        });
-    }
-
-    function arStopRecording() {
-      if (arMediaRecorder && arMediaRecorder.state === 'recording') {
-        arMediaRecorder.stop();
-      }
-      arStopRecordingUI();
-    }
-
-    function arStopRecordingUI() {
-      var btn = document.getElementById('arChatVoiceBtn');
-      btn.textContent = '🎤';
-      btn.classList.remove('recording');
-      arIsRecording = false;
-    }
-
-    // ============================================================
-    // FUNZIONI DI BASE CHAT (cronologia, messaggi, ecc.)
-    // ============================================================
-
-    function cleanBotResponse(text) {
-      if (!text) return "Mi dispiace, non ho capito. Puoi riformulare?";
-      var cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
-      cleaned = cleaned.replace(/<think>[\s\S]*$/i, '').trim();
-      return cleaned || "Mi dispiace, non ho capito. Puoi riformulare?";
-    }
-
-    function arToggleChat() {
-      var window = document.getElementById('arChatWindow');
-      var isOpen = window.classList.contains('open');
-      
-      if (!isOpen) {
-        loadChatHistory();
-      }
-      
-      window.classList.toggle('open');
-      arDismissTooltip();
-      arHideBadge();
-    }
-
-    function arOpenFromTooltip() {
-      document.getElementById('arChatWindow').classList.add('open');
-      loadChatHistory();
-      arDismissTooltip();
-      arHideBadge();
-    }
-
-    function arDismissTooltip() {
-      var tt = document.getElementById('arChatTooltip');
-      if (tt) tt.classList.remove('visible');
-      sessionStorage.setItem('arChatTooltipDismissed', '1');
-    }
-
-    function arHideBadge() {
-      var badge = document.getElementById('arChatBadge');
-      if (badge) badge.classList.add('hidden');
-      sessionStorage.setItem('arChatBadgeDismissed', '1');
-    }
-
-    // ============================================================
-    // CRONOLOGIA CHAT - localStorage
-    // ============================================================
-    
-    function getChatHistory() {
-      try {
-        var data = localStorage.getItem('arChatHistory');
-        return data ? JSON.parse(data) : null;
-      } catch(e) {
-        return null;
-      }
-    }
-
-    function saveChatHistory(history) {
-      try {
-        localStorage.setItem('arChatHistory', JSON.stringify(history));
-      } catch(e) {
-        console.warn('Impossibile salvare la cronologia:', e);
-      }
-    }
-
-    function addMessageToHistory(role, content) {
-      var history = getChatHistory();
-      if (!history) {
-        history = {
-          userId: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
-          userName: null,
-          messages: [],
-          created: Date.now()
+        window.speechSynthesis.onvoiceschanged = function() {
+          window.speechSynthesis.getVoices();
         };
       }
-      
-      history.messages.push({
-        role: role,
-        content: content,
-        timestamp: Date.now()
-      });
-      
-      if (history.messages.length > 200) {
-        history.messages = history.messages.slice(-200);
-      }
-      
-      saveChatHistory(history);
-    }
 
-    function saveUserName(name) {
-      var history = getChatHistory();
-      if (history) {
-        history.userName = name;
-        saveChatHistory(history);
-      }
-    }
+      // ============================================================
+      // TRASCRIZIONE VOCALE CON WEB SPEECH API (Google Speech Recognition)
+      // ============================================================
+      var arRecognition = null;
+      var arIsRecording = false;
+      var arFinalTranscript = '';
 
-    function getUserName() {
-      var history = getChatHistory();
-      return history ? history.userName : null;
-    }
-
-    function loadChatHistory() {
-      var box = document.getElementById('arChatMessages');
-      var history = getChatHistory();
-      
-      box.innerHTML = '';
-      
-      if (history && history.messages.length > 0) {
-        var messages = history.messages.slice(-20);
-        messages.forEach(function(msg) {
-          arAddMessage(msg.content, msg.role, false);
-        });
-        
-        if (history.userName) {
-          var welcomeDiv = document.createElement('div');
-          welcomeDiv.className = 'ar-msg bot welcome-msg';
-          welcomeDiv.innerHTML = '👋 Bentornato/a <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?';
-          box.appendChild(welcomeDiv);
-        }
-      } else {
-        var welcomeDiv = document.createElement('div');
-        welcomeDiv.className = 'ar-msg bot welcome-msg';
-        welcomeDiv.innerHTML = `
-          👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
-          Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
-          <em style="font-size:0.8rem;opacity:0.7;">🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;text-decoration:underline;">Privacy Policy</a>.</em>
-        `;
-        box.appendChild(welcomeDiv);
-        
-        // Pulsanti azione rapida
-        arAddActionButtons([
-          { label: '📋 Servizi', action: 'mostraServizi' },
-          { label: '🎵 Musica', action: 'mostraMusica' },
-          { label: '📧 Contatti', action: 'mostraContatti' },
-          { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
-        ]);
-        
-        if (!history || !history.userName) {
-          setTimeout(function() {
-            arAddMessage('Come ti chiami? Così possiamo darti un trattamento personalizzato.', 'bot', false);
-          }, 800);
+      function arToggleVoiceRecording() {
+        if (arIsRecording) {
+          arStopRecording();
+        } else {
+          arStartRecording();
         }
       }
-      
-      box.scrollTop = box.scrollHeight;
-    }
 
-    // ============================================================
-    // PULSANTI INTERATTIVI
-    // ============================================================
-    
-    function arAddActionButtons(buttons) {
-      var box = document.getElementById('arChatMessages');
-      var div = document.createElement('div');
-      div.className = 'ar-msg bot';
-      div.innerHTML = '<div class="ar-action-buttons">' +
-        buttons.map(function(b) {
-          return '<button onclick="arHandleAction(\'' + b.action + '\')">' + b.label + '</button>';
-        }).join('') +
-        '</div>';
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function arHandleAction(action) {
-      switch(action) {
-        case 'mostraServizi':
-          arAddMessage('I nostri servizi principali sono: <strong>Grafica & Web</strong>, <strong>Musica & Produzione</strong>, <strong>Consulenza & Altro</strong>. Vuoi sapere più dettagli su uno di questi?', 'bot');
-          arAddActionButtons([
-            { label: '🖥️ Grafica & Web', action: 'dettaglioGrafica' },
-            { label: '🎵 Musica & Produzione', action: 'dettaglioMusica' },
-            { label: '📋 Consulenza', action: 'dettaglioConsulenza' }
-          ]);
-          break;
-          
-        case 'dettaglioGrafica':
-          arAddMessage('🖥️ <strong>Grafica & Web</strong>:\n• Creazione Loghi, Banner, Locandine (Photoshop/Illustrator)\n• Siti Web Vetrina ed E-Commerce Dropshipping\n• Gestione Social per amplificazione follower\n• Editore (pubblicazione digital store, copyright, royalties)', 'bot');
-          break;
-          
-        case 'dettaglioMusica':
-          arAddMessage('🎵 <strong>Musica & Produzione</strong>:\n• Produzione Musicale, Testi, Recording (Solo Gospel)\n• Mixing / Mastering\n• Foto e Video Editing 3D (Hitfilm, Photoshop)\n• Assistenza software PC/Tablet/Smartphone', 'bot');
-          break;
-          
-        case 'dettaglioConsulenza':
-          arAddMessage('📋 <strong>Consulenza & Altro</strong>:\n• Receptionist, fogli di calcolo, Word, PDF\n• Creazione SPID, pratiche INPS, punti patente\n• Speaker e creatore web radio e DJ', 'bot');
-          break;
-          
-        case 'mostraMusica':
-          arAddMessage('🎵 Puoi ascoltarci su:\n• <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank">Spotify</a>\n• <a href="https://soundcloud.com/alanrose-13" target="_blank">SoundCloud</a>\n• <a href="https://www.youtube.com/@Alan_e_Rose" target="_blank">YouTube</a>\n\nI nostri brani: El es el rey (2026), Mai Solo (2025), Sopra Un\'Isola (2025), Ali D\'Aquila (2025), In Ginocchio Da Te (2025), La Tua Anima (2024), Tu Vedrai (2024), Tu Mi Fai Vivere (2024)', 'bot');
-          break;
-          
-        case 'mostraContatti':
-          arAddMessage('📧 Puoi contattarci via email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>\n\nOppure compila il <a href="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform" target="_blank">modulo di richiesta servizio</a>', 'bot');
-          break;
-          
-        case 'mostraFormRichiesta':
-          arShowFormInChat('https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true');
-          break;
-          
-        default:
-          arAddMessage('Funzionalità in sviluppo! 😊', 'bot');
-      }
-    }
-
-    // ============================================================
-    // MODULO INTEGRATO NELLA CHAT
-    // ============================================================
-    
-    function arShowFormInChat(formUrl) {
-      var box = document.getElementById('arChatMessages');
-      var div = document.createElement('div');
-      div.className = 'ar-msg bot';
-      div.innerHTML = `
-        <div style="margin-bottom:6px;font-weight:600;">📝 Compila il modulo qui sotto:</div>
-        <div class="ar-inline-form">
-          <iframe src="${formUrl}" allow="camera; microphone; display-capture"></iframe>
-        </div>
-        <div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔒 I tuoi dati sono trattati secondo la nostra Privacy Policy.</div>
-      `;
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    // ============================================================
-    // FUNZIONI PRINCIPALI CHAT
-    // ============================================================
-
-    function arAddMessage(text, cls, saveToHistory) {
-      if (saveToHistory === undefined) saveToHistory = true;
-      
-      var box = document.getElementById('arChatMessages');
-      var div = document.createElement('div');
-      div.className = 'ar-msg ' + cls;
-      if (cls === 'bot') {
-        div.innerHTML = text;
-      } else {
-        div.innerHTML = `<span class="user-avatar">💛</span><span>${text}</span>`;
-      }
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-      
-      if (saveToHistory && cls === 'user') {
-        addMessageToHistory('user', text);
-        
-        // Rilevazione del nome
-        var nameMatch = text.match(/^(mi chiamo|sono|io sono)\s+([A-Za-zÀ-ÖØ-öø-ÿ\s]+)$/i);
-        if (nameMatch) {
-          var name = nameMatch[2].trim();
-          saveUserName(name);
-          var msgs = box.querySelectorAll('.ar-msg.bot');
-          if (msgs.length > 0) {
-            var lastBot = msgs[msgs.length - 1];
-            if (lastBot.textContent.includes('Come ti chiami')) {
-              lastBot.remove();
-            }
-          }
-          setTimeout(function() {
-            arAddMessage('Piacere di conoscerti <strong>' + name + '</strong>! Sono qui per aiutarti. Cosa ti serve?', 'bot', false);
-            // Mostra pulsanti azione
-            arAddActionButtons([
-              { label: '📋 Servizi', action: 'mostraServizi' },
-              { label: '🎵 Musica', action: 'mostraMusica' },
-              { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
-            ]);
-          }, 300);
-        }
-      } else if (saveToHistory && cls === 'bot') {
-        if (!text.includes('Bentornato') && !text.includes('Piacere di conoscerti') && !text.includes('Come ti chiami')) {
-          addMessageToHistory('bot', text);
-          // Sintesi vocale per i messaggi del bot (esclusi i messaggi con link o form)
-          if (!text.includes('<a') && !text.includes('iframe')) {
-            var cleanText = text.replace(/<[^>]*>/g, '');
-            arSpeak(cleanText);
-          }
-        }
-      }
-      
-      return div;
-    }
-
-    // Esponi le funzioni globalmente
-    window.arAddMessage = arAddMessage;
-    window.arAddActionButtons = arAddActionButtons;
-    window.arHandleAction = arHandleAction;
-    window.arShowFormInChat = arShowFormInChat;
-
-    setTimeout(function() {
-      if (!sessionStorage.getItem('arChatTooltipDismissed')) {
-        var tt = document.getElementById('arChatTooltip');
-        if (tt) tt.classList.add('visible');
-      }
-      if (sessionStorage.getItem('arChatBadgeDismissed')) {
-        var badge = document.getElementById('arChatBadge');
-        if (badge) badge.classList.add('hidden');
-      }
-    }, 1200);
-
-    // ============================================================
-    // INVIO MESSAGGIO CON INTERRUZIONE
-    // ============================================================
-    
-    async function arSendMessage() {
-      var input = document.getElementById('arChatInput');
-      var msg = input.value.trim();
-      if (!msg) return;
-
-      if (isBotTyping) {
-        arStopTyping();
-      }
-
-      input.disabled = true;
-      document.getElementById('arChatSend').disabled = true;
-
-      arAddMessage(msg, 'user');
-
-      input.value = '';
-      arShowTyping();
-
-      try {
-        var response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'qwen/qwen3.6-27b',
-            reasoning_format: 'hidden',
-            reasoning_effort: 'none',
-            messages: [
-              {
-                role: 'system',
-                content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati in chat (nome, email, descrizione, ecc.): la conversazione non viene conservata da nessuna parte, quindi raccoglierli sarebbe inutile. Accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruita al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".'
-              },
-              {
-                role: 'user',
-                content: msg
-              }
-            ],
-            stream: false,
-            temperature: 0.7,
-            max_tokens: 600
-          })
-        });
-
-        var data = await response.json();
-        console.log('BLESS debug - risposta grezza del Worker:', data);
-        arRemoveTyping();
-
-        if (data.error) {
-          var errorMsg = 'Si è verificato un errore. Riprova più tardi.';
-          if (data.error.message && data.error.message.toLowerCase().includes('rate')) {
-            errorMsg = 'Il servizio è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, contattaci a alanrose.13@yahoo.com.';
-          } else if (data.error.message) {
-            errorMsg = 'Errore: ' + data.error.message;
-          }
-          await arTypeMessage(errorMsg, 'bot', 20);
+      function arStartRecording() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+          arAddMessage('Il tuo browser non supporta il riconoscimento vocale. Prova con Chrome o Edge.', 'bot');
           return;
         }
 
-        var reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
-        reply = cleanBotResponse(reply);
-        await arTypeMessage(reply, 'bot', 20);
+        var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        arRecognition = new SpeechRecognition();
+        arRecognition.lang = 'it-IT';
+        arRecognition.continuous = true;
+        arRecognition.interimResults = true;
+        arRecognition.maxAlternatives = 1;
 
-      } catch (err) {
-        arRemoveTyping();
-        arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
-        console.error('Errore chatbot:', err);
-      } finally {
-        input.disabled = false;
-        document.getElementById('arChatSend').disabled = false;
-        input.focus();
+        arFinalTranscript = '';
+        var interimTranscript = '';
+
+        arRecognition.onresult = function(event) {
+          interimTranscript = '';
+          for (var i = event.resultIndex; i < event.results.length; i++) {
+            var transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              arFinalTranscript += transcript + ' ';
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+          
+          var input = document.getElementById('arChatInput');
+          if (arFinalTranscript) {
+            input.value = arFinalTranscript + interimTranscript;
+          } else {
+            input.value = interimTranscript;
+          }
+          
+          input.selectionStart = input.selectionEnd = input.value.length;
+        };
+
+        arRecognition.onerror = function(event) {
+          console.error('Errore riconoscimento vocale:', event.error);
+          if (event.error === 'not-allowed') {
+            arAddMessage('Permesso microfono negato. Abilita il microfono nelle impostazioni del browser.', 'bot');
+          } else if (event.error === 'no-speech') {
+            // Ignora silenziosamente
+          } else {
+            arAddMessage('Errore nel riconoscimento vocale. Riprova.', 'bot');
+          }
+          arStopRecordingUI();
+        };
+
+        arRecognition.onend = function() {
+          if (arIsRecording) {
+            try {
+              arRecognition.start();
+            } catch(e) {
+              arStopRecordingUI();
+            }
+          }
+        };
+
+        try {
+          arRecognition.start();
+          arIsRecording = true;
+          var btn = document.getElementById('arChatVoiceBtn');
+          btn.textContent = '⏹';
+          btn.classList.add('recording');
+          
+          document.getElementById('arChatInput').value = '';
+          arAddMessage('🎤 Sto ascoltando... Parla ora!', 'bot');
+        } catch(e) {
+          console.error('Errore avvio riconoscimento:', e);
+          arAddMessage('Impossibile avviare il microfono. Riprova.', 'bot');
+          arStopRecordingUI();
+        }
       }
-    }
 
-    function arStopTyping() {
-      if (typingInterval) {
-        clearInterval(typingInterval);
-        typingInterval = null;
+      function arStopRecording() {
+        if (arRecognition) {
+          try {
+            arRecognition.stop();
+          } catch(e) {}
+        }
+        
+        var input = document.getElementById('arChatInput');
+        var text = input.value.trim();
+        
+        arStopRecordingUI();
+        
+        if (text) {
+          arSendMessage();
+        } else {
+          arAddMessage('Non ho rilevato alcun parlato. Riprova o scrivi il tuo messaggio.', 'bot');
+        }
       }
-      isBotTyping = false;
-      currentBotMessage = null;
-      arRemoveTyping();
-    }
 
-    function arTypeMessage(text, cls, speed) {
-      if (speed === undefined) speed = 25;
-      return new Promise(function(resolve) {
+      function arStopRecordingUI() {
+        arIsRecording = false;
+        var btn = document.getElementById('arChatVoiceBtn');
+        btn.textContent = '🎤';
+        btn.classList.remove('recording');
+        
+        if (arRecognition) {
+          try {
+            arRecognition.stop();
+          } catch(e) {}
+          arRecognition = null;
+        }
+      }
+
+      // ============================================================
+      // CRONOLOGIA CHAT - localStorage
+      // ============================================================
+      
+      function getChatHistory() {
+        try {
+          var data = localStorage.getItem('arChatHistory');
+          return data ? JSON.parse(data) : null;
+        } catch(e) {
+          return null;
+        }
+      }
+
+      function saveChatHistory(history) {
+        try {
+          localStorage.setItem('arChatHistory', JSON.stringify(history));
+        } catch(e) {
+          console.warn('Impossibile salvare la cronologia:', e);
+        }
+      }
+
+      function addMessageToHistory(role, content) {
+        var history = getChatHistory();
+        if (!history) {
+          history = {
+            userId: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+            userName: null,
+            messages: [],
+            created: Date.now()
+          };
+        }
+        
+        history.messages.push({
+          role: role,
+          content: content,
+          timestamp: Date.now()
+        });
+        
+        if (history.messages.length > 200) {
+          history.messages = history.messages.slice(-200);
+        }
+        
+        saveChatHistory(history);
+      }
+
+      function saveUserName(name) {
+        var history = getChatHistory();
+        if (history) {
+          history.userName = name;
+          saveChatHistory(history);
+        }
+      }
+
+      // ============================================================
+      // FUNZIONI DI BASE CHAT
+      // ============================================================
+
+      const AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
+
+      var typingInterval = null;
+      var isBotTyping = false;
+      var currentBotMessage = null;
+
+      function cleanBotResponse(text) {
+        if (!text) return "Mi dispiace, non ho capito. Puoi riformulare?";
+        var cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+        cleaned = cleaned.replace(/<think>[\s\S]*$/i, '').trim();
+        return cleaned || "Mi dispiace, non ho capito. Puoi riformulare?";
+      }
+
+      function arToggleChat() {
+        var window = document.getElementById('arChatWindow');
+        var isOpen = window.classList.contains('open');
+        
+        if (!isOpen) {
+          loadChatHistory();
+        }
+        
+        window.classList.toggle('open');
+        arDismissTooltip();
+        arHideBadge();
+      }
+
+      function arOpenFromTooltip() {
+        document.getElementById('arChatWindow').classList.add('open');
+        loadChatHistory();
+        arDismissTooltip();
+        arHideBadge();
+      }
+
+      function arDismissTooltip() {
+        var tt = document.getElementById('arChatTooltip');
+        if (tt) tt.classList.remove('visible');
+        sessionStorage.setItem('arChatTooltipDismissed', '1');
+      }
+
+      function arHideBadge() {
+        var badge = document.getElementById('arChatBadge');
+        if (badge) badge.classList.add('hidden');
+        sessionStorage.setItem('arChatBadgeDismissed', '1');
+      }
+
+      function loadChatHistory() {
+        var box = document.getElementById('arChatMessages');
+        var history = getChatHistory();
+        
+        box.innerHTML = '';
+        
+        if (history && history.messages.length > 0) {
+          var messages = history.messages.slice(-20);
+          messages.forEach(function(msg) {
+            arAddMessage(msg.content, msg.role, false);
+          });
+          
+          if (history.userName) {
+            var welcomeDiv = document.createElement('div');
+            welcomeDiv.className = 'ar-msg bot welcome-msg';
+            welcomeDiv.innerHTML = '👋 Bentornato <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?';
+            box.appendChild(welcomeDiv);
+          }
+        } else {
+          var welcomeDiv = document.createElement('div');
+          welcomeDiv.className = 'ar-msg bot welcome-msg';
+          welcomeDiv.innerHTML = `
+            👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
+            Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
+            <em style="font-size:0.8rem;opacity:0.7;">🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;text-decoration:underline;">Privacy Policy</a>.</em>
+          `;
+          box.appendChild(welcomeDiv);
+          
+          arAddActionButtons([
+            { label: '📋 Servizi', action: 'mostraServizi' },
+            { label: '🎵 Musica', action: 'mostraMusica' },
+            { label: '📧 Contatti', action: 'mostraContatti' },
+            { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
+          ]);
+          
+          if (!history || !history.userName) {
+            setTimeout(function() {
+              arAddMessage('Come ti chiami? Così possiamo darti un trattamento personalizzato.', 'bot', false);
+            }, 800);
+          }
+        }
+        
+        box.scrollTop = box.scrollHeight;
+      }
+
+      // ============================================================
+      // PULSANTI INTERATTIVI
+      // ============================================================
+      
+      function arAddActionButtons(buttons) {
+        var box = document.getElementById('arChatMessages');
+        var div = document.createElement('div');
+        div.className = 'ar-msg bot';
+        div.innerHTML = '<div class="ar-action-buttons">' +
+          buttons.map(function(b) {
+            return '<button onclick="arHandleAction(\'' + b.action + '\')">' + b.label + '</button>';
+          }).join('') +
+          '</div>';
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function arHandleAction(action) {
+        switch(action) {
+          case 'mostraServizi':
+            arAddMessage('I nostri servizi principali sono: <strong>Grafica & Web</strong>, <strong>Musica & Produzione</strong>, <strong>Consulenza & Altro</strong>. Vuoi sapere più dettagli su uno di questi?', 'bot');
+            arAddActionButtons([
+              { label: '🖥️ Grafica & Web', action: 'dettaglioGrafica' },
+              { label: '🎵 Musica & Produzione', action: 'dettaglioMusica' },
+              { label: '📋 Consulenza', action: 'dettaglioConsulenza' }
+            ]);
+            break;
+            
+          case 'dettaglioGrafica':
+            arAddMessage('🖥️ <strong>Grafica & Web</strong>:\n• Creazione Loghi, Banner, Locandine (Photoshop/Illustrator)\n• Siti Web Vetrina ed E-Commerce Dropshipping\n• Gestione Social per amplificazione follower\n• Editore (pubblicazione digital store, copyright, royalties)', 'bot');
+            break;
+            
+          case 'dettaglioMusica':
+            arAddMessage('🎵 <strong>Musica & Produzione</strong>:\n• Produzione Musicale, Testi, Recording (Solo Gospel)\n• Mixing / Mastering\n• Foto e Video Editing 3D (Hitfilm, Photoshop)\n• Assistenza software PC/Tablet/Smartphone', 'bot');
+            break;
+            
+          case 'dettaglioConsulenza':
+            arAddMessage('📋 <strong>Consulenza & Altro</strong>:\n• Receptionist, fogli di calcolo, Word, PDF\n• Creazione SPID, pratiche INPS, punti patente\n• Speaker e creatore web radio e DJ', 'bot');
+            break;
+            
+          case 'mostraMusica':
+            arAddMessage('🎵 Puoi ascoltarci su:\n• <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank">Spotify</a>\n• <a href="https://soundcloud.com/alanrose-13" target="_blank">SoundCloud</a>\n• <a href="https://www.youtube.com/@Alan_e_Rose" target="_blank">YouTube</a>\n\nI nostri brani: El es el rey (2026), Mai Solo (2025), Sopra Un\'Isola (2025), Ali D\'Aquila (2025), In Ginocchio Da Te (2025), La Tua Anima (2024), Tu Vedrai (2024), Tu Mi Fai Vivere (2024)', 'bot');
+            break;
+            
+          case 'mostraContatti':
+            arAddMessage('📧 Puoi contattarci via email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>\n\nOppure compila il <a href="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform" target="_blank">modulo di richiesta servizio</a>', 'bot');
+            break;
+            
+          case 'mostraFormRichiesta':
+            arShowFormInChat('https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true');
+            break;
+            
+          default:
+            arAddMessage('Funzionalità in sviluppo! 😊', 'bot');
+        }
+      }
+
+      // ============================================================
+      // MODULO INTEGRATO NELLA CHAT
+      // ============================================================
+      
+      function arShowFormInChat(formUrl) {
+        var box = document.getElementById('arChatMessages');
+        var div = document.createElement('div');
+        div.className = 'ar-msg bot';
+        div.innerHTML = `
+          <div style="margin-bottom:6px;font-weight:600;">📝 Compila il modulo qui sotto:</div>
+          <div class="ar-inline-form">
+            <iframe src="${formUrl}" allow="camera; microphone; display-capture"></iframe>
+          </div>
+          <div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔒 I tuoi dati sono trattati secondo la nostra Privacy Policy.</div>
+        `;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      // ============================================================
+      // FUNZIONI PRINCIPALI CHAT
+      // ============================================================
+
+      function arAddMessage(text, cls, saveToHistory) {
+        if (saveToHistory === undefined) saveToHistory = true;
+        
         var box = document.getElementById('arChatMessages');
         var div = document.createElement('div');
         div.className = 'ar-msg ' + cls;
         if (cls === 'bot') {
-          div.textContent = '';
+          div.innerHTML = text;
         } else {
-          div.innerHTML = `<span class="user-avatar">💛</span><span></span>`;
+          div.innerHTML = `<span class="user-avatar">💛</span><span>${text}</span>`;
         }
         box.appendChild(div);
-        var i = 0;
-        isBotTyping = true;
-        currentBotMessage = div;
-
-        var fullText = '';
-
-        typingInterval = setInterval(function() {
-          if (!isBotTyping) {
-            clearInterval(typingInterval);
-            typingInterval = null;
-            if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
-              addMessageToHistory('bot', fullText);
-              // Sintesi vocale
-              var cleanText = fullText.replace(/<[^>]*>/g, '');
-              arSpeak(cleanText);
-            }
-            resolve();
-            return;
-          }
-          if (i < text.length) {
-            if (cls === 'bot') {
-              div.textContent += text.charAt(i);
-              fullText += text.charAt(i);
-            } else {
-              var span = div.querySelector('span:last-child');
-              if (span) {
-                span.textContent += text.charAt(i);
-                fullText += text.charAt(i);
+        box.scrollTop = box.scrollHeight;
+        
+        if (saveToHistory && cls === 'user') {
+          addMessageToHistory('user', text);
+          
+          var nameMatch = text.match(/^(mi chiamo|sono|io sono)\s+([A-Za-zÀ-ÖØ-öø-ÿ\s]+)$/i);
+          if (nameMatch) {
+            var name = nameMatch[2].trim();
+            saveUserName(name);
+            var msgs = box.querySelectorAll('.ar-msg.bot');
+            if (msgs.length > 0) {
+              var lastBot = msgs[msgs.length - 1];
+              if (lastBot.textContent.includes('Come ti chiami')) {
+                lastBot.remove();
               }
             }
-            i++;
-            box.scrollTop = box.scrollHeight;
-          } else {
-            clearInterval(typingInterval);
-            typingInterval = null;
-            isBotTyping = false;
-            currentBotMessage = null;
-            if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
-              addMessageToHistory('bot', fullText);
-              var cleanText = fullText.replace(/<[^>]*>/g, '');
+            setTimeout(function() {
+              arAddMessage('Piacere di conoscerti <strong>' + name + '</strong>! Sono qui per aiutarti. Cosa ti serve?', 'bot', false);
+              arAddActionButtons([
+                { label: '📋 Servizi', action: 'mostraServizi' },
+                { label: '🎵 Musica', action: 'mostraMusica' },
+                { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
+              ]);
+            }, 300);
+          }
+        } else if (saveToHistory && cls === 'bot') {
+          if (!text.includes('Bentornato') && !text.includes('Piacere di conoscerti') && !text.includes('Come ti chiami')) {
+            addMessageToHistory('bot', text);
+            if (!text.includes('<a') && !text.includes('iframe')) {
+              var cleanText = text.replace(/<[^>]*>/g, '');
               arSpeak(cleanText);
             }
-            resolve();
           }
-        }, speed);
-      });
-    }
-
-    function arShowTyping() {
-      var box = document.getElementById('arChatMessages');
-      var div = document.createElement('div');
-      div.className = 'ar-msg typing';
-      div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
-      div.id = 'arTypingIndicator';
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function arRemoveTyping() {
-      var el = document.getElementById('arTypingIndicator');
-      if (el) el.remove();
-    }
-
-    // Carica la cronologia all'avvio
-    document.addEventListener('DOMContentLoaded', function() {
-      if (document.getElementById('arChatWindow').classList.contains('open')) {
-        loadChatHistory();
+        }
+        
+        return div;
       }
-    });
 
-    // Esponi le funzioni globalmente
-    window.arSendMessage = arSendMessage;
-    window.arToggleChat = arToggleChat;
-    window.arOpenFromTooltip = arOpenFromTooltip;
-    window.arDismissTooltip = arDismissTooltip;
-    window.arHideBadge = arHideBadge;
-    window.loadChatHistory = loadChatHistory;
-    window.arToggleVoiceRecording = arToggleVoiceRecording;
-    window.arSpeak = arSpeak;
+      window.arAddMessage = arAddMessage;
+      window.arAddActionButtons = arAddActionButtons;
+      window.arHandleAction = arHandleAction;
+      window.arShowFormInChat = arShowFormInChat;
+
+      setTimeout(function() {
+        if (!sessionStorage.getItem('arChatTooltipDismissed')) {
+          var tt = document.getElementById('arChatTooltip');
+          if (tt) tt.classList.add('visible');
+        }
+        if (sessionStorage.getItem('arChatBadgeDismissed')) {
+          var badge = document.getElementById('arChatBadge');
+          if (badge) badge.classList.add('hidden');
+        }
+      }, 1200);
+
+      // ============================================================
+      // INVIO MESSAGGIO CON INTERRUZIONE - L'UTENTE PUÒ SCRIVERE MENTRE IL BOT DIGITA
+      // ============================================================
+      
+      function arStopTyping() {
+        if (typingInterval) {
+          clearInterval(typingInterval);
+          typingInterval = null;
+        }
+        isBotTyping = false;
+        currentBotMessage = null;
+        arRemoveTyping();
+      }
+
+      function arTypeMessage(text, cls, speed) {
+        if (speed === undefined) speed = 25;
+        return new Promise(function(resolve) {
+          var box = document.getElementById('arChatMessages');
+          var div = document.createElement('div');
+          div.className = 'ar-msg ' + cls;
+          if (cls === 'bot') {
+            div.textContent = '';
+          } else {
+            div.innerHTML = `<span class="user-avatar">💛</span><span></span>`;
+          }
+          box.appendChild(div);
+          var i = 0;
+          isBotTyping = true;
+          currentBotMessage = div;
+
+          var fullText = '';
+
+          typingInterval = setInterval(function() {
+            if (!isBotTyping) {
+              clearInterval(typingInterval);
+              typingInterval = null;
+              if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
+                addMessageToHistory('bot', fullText);
+                var cleanText = fullText.replace(/<[^>]*>/g, '');
+                arSpeak(cleanText);
+              }
+              resolve();
+              return;
+            }
+            if (i < text.length) {
+              if (cls === 'bot') {
+                div.textContent += text.charAt(i);
+                fullText += text.charAt(i);
+              } else {
+                var span = div.querySelector('span:last-child');
+                if (span) {
+                  span.textContent += text.charAt(i);
+                  fullText += text.charAt(i);
+                }
+              }
+              i++;
+              box.scrollTop = box.scrollHeight;
+            } else {
+              clearInterval(typingInterval);
+              typingInterval = null;
+              isBotTyping = false;
+              currentBotMessage = null;
+              if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
+                addMessageToHistory('bot', fullText);
+                var cleanText = fullText.replace(/<[^>]*>/g, '');
+                arSpeak(cleanText);
+              }
+              resolve();
+            }
+          }, speed);
+        });
+      }
+
+      function arShowTyping() {
+        var box = document.getElementById('arChatMessages');
+        var div = document.createElement('div');
+        div.className = 'ar-msg typing';
+        div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+        div.id = 'arTypingIndicator';
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function arRemoveTyping() {
+        var el = document.getElementById('arTypingIndicator');
+        if (el) el.remove();
+      }
+
+      async function arSendMessage() {
+        var input = document.getElementById('arChatInput');
+        var msg = input.value.trim();
+        if (!msg) return;
+
+        if (isBotTyping) {
+          arStopTyping();
+          if (currentBotMessage) {
+            currentBotMessage.remove();
+            currentBotMessage = null;
+          }
+        }
+
+        if (arIsRecording) {
+          arStopRecordingUI();
+        }
+
+        input.disabled = true;
+        document.getElementById('arChatSend').disabled = true;
+
+        arAddMessage(msg, 'user');
+
+        input.value = '';
+        arShowTyping();
+
+        try {
+          var response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'qwen/qwen3.6-27b',
+              reasoning_format: 'hidden',
+              reasoning_effort: 'none',
+              messages: [
+                {
+                  role: 'system',
+                  content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati in chat (nome, email, descrizione, ecc.): la conversazione non viene conservata da nessuna parte, quindi raccoglierli sarebbe inutile. Accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruito al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".\n\n**IMPORTANTE: Tutti i tuoi messaggi devono essere al MASCHILE.** Non usare mai "pronta", "sono pronta", "disponibile" al femminile. Usa sempre "pronto", "sono pronto", "disponibile" al maschile.'
+                },
+                {
+                  role: 'user',
+                  content: msg
+                }
+              ],
+              stream: false,
+              temperature: 0.7,
+              max_tokens: 600
+            })
+          });
+
+          var data = await response.json();
+          arRemoveTyping();
+
+          if (data.error) {
+            var errorMsg = 'Si è verificato un errore. Riprova più tardi.';
+            if (data.error.message && data.error.message.toLowerCase().includes('rate')) {
+              errorMsg = 'Il servizio è momentaneamente sovraccarico. Riprova tra qualche minuto. In alternativa, contattaci a alanrose.13@yahoo.com.';
+            } else if (data.error.message) {
+              errorMsg = 'Errore: ' + data.error.message;
+            }
+            await arTypeMessage(errorMsg, 'bot', 20);
+            return;
+          }
+
+          var reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
+          reply = cleanBotResponse(reply);
+          
+          // Forza la correzione di eventuali femminili rimasti
+          reply = reply.replace(/sono pronta/gi, 'sono pronto');
+          reply = reply.replace(/sono disponibile/gi, 'sono disponibile');
+          
+          await arTypeMessage(reply, 'bot', 20);
+
+        } catch (err) {
+          arRemoveTyping();
+          arAddMessage('Connessione al servizio chat non riuscita. Riprova tra poco o contattaci a alanrose.13@yahoo.com', 'bot');
+          console.error('Errore chatbot:', err);
+        } finally {
+          input.disabled = false;
+          document.getElementById('arChatSend').disabled = false;
+          input.focus();
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('arChatWindow').classList.contains('open')) {
+          loadChatHistory();
+        }
+      });
+
+      window.arSendMessage = arSendMessage;
+      window.arToggleChat = arToggleChat;
+      window.arOpenFromTooltip = arOpenFromTooltip;
+      window.arDismissTooltip = arDismissTooltip;
+      window.arHideBadge = arHideBadge;
+      window.loadChatHistory = loadChatHistory;
+      window.arToggleVoiceRecording = arToggleVoiceRecording;
+      window.arSpeak = arSpeak;
+      window.arStopTyping = arStopTyping;
+      window.arTypeMessage = arTypeMessage;
+      window.arShowTyping = arShowTyping;
+      window.arRemoveTyping = arRemoveTyping;
+    })();
   </script>
 
 </body>
