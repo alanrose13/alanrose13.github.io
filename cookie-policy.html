@@ -470,25 +470,6 @@
       align-items: center;
       gap: 12px;
     }
-    #arChatHeader .voice-toggle {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.65rem;
-      cursor: pointer;
-      color: rgba(255,255,255,0.7);
-      user-select: none;
-    }
-    #arChatHeader .voice-toggle input[type="checkbox"] {
-      cursor: pointer;
-      width: 16px;
-      height: 16px;
-      accent-color: #C9A961;
-      margin: 0;
-    }
-    #arChatHeader .voice-toggle:hover {
-      color: #fff;
-    }
     #arChatHeader span.close {
       cursor: pointer;
       font-size: 22px;
@@ -613,6 +594,10 @@
       border-color: #C9A961;
       box-shadow: 0 0 0 3px rgba(201,169,97,0.1);
     }
+    #arChatInput:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     #arChatSend {
       background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
       color: #fff;
@@ -650,9 +635,44 @@
       color: #E24C4C;
       animation: pulseMic 1s ease-in-out infinite;
     }
+    #arChatVoiceBtn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      animation: none;
+    }
     @keyframes pulseMic {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.2); }
+    }
+
+    /* Barra sotto l'input: toggle audio + disclaimer AI */
+    #arChatFooterBar {
+      padding: 8px 14px 12px;
+      background: rgba(255,255,255,0.5);
+      border-top: 1px solid rgba(201,169,97,0.1);
+    }
+    #arChatFooterBar .voice-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      color: var(--m);
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 6px;
+    }
+    #arChatFooterBar .voice-toggle input[type="checkbox"] {
+      cursor: pointer;
+      width: 15px;
+      height: 15px;
+      accent-color: #C9A961;
+      margin: 0;
+    }
+    #arChatFooterBar .ai-disclaimer {
+      font-size: .68rem;
+      line-height: 1.4;
+      color: #8a7a63;
+      opacity: 0.85;
     }
 
     /* Pulsanti azione nella chat */
@@ -694,6 +714,21 @@
       display: block;
     }
 
+    /* Consenso GDPR nella chat */
+    .gdpr-comment-consent {
+      background: rgba(245,241,232,0.9);
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: .78rem;
+      border: 1px solid rgba(201,169,97,0.3);
+    }
+    .gdpr-comment-consent input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
+    .gdpr-comment-consent label { cursor: pointer; }
+    .gdpr-comment-consent a { color: var(--o); text-decoration: underline; }
+
     @media (max-width: 480px) {
       #arChatWindow {
         right: 10px;
@@ -705,8 +740,10 @@
       #arChatBtn img { width: 48px; height: 48px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
       .ar-msg.bot .ar-inline-form iframe { height: 300px; }
-      #arChatHeader .voice-toggle { font-size: 0.55rem; }
-      #arChatHeader .voice-toggle input[type="checkbox"] { width: 14px; height: 14px; }
+      #arChatFooterBar { padding: 6px 10px 10px; }
+      #arChatFooterBar .voice-toggle { font-size: 0.68rem; }
+      #arChatFooterBar .voice-toggle input[type="checkbox"] { width: 13px; height: 13px; }
+      #arChatFooterBar .ai-disclaimer { font-size: .62rem; }
     }
 
     button:focus-visible,
@@ -971,7 +1008,7 @@
 
   <!-- CHATBOT -->
   <button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">
-    <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/AI%20CHAT.png" alt="BLESS">
+    <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/AI%20CHAT.png" alt="BLESS" id="arChatBtnImg">
   </button>
 
   <div id="arChatWindow">
@@ -984,10 +1021,6 @@
         </div>
       </div>
       <div class="header-right">
-        <label class="voice-toggle" title="Attiva/disattiva la voce del bot">
-          🔊
-          <input type="checkbox" id="arVoiceToggle" checked>
-        </label>
         <span class="close" onclick="arToggleChat()">×</span>
       </div>
     </div>
@@ -998,6 +1031,15 @@
       <input type="text" id="arChatInput" placeholder="Scrivi o parla..." onkeydown="if(event.key==='Enter')arSendMessage()">
       <button id="arChatVoiceBtn" onclick="arToggleVoiceRecording()" title="Registra audio (riconoscimento vocale)">🎤</button>
       <button id="arChatSend" onclick="arSendMessage()">Invia</button>
+    </div>
+    <div id="arChatFooterBar">
+      <label class="voice-toggle" title="Attiva/disattiva la voce del bot">
+        <input type="checkbox" id="arVoiceToggle" checked>
+        🔊 Audio risposte
+      </label>
+      <div class="ai-disclaimer">
+        🤖 BLESS è un assistente basato su intelligenza artificiale: le risposte potrebbero non essere sempre accurate. Verifica sempre le informazioni importanti con le tue ricerche e non affidarti al 100% a quanto scritto qui.
+      </div>
     </div>
   </div>
 
@@ -1015,6 +1057,7 @@
         if (!('speechSynthesis' in window)) return;
         var voices = window.speechSynthesis.getVoices();
         
+        // Cerca una voce maschile italiana - priorità a quelle più naturali
         var maleVoices = voices.filter(function(v) { 
           return v.lang.startsWith('it') && 
                  (v.name.toLowerCase().includes('male') || 
@@ -1054,6 +1097,8 @@
         
         var utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'it-IT';
+        
+        // PARAMETRI PER UNA VOCE PIÙ UMANA, CALDA E PROFONDA
         utterance.rate = 0.8;
         utterance.pitch = 0.65;
         utterance.volume = 1.0;
@@ -1262,14 +1307,14 @@
       }
 
       function arToggleChat() {
-        var window = document.getElementById('arChatWindow');
-        var isOpen = window.classList.contains('open');
+        var chatWin = document.getElementById('arChatWindow');
+        var isOpen = chatWin.classList.contains('open');
         
         if (!isOpen) {
           loadChatHistory();
         }
         
-        window.classList.toggle('open');
+        chatWin.classList.toggle('open');
         arDismissTooltip();
         arHideBadge();
       }
@@ -1293,6 +1338,15 @@
         sessionStorage.setItem('arChatBadgeDismissed', '1');
       }
 
+      function arSetInputEnabled(enabled) {
+        var input = document.getElementById('arChatInput');
+        var sendBtn = document.getElementById('arChatSend');
+        var micBtn = document.getElementById('arChatVoiceBtn');
+        if (input) input.disabled = !enabled;
+        if (sendBtn) sendBtn.disabled = !enabled;
+        if (micBtn) micBtn.disabled = !enabled;
+      }
+
       function loadChatHistory() {
         var box = document.getElementById('arChatMessages');
         var history = getChatHistory();
@@ -1300,6 +1354,9 @@
         box.innerHTML = '';
         
         if (history && history.messages.length > 0) {
+          // Consenso già dato in precedenza (esiste uno storico salvato): sblocca l'input.
+          arSetInputEnabled(true);
+
           var messages = history.messages.slice(-20);
           messages.forEach(function(msg) {
             arAddMessage(msg.content, msg.role, false);
@@ -1318,20 +1375,32 @@
             👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
             Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
             <em style="font-size:0.8rem;opacity:0.7;">🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;text-decoration:underline;">Privacy Policy</a>.</em>
+            <div class="gdpr-comment-consent" id="arChatConsentBox" style="margin-top:10px;padding:10px 12px;font-size:.78rem;">
+              <input type="checkbox" id="arChatConsentCheck">
+              <label for="arChatConsentCheck">Acconsento al trattamento dei dati che scrivo in questa chat, come da <a href="cookie-policy.html" target="_blank" style="color:#C9A961;">Privacy Policy</a>. Senza consenso non potrò continuare la conversazione.</label>
+            </div>
           `;
           box.appendChild(welcomeDiv);
           
-          arAddActionButtons([
-            { label: '📋 Servizi', action: 'mostraServizi' },
-            { label: '🎵 Musica', action: 'mostraMusica' },
-            { label: '📧 Contatti', action: 'mostraContatti' },
-            { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
-          ]);
+          // Finché il consenso non è dato, input/microfono/invio restano disattivati.
+          arSetInputEnabled(false);
           
-          if (!history || !history.userName) {
-            setTimeout(function() {
-              arAddMessage('Come ti chiami? Così possiamo darti un trattamento personalizzato.', 'bot', false);
-            }, 800);
+          var consentCheck = document.getElementById('arChatConsentCheck');
+          if (consentCheck) {
+            consentCheck.addEventListener('change', function() {
+              arSetInputEnabled(this.checked);
+              if (this.checked) {
+                arAddActionButtons([
+                  { label: '📋 Servizi', action: 'mostraServizi' },
+                  { label: '🎵 Musica', action: 'mostraMusica' },
+                  { label: '📧 Contatti', action: 'mostraContatti' },
+                  { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
+                ]);
+                setTimeout(function() {
+                  arAddMessage('Come ti chiami? Così possiamo darti un trattamento personalizzato.', 'bot', false);
+                }, 800);
+              }
+            });
           }
         }
         
@@ -1641,8 +1710,7 @@
           reply = cleanBotResponse(reply);
           
           reply = reply.replace(/sono pronta/gi, 'sono pronto');
-          reply = reply.replace(/sono disponibile/gi, 'sono disponibile');
-          
+
           await arTypeMessage(reply, 'bot', 20);
 
         } catch (err) {
