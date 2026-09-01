@@ -2010,34 +2010,54 @@
   <script>
     (function () {
       // ============================================================
-      // SINTESI VOCALE - VOICE TOGGLE + VOCE UMANA CALDA E PROFONDA
+      // SINTESI VOCALE - VOICE TOGGLE + VOCE UMANA CALDA, CALMA E PROFONDA
       // ============================================================
       
       var arVoiceEnabled = true;
       var arVoicesLoaded = false;
       var arItalianMaleVoice = null;
-      
+
+      // Punteggio di "qualità/naturalezza" di una voce italiana.
+      // Più alto = più simile a una voce neurale/umana calda.
+      function arScoreVoice(v) {
+        var n = v.name.toLowerCase();
+        var score = 0;
+
+        // Voci "Online (Natural)" di Microsoft Edge: le più realistiche disponibili gratis nel browser
+        if (n.includes('online (natural)')) score += 100;
+        if (n.includes('neural')) score += 90;
+
+        // Voci "Google italiano" di Chrome (motore Google, buona qualità)
+        if (n.includes('google') && n.includes('itali')) score += 70;
+
+        // Preferenza per un timbro maschile (più coerente con "ragazzo sui 33 anni")
+        if (n.includes('male') || n.includes('diego') || n.includes('cosimo') ||
+            n.includes('giorgio') || n.includes('alberto') || n.includes('massimo') ||
+            n.includes('benigno') || n.includes('standard-a') || n.includes('standard-c')) score += 20;
+
+        // Penalizza esplicitamente le voci femminili se troviamo di meglio
+        if (n.includes('female') || n.includes('elsa') || n.includes('isabella') ||
+            n.includes('elena') || n.includes('carla')) score -= 10;
+
+        // Voci locali di sistema (offline) di solito le più robotiche: leggera penalità
+        if (v.localService) score -= 5;
+
+        return score;
+      }
+
       function arLoadVoices() {
         if (!('speechSynthesis' in window)) return;
         var voices = window.speechSynthesis.getVoices();
-        
-        // Cerca una voce maschile italiana - priorità a quelle più naturali
-        var maleVoices = voices.filter(function(v) { 
-          return v.lang.startsWith('it') && 
-                 (v.name.toLowerCase().includes('male') || 
-                  v.name.toLowerCase().includes('giorgio') ||
-                  v.name.toLowerCase().includes('alberto') ||
-                  v.name.toLowerCase().includes('massimo') ||
-                  v.name.toLowerCase().includes('standard-a'));
-        });
-        
-        if (maleVoices.length > 0) {
-          arItalianMaleVoice = maleVoices[0];
-        } else {
-          var anyItalian = voices.find(function(v) { return v.lang.startsWith('it'); });
-          if (anyItalian) arItalianMaleVoice = anyItalian;
+        var italianVoices = voices.filter(function(v) { return v.lang && v.lang.toLowerCase().startsWith('it'); });
+
+        if (italianVoices.length > 0) {
+          italianVoices.sort(function(a, b) { return arScoreVoice(b) - arScoreVoice(a); });
+          arItalianMaleVoice = italianVoices[0];
+        } else if (voices.length > 0) {
+          // Nessuna voce italiana disponibile: meglio comunque una voce di qualità che nessuna voce
+          arItalianMaleVoice = voices[0];
         }
-        
+
         arVoicesLoaded = true;
       }
       
@@ -2047,6 +2067,8 @@
           arLoadVoices();
         };
         setTimeout(arLoadVoices, 300);
+        // Su alcuni browser (es. Edge) l'elenco voci arriva con un piccolo ritardo aggiuntivo
+        setTimeout(arLoadVoices, 1200);
       }
       
       function arSpeak(text) {
@@ -2061,17 +2083,23 @@
         
         var utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'it-IT';
-        
-        // PARAMETRI PER UNA VOCE PIÙ UMANA, CALDA E PROFONDA
-        utterance.rate = 0.8;
-        utterance.pitch = 0.65;
+
+        // PARAMETRI PER UNA VOCE PIÙ UMANA, CALDA, CALMA E PROFONDA
+        // (ritmo naturale, non troppo lento da suonare robotico, tono leggermente abbassato per calore)
+        utterance.rate = 0.92;
+        utterance.pitch = 0.88;
         utterance.volume = 1.0;
-        
+
+        if (!arVoicesLoaded) arLoadVoices();
         if (arItalianMaleVoice) {
           utterance.voice = arItalianMaleVoice;
-        } else {
-          if (!arVoicesLoaded) arLoadVoices();
-          if (arItalianMaleVoice) utterance.voice = arItalianMaleVoice;
+          utterance.lang = arItalianMaleVoice.lang;
+          // Le voci "Online (Natural)"/Neural reggono bene un ritmo quasi naturale
+          var nm = arItalianMaleVoice.name.toLowerCase();
+          if (nm.includes('online (natural)') || nm.includes('neural')) {
+            utterance.rate = 1.0;
+            utterance.pitch = 0.95;
+          }
         }
         
         window.speechSynthesis.speak(utterance);
