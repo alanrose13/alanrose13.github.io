@@ -408,7 +408,7 @@
       width: 360px;
       max-width: 90vw;
       height: 500px;
-      max-height: 75vh;
+      max-height: min(75vh, 75dvh);
       background: rgba(255, 255, 255, 0.92);
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 80px rgba(201,169,97,0.05);
@@ -732,9 +732,10 @@
     @media (max-width: 480px) {
       #arChatWindow {
         right: 10px;
-        bottom: 80px;
+        bottom: calc(80px + env(safe-area-inset-bottom, 0px));
         width: calc(100vw - 20px);
-        height: 70vh;
+        height: min(70vh, 70dvh);
+        max-height: min(70vh, 70dvh);
       }
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn img { width: 48px; height: 48px; }
@@ -1046,6 +1047,23 @@
   <script>
     (function () {
       // ============================================================
+      // FIX CHAT COPERTA DALLA TASTIERA SU MOBILE
+      // ============================================================
+      if (window.visualViewport) {
+        var arKeyboardChatWin = null;
+        function arFixKeyboardOverlap() {
+          if (!arKeyboardChatWin) arKeyboardChatWin = document.getElementById('arChatWindow');
+          if (!arKeyboardChatWin || !arKeyboardChatWin.classList.contains('open')) return;
+          var overlap = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
+          arKeyboardChatWin.style.transform = overlap > 0
+            ? 'translateY(-' + overlap + 'px) scale(1)'
+            : 'translateY(0) scale(1)';
+        }
+        window.visualViewport.addEventListener('resize', arFixKeyboardOverlap);
+        window.visualViewport.addEventListener('scroll', arFixKeyboardOverlap);
+      }
+
+      // ============================================================
       // SINTESI VOCALE - VOICE TOGGLE + VOCE UMANA CALDA E PROFONDA
       // ============================================================
       
@@ -1340,6 +1358,8 @@
         
         if (!isOpen) {
           loadChatHistory();
+        } else {
+          chatWin.style.transform = '';
         }
         
         chatWin.classList.toggle('open');
