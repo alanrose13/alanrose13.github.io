@@ -510,10 +510,10 @@
       position: fixed;
       bottom: 100px;
       right: 20px;
-      width: 360px;
-      max-width: 90vw;
-      height: 500px;
-      max-height: min(75vh, 75dvh);
+      width: 380px;
+      max-width: 92vw;
+      height: 560px;
+      max-height: min(78vh, 78dvh);
       background: rgba(255, 255, 255, 0.92);
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 80px rgba(201,169,97,0.05);
@@ -543,6 +543,7 @@
       align-items: center;
       font-weight: 700;
       border-bottom: 1px solid rgba(201,169,97,0.2);
+      flex-shrink: 0;
     }
     #arChatHeader .header-left {
       display: flex;
@@ -586,11 +587,13 @@
     #arChatMessages {
       flex: 1;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding: 16px;
       background: rgba(245, 241, 232, 0.3);
       display: flex;
       flex-direction: column;
       gap: 8px;
+      min-height: 0;
     }
     #arChatMessages::-webkit-scrollbar {
       width: 4px;
@@ -612,6 +615,8 @@
       line-height: 1.5;
       animation: arMsgIn .3s cubic-bezier(0.23, 1, 0.32, 1);
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     @keyframes arMsgIn {
       from { opacity: 0; transform: translateY(8px) scale(0.97); }
@@ -677,15 +682,21 @@
       30% { opacity: 1; transform: scale(1.2); }
     }
 
+    /* --------------------------------------------------------------
+       INPUT ROW: digitazione + microfono + audio risposte + invio
+    -------------------------------------------------------------- */
     #arChatInputRow {
       display: flex;
+      align-items: flex-end;
       border-top: 1px solid rgba(201,169,97,0.15);
       padding: 10px 12px;
-      gap: 8px;
+      gap: 6px;
       background: rgba(255,255,255,0.5);
+      flex-shrink: 0;
     }
     #arChatInput {
       flex: 1;
+      min-width: 0;
       border: 1px solid rgba(201,169,97,0.2);
       border-radius: 12px;
       padding: 10px 14px;
@@ -708,11 +719,13 @@
       color: #fff;
       border: none;
       border-radius: 12px;
-      padding: 0 18px;
+      padding: 0 16px;
+      height: 40px;
       font-weight: 700;
       cursor: pointer;
       transition: .3s;
       font-size: .9rem;
+      flex-shrink: 0;
     }
     #arChatSend:hover {
       transform: scale(1.03);
@@ -728,12 +741,18 @@
     #arChatVoiceBtn {
       background: transparent;
       border: none;
-      font-size: 22px;
+      font-size: 20px;
       cursor: pointer;
-      padding: 0 6px;
+      padding: 0;
+      width: 38px;
+      height: 40px;
+      flex-shrink: 0;
       transition: .3s;
       color: var(--m);
-      opacity: 0.6;
+      opacity: 0.65;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #arChatVoiceBtn:hover { opacity: 1; }
     #arChatVoiceBtn.recording {
@@ -750,37 +769,97 @@
       50% { transform: scale(1.2); }
     }
 
-    /* Barra sotto l'input: toggle audio + disclaimer AI */
+    /* Blocco toggle audio risposte (con etichetta sopra) accanto al tasto Invia */
+    .ar-voice-out-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 2px;
+    }
+    .ar-voice-out-wrap .voice-out-label {
+      font-size: .55rem;
+      line-height: 1;
+      color: var(--m);
+      opacity: 0.65;
+      white-space: nowrap;
+      font-weight: 600;
+      text-align: center;
+    }
+    #arVoiceOutBtn {
+      background: rgba(201,169,97,0.12);
+      border: 1px solid rgba(201,169,97,0.3);
+      border-radius: 10px;
+      width: 38px;
+      height: 34px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: .3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--m);
+    }
+    #arVoiceOutBtn.active {
+      background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
+      border-color: #B8962E;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(201,169,97,0.35);
+    }
+    #arVoiceOutBtn:hover { transform: scale(1.05); }
+    #arVoiceOutBtn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Barra sotto l'input: azioni rapide + privacy + disclaimer AI */
     #arChatFooterBar {
       padding: 8px 14px 12px;
       background: rgba(255,255,255,0.5);
       border-top: 1px solid rgba(201,169,97,0.1);
+      flex-shrink: 0;
     }
-    #arChatFooterBar .voice-toggle {
+    .ar-quick-actions {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 6px;
-      font-size: .75rem;
+      margin-bottom: 8px;
+    }
+    .ar-quick-actions button {
+      background: var(--o);
       color: var(--m);
+      padding: 6px 12px;
+      border: none;
+      border-radius: 20px;
       cursor: pointer;
-      user-select: none;
+      font-weight: 600;
+      font-size: .74rem;
+      transition: .3s;
+      font-family: 'Segoe UI', sans-serif;
+      white-space: nowrap;
+    }
+    .ar-quick-actions button:hover {
+      background: var(--m);
+      color: #fff;
+      transform: scale(1.03);
+    }
+    #arChatFooterBar .ar-privacy-note {
+      font-size: .7rem;
+      line-height: 1.4;
+      color: #8a7a63;
       margin-bottom: 6px;
     }
-    #arChatFooterBar .voice-toggle input[type="checkbox"] {
-      cursor: pointer;
-      width: 15px;
-      height: 15px;
-      accent-color: #C9A961;
-      margin: 0;
-    }
+    #arChatFooterBar .ar-privacy-note a { color: var(--o); text-decoration: underline; }
     #arChatFooterBar .ai-disclaimer {
-      font-size: .68rem;
+      font-size: .66rem;
       line-height: 1.4;
       color: #8a7a63;
       opacity: 0.85;
+      margin-top: 6px;
     }
 
-    /* Pulsanti azione nella chat */
+    /* Pulsanti azione nella chat (fallback, usati raramente) */
     .ar-action-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -819,23 +898,80 @@
       display: block;
     }
 
+    /* Consenso GDPR nel footer */
+    .gdpr-comment-consent {
+      background: rgba(245,241,232,0.9);
+      padding: 8px 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: .72rem;
+      line-height: 1.35;
+      border: 1px solid rgba(201,169,97,0.3);
+    }
+    .gdpr-comment-consent input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; width: 15px; height: 15px; accent-color: #C9A961; }
+    .gdpr-comment-consent label { cursor: pointer; }
+    .gdpr-comment-consent a { color: var(--o); text-decoration: underline; }
+
+    /* --------------------------------------------------------------
+       RESPONSIVE MOBILE
+    -------------------------------------------------------------- */
     @media (max-width: 480px) {
       #arChatWindow {
-        right: 10px;
-        bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-        width: calc(100vw - 20px);
-        height: min(70vh, 70dvh);
-        max-height: min(70vh, 70dvh);
+        right: 8px;
+        left: 8px;
+        bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+        width: auto;
+        max-width: none;
+        height: min(72vh, 72dvh);
+        max-height: min(72vh, 72dvh);
+        border-radius: 16px;
       }
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn img { width: 48px; height: 48px; }
+      #arChatHeader { padding: 12px 14px; }
+      #arChatHeader .header-left .avatar-small { width: 28px; height: 28px; font-size: 14px; }
+      #arChatHeader .header-left .chat-title .name { font-size: .9rem; }
+      #arChatHeader .header-left .chat-title .sub { font-size: .6rem; }
+      #arChatMessages { padding: 12px; gap: 6px; }
+      .ar-msg { font-size: .85rem; max-width: 90%; padding: 9px 12px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
-      .ar-msg.bot .ar-inline-form iframe { height: 300px; }
+      .ar-msg.bot .ar-inline-form iframe { height: 280px; }
+      #arChatInputRow { padding: 8px 8px; gap: 4px; }
+      #arChatInput { font-size: .85rem; padding: 9px 12px; }
+      #arChatSend { padding: 0 12px; font-size: .82rem; height: 38px; }
+      #arChatVoiceBtn { width: 32px; height: 38px; font-size: 18px; }
+      #arVoiceOutBtn { width: 32px; height: 32px; font-size: 15px; }
+      .ar-voice-out-wrap .voice-out-label { font-size: .5rem; }
       #arChatFooterBar { padding: 6px 10px 10px; }
-      #arChatFooterBar .voice-toggle { font-size: 0.68rem; }
-      #arChatFooterBar .voice-toggle input[type="checkbox"] { width: 13px; height: 13px; }
-      #arChatFooterBar .ai-disclaimer { font-size: .62rem; }
+      .ar-quick-actions { gap: 4px; margin-bottom: 6px; }
+      .ar-quick-actions button { font-size: .68rem; padding: 5px 10px; }
+      #arChatFooterBar .ar-privacy-note { font-size: .64rem; }
+      #arChatFooterBar .ai-disclaimer { font-size: .6rem; }
+      .gdpr-comment-consent { font-size: .68rem; padding: 7px 8px; }
     }
+
+    @media (max-width: 360px) {
+      #arChatInput { font-size: .8rem; }
+      #arChatSend { padding: 0 9px; font-size: .76rem; }
+      .ar-quick-actions button { font-size: .64rem; padding: 4px 8px; }
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid #C9A961;
+      outline-offset: 2px;
+    }
+
+    .ar-msg.bot a {
+      color: #B8962E;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .ar-msg.bot a:hover { color: #8A7024; }
 
     #sideNewsletter {
       position: fixed;
@@ -1017,13 +1153,6 @@
     @media (min-width: 1400px) {
       .ambient-layer { display: none; }
     }
-
-    .ar-msg.bot a {
-      color: #B8962E;
-      text-decoration: underline;
-      font-weight: 600;
-    }
-    .ar-msg.bot a:hover { color: #8A7024; }
 
     #CybotCookiebotDialogPoweredByText,
     .CookiebotWidget,
@@ -1994,16 +2123,29 @@
     </div>
     <div id="arChatInputRow">
       <input type="text" id="arChatInput" placeholder="Scrivi o parla..." onkeydown="if(event.key==='Enter')arSendMessage()">
-      <button id="arChatVoiceBtn" onclick="arToggleVoiceRecording()" title="Registra audio (riconoscimento vocale)">🎤</button>
+      <button id="arChatVoiceBtn" onclick="arToggleVoiceRecording()" title="Registra audio (riconoscimento vocale)" aria-label="Registra audio">🎤</button>
+      <div class="ar-voice-out-wrap">
+        <span class="voice-out-label">Ascolta i messaggi</span>
+        <button id="arVoiceOutBtn" class="active" onclick="arToggleVoiceOutput()" title="Attiva/disattiva la voce del bot" aria-label="Attiva o disattiva l'ascolto dei messaggi" aria-pressed="true">🔊</button>
+      </div>
       <button id="arChatSend" onclick="arSendMessage()">Invia</button>
     </div>
     <div id="arChatFooterBar">
-      <label class="voice-toggle" title="Attiva/disattiva la voce del bot">
-        <input type="checkbox" id="arVoiceToggle" checked>
-        🔊 Audio risposte
-      </label>
+      <div class="ar-quick-actions">
+        <button onclick="arHandleAction('mostraServizi')">📋 Servizi</button>
+        <button onclick="arHandleAction('mostraMusica')">🎵 Musica</button>
+        <button onclick="arHandleAction('mostraContatti')">📧 Contatti</button>
+        <button onclick="arHandleAction('mostraFormRichiesta')">📝 Richiedi Servizio</button>
+      </div>
+      <div class="ar-privacy-note">
+        🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+      </div>
+      <div class="gdpr-comment-consent" id="arChatConsentBox">
+        <input type="checkbox" id="arChatConsentCheck">
+        <label for="arChatConsentCheck">Acconsento al trattamento dei dati che scrivo in questa chat, come da <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>. Senza consenso non potrò continuare la conversazione.</label>
+      </div>
       <div class="ai-disclaimer">
-        🤖 BLESS è un assistente basato su intelligenza artificiale: le risposte potrebbero non essere sempre accurate. Verifica sempre le informazioni importanti con le tue ricerche e non affidarti al 100% a quanto scritto qui.
+        🤖 BLESS è un assistente IA: le risposte potrebbero non essere sempre accurate, verifica sempre le informazioni importanti.
       </div>
     </div>
   </div>
@@ -2060,15 +2202,15 @@
       }
 
       // ============================================================
-      // SINTESI VOCALE - VOICE TOGGLE + VOCE UMANA CALDA, CALMA E PROFONDA
+      // SINTESI VOCALE - VOICE TOGGLE + VOCE GIOVANILE A VELOCITà NORMALE
       // ============================================================
-      
+
       var arVoiceEnabled = true;
       var arVoicesLoaded = false;
-      var arItalianMaleVoice = null;
+      var arItalianVoice = null;
 
-      // Punteggio di "qualità/naturalezza" di una voce italiana.
-      // Più alto = più simile a una voce neurale/umana calda.
+      // Punteggio di "qualità/naturalezza/giovinezza" di una voce italiana.
+      // Più alto = più simile a una voce neurale, naturale e giovanile.
       function arScoreVoice(v) {
         var n = v.name.toLowerCase();
         var score = 0;
@@ -2080,17 +2222,12 @@
         // Voci "Google italiano" di Chrome (motore Google, buona qualità)
         if (n.includes('google') && n.includes('itali')) score += 70;
 
-        // Preferenza per un timbro maschile (più coerente con "ragazzo sui 33 anni")
-        if (n.includes('male') || n.includes('diego') || n.includes('cosimo') ||
-            n.includes('giorgio') || n.includes('alberto') || n.includes('massimo') ||
-            n.includes('benigno') || n.includes('standard-a') || n.includes('standard-c')) score += 20;
+        // Preferenza per timbri più freschi/giovanili quando riconoscibili dal nome
+        if (n.includes('diego') || n.includes('cosimo') || n.includes('giuseppe') ||
+            n.includes('benigno') || n.includes('standard-c')) score += 15;
 
-        // Penalizza esplicitamente le voci femminili se troviamo di meglio
-        if (n.includes('female') || n.includes('elsa') || n.includes('isabella') ||
-            n.includes('elena') || n.includes('carla')) score -= 10;
-
-        // Voci locali di sistema (offline) di solito le più robotiche: leggera penalità
-        if (v.localService) score -= 5;
+        // Penalizza voci esplicitamente "anziane"/robotiche se troviamo di meglio
+        if (n.includes('compact') || n.includes('enhanced') === false && v.localService) score -= 3;
 
         return score;
       }
@@ -2102,15 +2239,15 @@
 
         if (italianVoices.length > 0) {
           italianVoices.sort(function(a, b) { return arScoreVoice(b) - arScoreVoice(a); });
-          arItalianMaleVoice = italianVoices[0];
+          arItalianVoice = italianVoices[0];
         } else if (voices.length > 0) {
           // Nessuna voce italiana disponibile: meglio comunque una voce di qualità che nessuna voce
-          arItalianMaleVoice = voices[0];
+          arItalianVoice = voices[0];
         }
 
         arVoicesLoaded = true;
       }
-      
+
       if ('speechSynthesis' in window) {
         window.speechSynthesis.getVoices();
         window.speechSynthesis.onvoiceschanged = function() {
@@ -2120,40 +2257,49 @@
         // Su alcuni browser (es. Edge) l'elenco voci arriva con un piccolo ritardo aggiuntivo
         setTimeout(arLoadVoices, 1200);
       }
-      
+
       function arSpeak(text) {
-        var toggle = document.getElementById('arVoiceToggle');
-        if (toggle) {
-          arVoiceEnabled = toggle.checked;
-        }
-        
         if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
-        
+
         window.speechSynthesis.cancel();
-        
+
         var utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'it-IT';
 
-        // PARAMETRI PER UNA VOCE PIÙ UMANA, CALDA, CALMA E PROFONDA
-        // (ritmo naturale, non troppo lento da suonare robotico, tono leggermente abbassato per calore)
-        utterance.rate = 0.92;
-        utterance.pitch = 0.88;
+        // PARAMETRI PER UNA VOCE PIÙ UMANA, GIOVANILE E NATURALE
+        // (velocità normale, tono leggermente più alto per un timbro più fresco/giovanile)
+        utterance.rate = 1.0;
+        utterance.pitch = 1.05;
         utterance.volume = 1.0;
 
         if (!arVoicesLoaded) arLoadVoices();
-        if (arItalianMaleVoice) {
-          utterance.voice = arItalianMaleVoice;
-          utterance.lang = arItalianMaleVoice.lang;
-          // Le voci "Online (Natural)"/Neural reggono bene un ritmo quasi naturale
-          var nm = arItalianMaleVoice.name.toLowerCase();
+        if (arItalianVoice) {
+          utterance.voice = arItalianVoice;
+          utterance.lang = arItalianVoice.lang;
+          // Le voci "Online (Natural)"/Neural reggono bene un ritmo pienamente naturale
+          var nm = arItalianVoice.name.toLowerCase();
           if (nm.includes('online (natural)') || nm.includes('neural')) {
-            utterance.rate = 1.0;
-            utterance.pitch = 0.95;
+            utterance.rate = 1.03;
+            utterance.pitch = 1.08;
           }
         }
-        
+
         window.speechSynthesis.speak(utterance);
       }
+
+      function arToggleVoiceOutput() {
+        arVoiceEnabled = !arVoiceEnabled;
+        var btn = document.getElementById('arVoiceOutBtn');
+        if (btn) {
+          btn.classList.toggle('active', arVoiceEnabled);
+          btn.textContent = arVoiceEnabled ? '🔊' : '🔇';
+          btn.setAttribute('aria-pressed', arVoiceEnabled ? 'true' : 'false');
+        }
+        if (!arVoiceEnabled && 'speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+      window.arToggleVoiceOutput = arToggleVoiceOutput;
 
       // ============================================================
       // TRASCRIZIONE VOCALE CON WEB SPEECH API
@@ -2196,14 +2342,14 @@
               interimTranscript += transcript;
             }
           }
-          
+
           var input = document.getElementById('arChatInput');
           if (arFinalTranscript) {
             input.value = arFinalTranscript + interimTranscript;
           } else {
             input.value = interimTranscript;
           }
-          
+
           input.selectionStart = input.selectionEnd = input.value.length;
         };
 
@@ -2235,7 +2381,7 @@
           var btn = document.getElementById('arChatVoiceBtn');
           btn.textContent = '⏹';
           btn.classList.add('recording');
-          
+
           document.getElementById('arChatInput').value = '';
           arAddMessage('🎤 Sto ascoltando... Parla ora!', 'bot');
         } catch(e) {
@@ -2251,12 +2397,12 @@
             arRecognition.stop();
           } catch(e) {}
         }
-        
+
         var input = document.getElementById('arChatInput');
         var text = input.value.trim();
-        
+
         arStopRecordingUI();
-        
+
         if (text) {
           arSendMessage();
         } else {
@@ -2269,7 +2415,7 @@
         var btn = document.getElementById('arChatVoiceBtn');
         btn.textContent = '🎤';
         btn.classList.remove('recording');
-        
+
         if (arRecognition) {
           try {
             arRecognition.stop();
@@ -2281,7 +2427,7 @@
       // ============================================================
       // CRONOLOGIA CHAT - localStorage
       // ============================================================
-      
+
       function getChatHistory() {
         try {
           var data = localStorage.getItem('arChatHistory');
@@ -2309,17 +2455,17 @@
             created: Date.now()
           };
         }
-        
+
         history.messages.push({
           role: role,
           content: content,
           timestamp: Date.now()
         });
-        
+
         if (history.messages.length > 200) {
           history.messages = history.messages.slice(-200);
         }
-        
+
         saveChatHistory(history);
       }
 
@@ -2348,16 +2494,21 @@
         return cleaned || "Mi dispiace, non ho capito. Puoi riformulare?";
       }
 
+      function arSetConsentUI(enabled) {
+        var check = document.getElementById('arChatConsentCheck');
+        if (check) check.checked = enabled;
+      }
+
       function arToggleChat() {
         var chatWin = document.getElementById('arChatWindow');
         var isOpen = chatWin.classList.contains('open');
-        
+
         if (!isOpen) {
           loadChatHistory();
         } else {
           chatWin.style.transform = '';
         }
-        
+
         chatWin.classList.toggle('open');
         arDismissTooltip();
         arHideBadge();
@@ -2394,18 +2545,19 @@
       function loadChatHistory() {
         var box = document.getElementById('arChatMessages');
         var history = getChatHistory();
-        
+
         box.innerHTML = '';
-        
+
         if (history && history.messages.length > 0) {
           // Consenso già dato in precedenza (esiste uno storico salvato): sblocca l'input.
           arSetInputEnabled(true);
+          arSetConsentUI(true);
 
           var messages = history.messages.slice(-20);
           messages.forEach(function(msg) {
             arAddMessage(msg.content, msg.role, false);
           });
-          
+
           if (history.userName) {
             var welcomeDiv = document.createElement('div');
             welcomeDiv.className = 'ar-msg bot welcome-msg';
@@ -2418,43 +2570,34 @@
           welcomeDiv.innerHTML = `
             👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
             Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
-            <em style="font-size:0.8rem;opacity:0.7;">🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;text-decoration:underline;">Privacy Policy</a>.</em>
-            <div class="gdpr-comment-consent" id="arChatConsentBox" style="margin-top:10px;padding:10px 12px;font-size:.78rem;">
-              <input type="checkbox" id="arChatConsentCheck">
-              <label for="arChatConsentCheck">Acconsento al trattamento dei dati che scrivo in questa chat, come da <a href="cookie-policy.html" target="_blank" style="color:#C9A961;">Privacy Policy</a>. Senza consenso non potrò continuare la conversazione.</label>
-            </div>
+            Come ti chiami? Così possiamo darti un trattamento personalizzato.
           `;
           box.appendChild(welcomeDiv);
-          
+
           // Finché il consenso non è dato, input/microfono/invio restano disattivati.
           arSetInputEnabled(false);
-          
-          var consentCheck = document.getElementById('arChatConsentCheck');
-          if (consentCheck) {
-            consentCheck.addEventListener('change', function() {
-              arSetInputEnabled(this.checked);
-              if (this.checked) {
-                arAddActionButtons([
-                  { label: '📋 Servizi', action: 'mostraServizi' },
-                  { label: '🎵 Musica', action: 'mostraMusica' },
-                  { label: '📧 Contatti', action: 'mostraContatti' },
-                  { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
-                ]);
-                setTimeout(function() {
-                  arAddMessage('Come ti chiami? Così possiamo darti un trattamento personalizzato.', 'bot', false);
-                }, 800);
-              }
-            });
-          }
+          arSetConsentUI(false);
         }
-        
+
         box.scrollTop = box.scrollHeight;
       }
 
       // ============================================================
+      // CONSENSO PRIVACY (checkbox fissa nel footer)
+      // ============================================================
+      document.addEventListener('DOMContentLoaded', function() {
+        var consentCheck = document.getElementById('arChatConsentCheck');
+        if (consentCheck) {
+          consentCheck.addEventListener('change', function() {
+            arSetInputEnabled(this.checked);
+          });
+        }
+      });
+
+      // ============================================================
       // PULSANTI INTERATTIVI
       // ============================================================
-      
+
       function arAddActionButtons(buttons) {
         var box = document.getElementById('arChatMessages');
         var div = document.createElement('div');
@@ -2478,31 +2621,31 @@
               { label: '📋 Consulenza', action: 'dettaglioConsulenza' }
             ]);
             break;
-            
+
           case 'dettaglioGrafica':
             arAddMessage('🖥️ <strong>Grafica & Web</strong>:\n• Creazione Loghi, Banner, Locandine (Photoshop/Illustrator)\n• Siti Web Vetrina ed E-Commerce Dropshipping\n• Gestione Social per amplificazione follower\n• Editore (pubblicazione digital store, copyright, royalties)', 'bot');
             break;
-            
+
           case 'dettaglioMusica':
             arAddMessage('🎵 <strong>Musica & Produzione</strong>:\n• Produzione Musicale, Testi, Recording (Solo Gospel)\n• Mixing / Mastering\n• Foto e Video Editing 3D (Hitfilm, Photoshop)\n• Assistenza software PC/Tablet/Smartphone', 'bot');
             break;
-            
+
           case 'dettaglioConsulenza':
             arAddMessage('📋 <strong>Consulenza & Altro</strong>:\n• Receptionist, fogli di calcolo, Word, PDF\n• Creazione SPID, pratiche INPS, punti patente\n• Speaker e creatore web radio e DJ', 'bot');
             break;
-            
+
           case 'mostraMusica':
             arAddMessage('🎵 Puoi ascoltarci su:\n• <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank">Spotify</a>\n• <a href="https://soundcloud.com/alanrose-13" target="_blank">SoundCloud</a>\n• <a href="https://www.youtube.com/@Alan_e_Rose" target="_blank">YouTube</a>\n\nI nostri brani: El es el rey (2026), Mai Solo (2025), Sopra Un\'Isola (2025), Ali D\'Aquila (2025), In Ginocchio Da Te (2025), La Tua Anima (2024), Tu Vedrai (2024), Tu Mi Fai Vivere (2024)', 'bot');
             break;
-            
+
           case 'mostraContatti':
             arAddMessage('📧 Puoi contattarci via email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>\n\nOppure compila il <a href="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform" target="_blank">modulo di richiesta servizio</a>', 'bot');
             break;
-            
+
           case 'mostraFormRichiesta':
             arShowFormInChat('https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true');
             break;
-            
+
           default:
             arAddMessage('Funzionalità in sviluppo! 😊', 'bot');
         }
@@ -2511,7 +2654,7 @@
       // ============================================================
       // MODULO INTEGRATO NELLA CHAT
       // ============================================================
-      
+
       function arShowFormInChat(formUrl) {
         var box = document.getElementById('arChatMessages');
         var div = document.createElement('div');
@@ -2533,7 +2676,7 @@
 
       function arAddMessage(text, cls, saveToHistory) {
         if (saveToHistory === undefined) saveToHistory = true;
-        
+
         var box = document.getElementById('arChatMessages');
         var div = document.createElement('div');
         div.className = 'ar-msg ' + cls;
@@ -2544,10 +2687,10 @@
         }
         box.appendChild(div);
         box.scrollTop = box.scrollHeight;
-        
+
         if (saveToHistory && cls === 'user') {
           addMessageToHistory('user', text);
-          
+
           var nameMatch = text.match(/^(mi chiamo|sono|io sono)\s+([A-Za-zÀ-ÖØ-öø-ÿ\s]+)$/i);
           if (nameMatch) {
             var name = nameMatch[2].trim();
@@ -2560,12 +2703,7 @@
               }
             }
             setTimeout(function() {
-              arAddMessage('Piacere di conoscerti <strong>' + name + '</strong>! Sono qui per aiutarti. Cosa ti serve?', 'bot', false);
-              arAddActionButtons([
-                { label: '📋 Servizi', action: 'mostraServizi' },
-                { label: '🎵 Musica', action: 'mostraMusica' },
-                { label: '📝 Richiedi Servizio', action: 'mostraFormRichiesta' }
-              ]);
+              arAddMessage('Piacere di conoscerti <strong>' + name + '</strong>! Sono qui per aiutarti. Cosa ti serve? Trovi Servizi, Musica e le altre scorciatoie appena sotto il campo di scrittura.', 'bot', false);
             }, 300);
           }
         } else if (saveToHistory && cls === 'bot') {
@@ -2577,7 +2715,7 @@
             }
           }
         }
-        
+
         return div;
       }
 
@@ -2600,7 +2738,7 @@
       // ============================================================
       // INVIO MESSAGGIO CON INTERRUZIONE
       // ============================================================
-      
+
       function arStopTyping() {
         if (typingInterval) {
           clearInterval(typingInterval);
@@ -2752,7 +2890,7 @@
 
           var reply = data.choices?.[0]?.message?.content || 'Mi dispiace, non ho capito. Puoi riformulare?';
           reply = cleanBotResponse(reply);
-          
+
           reply = reply.replace(/sono pronta/gi, 'sono pronto');
 
           await arTypeMessage(reply, 'bot', 20);
