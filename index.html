@@ -69,6 +69,9 @@
       display: flex; flex-wrap: wrap; justify-content: center;
       gap: 12px; padding: 14px;
       background: rgba(0,0,0,.72);
+      position: sticky;
+      top: 0;
+      z-index: 500;
     }
     nav a {
       color: #fff; text-decoration: none; font-weight: 600;
@@ -810,6 +813,10 @@
       font-size: .9rem;
       background: rgba(255,255,255,0.7);
       transition: .3s;
+      resize: none;
+      overflow-y: auto;
+      max-height: 100px;
+      line-height: 1.4;
     }
     #arChatInput:focus {
       outline: none;
@@ -2202,7 +2209,7 @@
       <!-- Il messaggio di benvenuto verrà inserito da JavaScript -->
     </div>
     <div id="arChatInputRow">
-      <input type="text" id="arChatInput" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon()" onkeydown="if(event.key==='Enter')arSendMessage()">
+      <textarea id="arChatInput" rows="1" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon(); arAutoResizeInput(this);" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>
       <button id="arChatMicSend" onclick="arMicSendClick()" title="Parla ora" aria-label="Registra audio o invia messaggio">
         <svg id="arMicSendIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2211,7 +2218,7 @@
         </svg>
       </button>
       <div class="ar-voice-out-wrap">
-        <span class="voice-out-label">Ascolta i messaggi</span>
+        <span class="voice-out-label">Ascolta testo</span>
         <button id="arVoiceOutBtn" class="active" onclick="arToggleVoiceOutput()" title="Attiva/disattiva la voce del bot" aria-label="Attiva o disattiva l'ascolto dei messaggi" aria-pressed="true">🔊</button>
       </div>
     </div>
@@ -2407,6 +2414,15 @@
       window.arToggleVoiceOutput = arToggleVoiceOutput;
 
       // ============================================================
+      // AUTO-RESIZE CASELLA DI TESTO (textarea multi-riga)
+      // ============================================================
+      function arAutoResizeInput(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+      }
+      window.arAutoResizeInput = arAutoResizeInput;
+
+      // ============================================================
       // PULSANTE COMBINATO MICROFONO / INVIO
       // ============================================================
       var arMicSvg = '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
@@ -2495,6 +2511,7 @@
           }
 
           input.selectionStart = input.selectionEnd = input.value.length;
+          arAutoResizeInput(input);
         };
 
         arRecognition.onerror = function(event) {
@@ -2510,12 +2527,9 @@
         };
 
         arRecognition.onend = function() {
+          // Niente più riavvio automatico: causava la trascrizione duplicata
           if (arIsRecording) {
-            try {
-              arRecognition.start();
-            } catch(e) {
-              arStopRecordingUI();
-            }
+            arStopRecording();
           }
         };
 
@@ -2529,7 +2543,7 @@
           btn.title = 'Sto registrando... clicca per fermare';
 
           document.getElementById('arChatInput').value = '';
-          arAddMessage('🎤 Parla ora!', 'bot');
+          arAddMessage('🎤 Ti ascolto, parla pure...', 'bot', false);
         } catch(e) {
           console.error('Errore avvio riconoscimento:', e);
           arAddMessage('Impossibile avviare il microfono. Riprova.', 'bot');
@@ -3050,6 +3064,7 @@
         arAddMessage(msg, 'user');
 
         input.value = '';
+        arAutoResizeInput(input);
         arUpdateMicSendIcon();
         arShowTyping();
 
