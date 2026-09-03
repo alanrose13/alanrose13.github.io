@@ -1285,9 +1285,11 @@
         if (n.includes('google') && n.includes('itali')) score += 70;
 
         // Preferenza per timbri più caldi/espressivi quando riconoscibili dal nome
-        if (n.includes('diego') || n.includes('cosimo') || n.includes('giuseppe') ||
-            n.includes('benigno') || n.includes('elsa') || n.includes('isabella') ||
-            n.includes('standard-c')) score += 15;
+              if (n.includes('diego') || n.includes('cosimo') || n.includes('giuseppe') ||
+            n.includes('benigno') || n.includes('standard-c') || n.includes('standard-a')) score += 15;
+
+        // Esclude esplicitamente le voci femminili italiane più comuni
+        if (n.includes('elsa') || n.includes('isabella') || n.includes('female')) score -= 200;
 
         // Penalizza voci esplicitamente robotiche/compatte se troviamo di meglio
         if (n.includes('compact') || n.includes('enhanced') === false && v.localService) score -= 3;
