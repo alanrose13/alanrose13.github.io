@@ -583,6 +583,23 @@
       opacity: 0.7;
     }
     #arChatHeader span.close:hover { opacity: 1; }
+    #arChatClearBtn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      opacity: 0.75;
+      font-size: 0.68rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 6px;
+      transition: .2s;
+      font-family: 'Segoe UI', sans-serif;
+      font-weight: 600;
+    }
+    #arChatClearBtn:hover { opacity: 1; background: rgba(255,255,255,0.1); }
 
     #arChatMessages {
       flex: 1;
@@ -594,6 +611,7 @@
       flex-direction: column;
       gap: 8px;
       min-height: 0;
+      position: relative;
     }
     #arChatMessages::-webkit-scrollbar {
       width: 4px;
@@ -606,6 +624,94 @@
       background: rgba(201,169,97,0.3);
       border-radius: 10px;
     }
+
+    /* Overlay di consenso privacy che copre l'area messaggi */
+    #arConsentOverlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: linear-gradient(160deg, rgba(245,241,232,0.98) 0%, rgba(245,241,232,0.94) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      text-align: center;
+      gap: 14px;
+    }
+    #arConsentOverlay .consent-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F5F1E8 0%, #C9A961 100%);
+      border: 1px solid rgba(201,169,97,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+    #arConsentOverlay h4 {
+      color: var(--m);
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+    #arConsentOverlay p {
+      color: var(--m);
+      font-size: 0.82rem;
+      opacity: 0.85;
+      line-height: 1.5;
+      max-width: 280px;
+    }
+    #arConsentOverlay .consent-check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid rgba(201,169,97,0.35);
+      border-radius: 10px;
+      padding: 12px 14px;
+      max-width: 300px;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0,0,0,.05);
+    }
+    #arConsentOverlay .consent-check-row input[type="checkbox"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: #C9A961;
+    }
+    #arConsentOverlay .consent-check-row label {
+      font-size: 0.78rem;
+      color: var(--m);
+      line-height: 1.4;
+      cursor: pointer;
+    }
+    #arConsentOverlay .consent-check-row a { color: var(--o); text-decoration: underline; }
+    #arConsentOverlay .consent-accept-btn {
+      background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 26px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: .3s;
+      font-family: 'Segoe UI', sans-serif;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    #arConsentOverlay .consent-accept-btn.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #arConsentOverlay .consent-accept-btn.enabled:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(201,169,97,0.35);
+    }
+    #arConsentOverlay.hidden { display: none; }
 
     .ar-msg {
       max-width: 85%;
@@ -683,7 +789,7 @@
     }
 
     /* --------------------------------------------------------------
-       INPUT ROW: digitazione + microfono + audio risposte + invio
+       INPUT ROW: digitazione + microfono/invio + audio risposte
     -------------------------------------------------------------- */
     #arChatInputRow {
       display: flex;
@@ -714,62 +820,41 @@
       opacity: 0.6;
       cursor: not-allowed;
     }
-    #arChatSend {
+
+    /* Pulsante combinato microfono / invio */
+    #arChatMicSend {
       background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
-      color: #fff;
       border: none;
       border-radius: 12px;
-      padding: 0 16px;
-      height: 40px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .3s;
-      font-size: .9rem;
-      flex-shrink: 0;
-    }
-    #arChatSend:hover {
-      transform: scale(1.03);
-      box-shadow: 0 4px 15px rgba(201,169,97,0.3);
-    }
-    #arChatSend:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Pulsante microfono */
-    #arChatVoiceBtn {
-      background: transparent;
-      border: none;
-      font-size: 20px;
       cursor: pointer;
       padding: 0;
-      width: 38px;
+      width: 40px;
       height: 40px;
       flex-shrink: 0;
       transition: .3s;
-      color: var(--m);
-      opacity: 0.65;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #4A3B2A;
     }
-    #arChatVoiceBtn:hover { opacity: 1; }
-    #arChatVoiceBtn.recording {
-      color: #E24C4C;
+    #arChatMicSend svg { width: 19px; height: 19px; display: block; }
+    #arChatMicSend:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(201,169,97,0.3); }
+    #arChatMicSend.recording {
+      background: #E24C4C;
+      color: #fff;
       animation: pulseMic 1s ease-in-out infinite;
     }
-    #arChatVoiceBtn:disabled {
-      opacity: 0.3;
+    #arChatMicSend:disabled {
+      opacity: 0.4;
       cursor: not-allowed;
       animation: none;
     }
     @keyframes pulseMic {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+      50% { transform: scale(1.12); }
     }
 
-    /* Blocco toggle audio risposte (con etichetta sopra) accanto al tasto Invia */
+    /* Blocco toggle audio risposte (con etichetta sopra) accanto al mic/invio */
     .ar-voice-out-wrap {
       display: flex;
       flex-direction: column;
@@ -898,22 +983,6 @@
       display: block;
     }
 
-    /* Consenso GDPR nel footer */
-    .gdpr-comment-consent {
-      background: rgba(245,241,232,0.9);
-      padding: 8px 10px;
-      border-radius: 8px;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      font-size: .72rem;
-      line-height: 1.35;
-      border: 1px solid rgba(201,169,97,0.3);
-    }
-    .gdpr-comment-consent input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; width: 15px; height: 15px; accent-color: #C9A961; }
-    .gdpr-comment-consent label { cursor: pointer; }
-    .gdpr-comment-consent a { color: var(--o); text-decoration: underline; }
-
     /* --------------------------------------------------------------
        RESPONSIVE MOBILE
     -------------------------------------------------------------- */
@@ -934,14 +1003,15 @@
       #arChatHeader .header-left .avatar-small { width: 28px; height: 28px; font-size: 14px; }
       #arChatHeader .header-left .chat-title .name { font-size: .9rem; }
       #arChatHeader .header-left .chat-title .sub { font-size: .6rem; }
+      #arChatClearBtn { font-size: .62rem; }
       #arChatMessages { padding: 12px; gap: 6px; }
       .ar-msg { font-size: .85rem; max-width: 90%; padding: 9px 12px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
       .ar-msg.bot .ar-inline-form iframe { height: 280px; }
       #arChatInputRow { padding: 8px 8px; gap: 4px; }
       #arChatInput { font-size: .85rem; padding: 9px 12px; }
-      #arChatSend { padding: 0 12px; font-size: .82rem; height: 38px; }
-      #arChatVoiceBtn { width: 32px; height: 38px; font-size: 18px; }
+      #arChatMicSend { width: 36px; height: 38px; }
+      #arChatMicSend svg { width: 17px; height: 17px; }
       #arVoiceOutBtn { width: 32px; height: 32px; font-size: 15px; }
       .ar-voice-out-wrap .voice-out-label { font-size: .5rem; }
       #arChatFooterBar { padding: 6px 10px 10px; }
@@ -949,12 +1019,11 @@
       .ar-quick-actions button { font-size: .68rem; padding: 5px 10px; }
       #arChatFooterBar .ar-privacy-note { font-size: .64rem; }
       #arChatFooterBar .ai-disclaimer { font-size: .6rem; }
-      .gdpr-comment-consent { font-size: .68rem; padding: 7px 8px; }
+      #arConsentOverlay .consent-check-row { font-size: .7rem; padding: 10px 12px; }
     }
 
     @media (max-width: 360px) {
       #arChatInput { font-size: .8rem; }
-      #arChatSend { padding: 0 9px; font-size: .76rem; }
       .ar-quick-actions button { font-size: .64rem; padding: 4px 8px; }
     }
 
@@ -2115,20 +2184,36 @@
         </div>
       </div>
       <div class="header-right">
+        <button id="arChatClearBtn" onclick="arClearChat()" title="Svuota la chat" aria-label="Svuota chat">🗑️ Svuota</button>
         <span class="close" onclick="arToggleChat()">×</span>
       </div>
     </div>
     <div id="arChatMessages">
+      <div id="arConsentOverlay">
+        <div class="consent-icon">🔒</div>
+        <h4>Prima di iniziare</h4>
+        <p>Per chattare con BLESS abbiamo bisogno del tuo consenso al trattamento dei dati che scriverai in questa conversazione.</p>
+        <div class="consent-check-row">
+          <input type="checkbox" id="arChatConsentCheck">
+          <label for="arChatConsentCheck">Acconsento al trattamento dei dati che scrivo in questa chat, come da <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</label>
+        </div>
+        <button class="consent-accept-btn" id="arConsentAcceptBtn" onclick="arAcceptConsent()">Accetta e inizia a chattare</button>
+      </div>
       <!-- Il messaggio di benvenuto verrà inserito da JavaScript -->
     </div>
     <div id="arChatInputRow">
-      <input type="text" id="arChatInput" placeholder="Scrivi o parla..." onkeydown="if(event.key==='Enter')arSendMessage()">
-      <button id="arChatVoiceBtn" onclick="arToggleVoiceRecording()" title="Registra audio (riconoscimento vocale)" aria-label="Registra audio">🎤</button>
+      <input type="text" id="arChatInput" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon()" onkeydown="if(event.key==='Enter')arSendMessage()">
+      <button id="arChatMicSend" onclick="arMicSendClick()" title="Parla ora" aria-label="Registra audio o invia messaggio">
+        <svg id="arMicSendIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
       <div class="ar-voice-out-wrap">
         <span class="voice-out-label">Ascolta i messaggi</span>
         <button id="arVoiceOutBtn" class="active" onclick="arToggleVoiceOutput()" title="Attiva/disattiva la voce del bot" aria-label="Attiva o disattiva l'ascolto dei messaggi" aria-pressed="true">🔊</button>
       </div>
-      <button id="arChatSend" onclick="arSendMessage()">Invia</button>
     </div>
     <div id="arChatFooterBar">
       <div class="ar-quick-actions">
@@ -2139,10 +2224,6 @@
       </div>
       <div class="ar-privacy-note">
         🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
-      </div>
-      <div class="gdpr-comment-consent" id="arChatConsentBox">
-        <input type="checkbox" id="arChatConsentCheck">
-        <label for="arChatConsentCheck">Acconsento al trattamento dei dati che scrivo in questa chat, come da <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>. Senza consenso non potrò continuare la conversazione.</label>
       </div>
       <div class="ai-disclaimer">
         🤖 BLESS è un assistente IA: le risposte potrebbero non essere sempre accurate, verifica sempre le informazioni importanti.
@@ -2202,15 +2283,15 @@
       }
 
       // ============================================================
-      // SINTESI VOCALE - VOICE TOGGLE + VOCE GIOVANILE A VELOCITà NORMALE
+      // SINTESI VOCALE - VOICE TOGGLE + VOCE ESPRESSIVA E NATURALE
       // ============================================================
 
       var arVoiceEnabled = true;
       var arVoicesLoaded = false;
       var arItalianVoice = null;
 
-      // Punteggio di "qualità/naturalezza/giovinezza" di una voce italiana.
-      // Più alto = più simile a una voce neurale, naturale e giovanile.
+      // Punteggio di "qualità/naturalezza/espressività" di una voce italiana.
+      // Più alto = più simile a una voce neurale, naturale, calda ed espressiva.
       function arScoreVoice(v) {
         var n = v.name.toLowerCase();
         var score = 0;
@@ -2222,11 +2303,12 @@
         // Voci "Google italiano" di Chrome (motore Google, buona qualità)
         if (n.includes('google') && n.includes('itali')) score += 70;
 
-        // Preferenza per timbri più freschi/giovanili quando riconoscibili dal nome
+        // Preferenza per timbri più caldi/espressivi quando riconoscibili dal nome
         if (n.includes('diego') || n.includes('cosimo') || n.includes('giuseppe') ||
-            n.includes('benigno') || n.includes('standard-c')) score += 15;
+            n.includes('benigno') || n.includes('elsa') || n.includes('isabella') ||
+            n.includes('standard-c')) score += 15;
 
-        // Penalizza voci esplicitamente "anziane"/robotiche se troviamo di meglio
+        // Penalizza voci esplicitamente robotiche/compatte se troviamo di meglio
         if (n.includes('compact') || n.includes('enhanced') === false && v.localService) score -= 3;
 
         return score;
@@ -2258,33 +2340,54 @@
         setTimeout(arLoadVoices, 1200);
       }
 
+      // Spezza il testo in frasi/segmenti naturali per intonazione più umana:
+      // ogni segmento riceve una micro-pausa e una lieve variazione di intonazione,
+      // simulando meglio il modo in cui una persona reale scandisce un discorso.
+      function arSplitIntoSegments(text) {
+        var raw = text.split(/(?<=[.!?…])\s+|(?<=[,;:])\s+(?=\S)/);
+        return raw.map(function(s) { return s.trim(); }).filter(Boolean);
+      }
+
       function arSpeak(text) {
         if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
 
         window.speechSynthesis.cancel();
 
-        var utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'it-IT';
-
-        // PARAMETRI PER UNA VOCE PIÙ UMANA, GIOVANILE E NATURALE
-        // (velocità normale, tono leggermente più alto per un timbro più fresco/giovanile)
-        utterance.rate = 1.0;
-        utterance.pitch = 1.05;
-        utterance.volume = 1.0;
-
         if (!arVoicesLoaded) arLoadVoices();
+
+        var segments = arSplitIntoSegments(text);
+        if (segments.length === 0) segments = [text];
+
+        var isPremiumVoice = false;
         if (arItalianVoice) {
-          utterance.voice = arItalianVoice;
-          utterance.lang = arItalianVoice.lang;
-          // Le voci "Online (Natural)"/Neural reggono bene un ritmo pienamente naturale
           var nm = arItalianVoice.name.toLowerCase();
-          if (nm.includes('online (natural)') || nm.includes('neural')) {
-            utterance.rate = 1.03;
-            utterance.pitch = 1.08;
-          }
+          isPremiumVoice = nm.includes('online (natural)') || nm.includes('neural');
         }
 
-        window.speechSynthesis.speak(utterance);
+        segments.forEach(function(segment, idx) {
+          var utterance = new SpeechSynthesisUtterance(segment);
+          utterance.lang = arItalianVoice ? arItalianVoice.lang : 'it-IT';
+          if (arItalianVoice) utterance.voice = arItalianVoice;
+
+          // PARAMETRI PER UNA VOCE PIÙ UMANA ED ESPRESSIVA
+          // Piccole variazioni di rate/pitch tra un segmento e l'altro
+          // imitano l'intonazione naturale del parlato umano, evitando la monotonia.
+          var isQuestion = /[?]\s*$/.test(segment);
+          var isExclaim = /[!]\s*$/.test(segment);
+          var isLastOfEmphasisWord = segment.length < 18;
+
+          var baseRate = isPremiumVoice ? 1.02 : 0.99;
+          var basePitch = isPremiumVoice ? 1.06 : 1.02;
+
+          var rateJitter = ((idx % 3) - 1) * 0.015; // leggerissima variazione ritmica
+          var pitchJitter = ((idx % 4) - 1.5) * 0.02;
+
+          utterance.rate = baseRate + rateJitter + (isLastOfEmphasisWord ? 0.03 : 0);
+          utterance.pitch = basePitch + pitchJitter + (isQuestion ? 0.06 : 0) + (isExclaim ? 0.04 : 0);
+          utterance.volume = 1.0;
+
+          window.speechSynthesis.speak(utterance);
+        });
       }
 
       function arToggleVoiceOutput() {
@@ -2300,6 +2403,45 @@
         }
       }
       window.arToggleVoiceOutput = arToggleVoiceOutput;
+
+      // ============================================================
+      // PULSANTE COMBINATO MICROFONO / INVIO
+      // ============================================================
+      var arMicSvg = '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+      var arSendSvg = '<path d="M4 12 20 4l-6.5 16-2.5-7-7-2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
+
+      function arUpdateMicSendIcon() {
+        if (arIsRecording) return; // durante la registrazione l'icona resta gestita separatamente
+        var input = document.getElementById('arChatInput');
+        var icon = document.getElementById('arMicSendIcon');
+        var btn = document.getElementById('arChatMicSend');
+        if (!input || !icon || !btn) return;
+
+        if (input.value.trim().length > 0) {
+          icon.innerHTML = arSendSvg;
+          btn.title = 'Invia messaggio';
+          btn.setAttribute('aria-label', 'Invia messaggio');
+        } else {
+          icon.innerHTML = arMicSvg;
+          btn.title = 'Parla ora';
+          btn.setAttribute('aria-label', 'Registra audio');
+        }
+      }
+      window.arUpdateMicSendIcon = arUpdateMicSendIcon;
+
+      function arMicSendClick() {
+        var input = document.getElementById('arChatInput');
+        if (arIsRecording) {
+          arStopRecording();
+          return;
+        }
+        if (input && input.value.trim().length > 0) {
+          arSendMessage();
+        } else {
+          arToggleVoiceRecording();
+        }
+      }
+      window.arMicSendClick = arMicSendClick;
 
       // ============================================================
       // TRASCRIZIONE VOCALE CON WEB SPEECH API
@@ -2378,12 +2520,14 @@
         try {
           arRecognition.start();
           arIsRecording = true;
-          var btn = document.getElementById('arChatVoiceBtn');
-          btn.textContent = '⏹';
+          var btn = document.getElementById('arChatMicSend');
+          var icon = document.getElementById('arMicSendIcon');
+          icon.innerHTML = arMicSvg;
           btn.classList.add('recording');
+          btn.title = 'Sto registrando... clicca per fermare';
 
           document.getElementById('arChatInput').value = '';
-          arAddMessage('🎤 Sto ascoltando... Parla ora!', 'bot');
+          arAddMessage('🎤 Parla ora!', 'bot');
         } catch(e) {
           console.error('Errore avvio riconoscimento:', e);
           arAddMessage('Impossibile avviare il microfono. Riprova.', 'bot');
@@ -2412,9 +2556,9 @@
 
       function arStopRecordingUI() {
         arIsRecording = false;
-        var btn = document.getElementById('arChatVoiceBtn');
-        btn.textContent = '🎤';
-        btn.classList.remove('recording');
+        var btn = document.getElementById('arChatMicSend');
+        if (btn) btn.classList.remove('recording');
+        arUpdateMicSendIcon();
 
         if (arRecognition) {
           try {
@@ -2478,6 +2622,60 @@
       }
 
       // ============================================================
+      // CONSENSO PRIVACY - stato persistente
+      // ============================================================
+      function getConsentGiven() {
+        try {
+          return localStorage.getItem('arChatConsentGiven') === '1';
+        } catch(e) {
+          return false;
+        }
+      }
+
+      function setConsentGiven(val) {
+        try {
+          localStorage.setItem('arChatConsentGiven', val ? '1' : '0');
+        } catch(e) {}
+      }
+
+      function arAcceptConsent() {
+        var check = document.getElementById('arChatConsentCheck');
+        if (!check || !check.checked) return;
+
+        setConsentGiven(true);
+        var overlay = document.getElementById('arConsentOverlay');
+        if (overlay) overlay.classList.add('hidden');
+
+        arSetInputEnabled(true);
+        arShowWelcomeIfNeeded();
+      }
+      window.arAcceptConsent = arAcceptConsent;
+
+      // ============================================================
+      // SVUOTA CHAT
+      // ============================================================
+      function arClearChat() {
+        try {
+          localStorage.removeItem('arChatHistory');
+        } catch(e) {}
+
+        var box = document.getElementById('arChatMessages');
+        var overlay = document.getElementById('arConsentOverlay');
+
+        // Rimuove tutti i messaggi tranne l'overlay di consenso
+        Array.prototype.slice.call(box.children).forEach(function(child) {
+          if (child.id !== 'arConsentOverlay') child.remove();
+        });
+
+        if (getConsentGiven()) {
+          arShowWelcomeIfNeeded(true);
+        }
+
+        box.scrollTop = 0;
+      }
+      window.arClearChat = arClearChat;
+
+      // ============================================================
       // FUNZIONI DI BASE CHAT
       // ============================================================
 
@@ -2492,11 +2690,6 @@
         var cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
         cleaned = cleaned.replace(/<think>[\s\S]*$/i, '').trim();
         return cleaned || "Mi dispiace, non ho capito. Puoi riformulare?";
-      }
-
-      function arSetConsentUI(enabled) {
-        var check = document.getElementById('arChatConsentCheck');
-        if (check) check.checked = enabled;
       }
 
       function arToggleChat() {
@@ -2535,24 +2728,16 @@
 
       function arSetInputEnabled(enabled) {
         var input = document.getElementById('arChatInput');
-        var sendBtn = document.getElementById('arChatSend');
-        var micBtn = document.getElementById('arChatVoiceBtn');
+        var micSendBtn = document.getElementById('arChatMicSend');
         if (input) input.disabled = !enabled;
-        if (sendBtn) sendBtn.disabled = !enabled;
-        if (micBtn) micBtn.disabled = !enabled;
+        if (micSendBtn) micSendBtn.disabled = !enabled;
       }
 
-      function loadChatHistory() {
+      function arShowWelcomeIfNeeded(forceGeneric) {
         var box = document.getElementById('arChatMessages');
         var history = getChatHistory();
 
-        box.innerHTML = '';
-
-        if (history && history.messages.length > 0) {
-          // Consenso già dato in precedenza (esiste uno storico salvato): sblocca l'input.
-          arSetInputEnabled(true);
-          arSetConsentUI(true);
-
+        if (!forceGeneric && history && history.messages.length > 0) {
           var messages = history.messages.slice(-20);
           messages.forEach(function(msg) {
             arAddMessage(msg.content, msg.role, false);
@@ -2565,31 +2750,48 @@
             box.appendChild(welcomeDiv);
           }
         } else {
-          var welcomeDiv = document.createElement('div');
-          welcomeDiv.className = 'ar-msg bot welcome-msg';
-          welcomeDiv.innerHTML = `
+          var welcomeDiv2 = document.createElement('div');
+          welcomeDiv2.className = 'ar-msg bot welcome-msg';
+          welcomeDiv2.innerHTML = `
             👋 Ciao! Sono <strong>BLESS</strong>, l'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>
             Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>
             Come ti chiami? Così possiamo darti un trattamento personalizzato.
           `;
-          box.appendChild(welcomeDiv);
-
-          // Finché il consenso non è dato, input/microfono/invio restano disattivati.
-          arSetInputEnabled(false);
-          arSetConsentUI(false);
+          box.appendChild(welcomeDiv2);
         }
 
         box.scrollTop = box.scrollHeight;
       }
 
-      // ============================================================
-      // CONSENSO PRIVACY (checkbox fissa nel footer)
-      // ============================================================
+      function loadChatHistory() {
+        var overlay = document.getElementById('arConsentOverlay');
+        var consentGiven = getConsentGiven();
+
+        if (!consentGiven) {
+          // Consenso non ancora dato: overlay visibile, input disattivato, nessun messaggio caricato.
+          if (overlay) overlay.classList.remove('hidden');
+          arSetInputEnabled(false);
+          return;
+        }
+
+        // Consenso già dato: nasconde l'overlay, sblocca l'input, mostra la cronologia.
+        if (overlay) overlay.classList.add('hidden');
+        arSetInputEnabled(true);
+
+        var box = document.getElementById('arChatMessages');
+        Array.prototype.slice.call(box.children).forEach(function(child) {
+          if (child.id !== 'arConsentOverlay') child.remove();
+        });
+
+        arShowWelcomeIfNeeded();
+      }
+
       document.addEventListener('DOMContentLoaded', function() {
         var consentCheck = document.getElementById('arChatConsentCheck');
-        if (consentCheck) {
+        var acceptBtn = document.getElementById('arConsentAcceptBtn');
+        if (consentCheck && acceptBtn) {
           consentCheck.addEventListener('change', function() {
-            arSetInputEnabled(this.checked);
+            acceptBtn.classList.toggle('enabled', this.checked);
           });
         }
       });
@@ -2841,11 +3043,12 @@
         }
 
         input.disabled = true;
-        document.getElementById('arChatSend').disabled = true;
+        document.getElementById('arChatMicSend').disabled = true;
 
         arAddMessage(msg, 'user');
 
         input.value = '';
+        arUpdateMicSendIcon();
         arShowTyping();
 
         try {
@@ -2901,7 +3104,8 @@
           console.error('Errore chatbot:', err);
         } finally {
           input.disabled = false;
-          document.getElementById('arChatSend').disabled = false;
+          document.getElementById('arChatMicSend').disabled = false;
+          arUpdateMicSendIcon();
           input.focus();
         }
       }
