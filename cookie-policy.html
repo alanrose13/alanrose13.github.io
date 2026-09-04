@@ -1264,7 +1264,7 @@
       }
 
       // ============================================================
-      // SINTESI VOCALE - VOCE NATURALE CON SELEZIONE ROBUSTA
+      // SINTESI VOCALE - VOCE MASCHILE ITALIANA, MOLTO UMANA
       // ============================================================
 
       var arVoiceEnabled = true;
@@ -1272,41 +1272,48 @@
       var arItalianVoice = null;
       var arVoiceLoadAttempts = 0;
 
-      // Funzione di punteggio migliorata per selezionare la voce più naturale e maschile
+      // Nomi di voci FEMMINILI note su tutte le piattaforme
+      // (Windows/Edge Neural, macOS/iOS, Chrome/Android, Google TTS).
+      // Qualsiasi voce il cui nome contiene una di queste stringhe
+      // viene ESCLUSA A PRIORI, non solo penalizzata.
+      var arFemaleVoiceNames = [
+        'elsa', 'isabella', 'fabiola', 'fiamma', 'imelda', 'irma', 'pierina',
+        'alice', 'federica', 'paola', 'silvia', 'valentina', 'giorgia',
+        'chiara', 'laura', 'monica', 'francesca', 'martina', 'serena',
+        'female', 'donna', 'woman'
+      ];
+
+      // Nomi di voci MASCHILI note (premiate quando presenti)
+      var arMaleVoiceNames = [
+        'diego', 'luca', 'giuseppe', 'benigno', 'calimero', 'cataldo',
+        'gianni', 'lisandro', 'palmiro', 'rinaldo', 'cosimo', 'marco',
+        'roberto', 'fabio', 'matteo', 'nicola', 'giorgio', 'mario',
+        'antonio', 'male', 'uomo', 'man'
+      ];
+
+      function arIsFemaleVoice(v) {
+        var n = v.name.toLowerCase();
+        return arFemaleVoiceNames.some(function (name) { return n.includes(name); });
+      }
+
+      // Funzione di punteggio: più alto = voce più naturale e maschile
       function arScoreVoice(v) {
         var n = v.name.toLowerCase();
         var score = 0;
+        var isMaleKnown = arMaleVoiceNames.some(function (name) { return n.includes(name); });
 
-        // Nomi maschili neurali di Edge (le più naturali in assoluto)
-        var maleNeuralNames = ['diego', 'benigno', 'cataldo', 'gianni', 'lisandro', 'palmiro', 'rinaldo', 'calimero'];
-        var femaleNeuralNames = ['elsa', 'isabella', 'fabiola', 'fiamma', 'imelda', 'irma', 'pierina', 'female'];
-        var googleMaleNames = ['standard-c', 'standard-a', 'standard-b'];
-
-        // RILEVAZIONE GENERE: se è femminile, punteggio molto basso
-        var isFemale = femaleNeuralNames.some(function(name) { return n.includes(name); });
-        if (isFemale) return -1000;
-
-        // MASCHILE: premia le voci neurali
-        var isMaleNeural = maleNeuralNames.some(function(name) { return n.includes(name); });
-        var isGoogleMale = googleMaleNames.some(function(name) { return n.includes(name); });
-
+        // Le voci "Online (Natural)" / neurali sono le più umane in assoluto
         if (n.includes('online (natural)') || n.includes('neural')) {
           score += 100;
-          if (isMaleNeural) score += 50; // bonus extra per le voci maschili neurali
+          if (isMaleKnown) score += 50;
         }
 
-        if (n.includes('google') && n.includes('itali')) {
-          score += 70;
-          if (isGoogleMale) score += 20;
-        }
+        if (n.includes('google') && n.includes('itali')) score += 70;
+        if (isMaleKnown) score += 40;
 
-        // Voce "Compact" di Edge è meno naturale
         if (n.includes('compact')) score -= 20;
-
-        // Voce "Standard" di Windows è robotica
         if (n.includes('standard') && !n.includes('online') && !n.includes('neural')) score -= 30;
 
-        // Priorità alle voci con "it-IT" esatto
         if (v.lang === 'it-IT') score += 10;
 
         return score;
@@ -1317,21 +1324,22 @@
 
         var voices = window.speechSynthesis.getVoices();
 
-        // Filtra solo voci italiane
-        var italianVoices = voices.filter(function(v) {
-          return v.lang && v.lang.toLowerCase().startsWith('it');
+        // Solo voci italiane, escludendo a priori quelle femminili note
+        var italianVoices = voices.filter(function (v) {
+          return v.lang && v.lang.toLowerCase().startsWith('it') && !arIsFemaleVoice(v);
         });
 
         if (italianVoices.length > 0) {
-          italianVoices.sort(function(a, b) {
-            return arScoreVoice(b) - arScoreVoice(a);
-          });
+          italianVoices.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
           arItalianVoice = italianVoices[0];
-          console.log('Voce italiana selezionata:', arItalianVoice ? arItalianVoice.name : 'nessuna');
-        } else if (voices.length > 0) {
-          // Fallback: usa la prima voce disponibile (anche se non italiana)
-          arItalianVoice = voices[0];
-          console.log('Nessuna voce italiana trovata, fallback a:', arItalianVoice ? arItalianVoice.name : 'nessuna');
+          console.log('Voce italiana selezionata:', arItalianVoice.name);
+        } else {
+          // Nessuna voce italiana non-femminile disponibile: proviamo con
+          // una voce qualsiasi non esplicitamente femminile, prima di
+          // arrenderci e usare la prima voce disponibile in assoluto.
+          var nonFemale = voices.filter(function (v) { return !arIsFemaleVoice(v); });
+          arItalianVoice = nonFemale.length > 0 ? nonFemale[0] : (voices[0] || null);
+          console.log('Nessuna voce italiana maschile trovata, fallback a:', arItalianVoice ? arItalianVoice.name : 'nessuna');
         }
 
         arVoicesLoaded = true;
