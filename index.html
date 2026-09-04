@@ -379,8 +379,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       [data-aos] {
-        opacity: 1 !important;
-        transform: none !important;
+        transition-duration: 0.01ms !important;
       }
     }
 
@@ -628,7 +627,6 @@
       border-radius: 10px;
     }
 
-    /* Overlay di consenso privacy che copre l'area messaggi */
     #arConsentOverlay {
       position: absolute;
       inset: 0;
@@ -791,9 +789,6 @@
       30% { opacity: 1; transform: scale(1.2); }
     }
 
-    /* --------------------------------------------------------------
-       INPUT ROW: digitazione + microfono/invio + audio risposte
-    -------------------------------------------------------------- */
     #arChatInputRow {
       display: flex;
       align-items: flex-end;
@@ -828,7 +823,6 @@
       cursor: not-allowed;
     }
 
-    /* Pulsante combinato microfono / invio */
     #arChatMicSend {
       background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
       border: none;
@@ -861,7 +855,6 @@
       50% { transform: scale(1.12); }
     }
 
-    /* Blocco toggle audio risposte (con etichetta sopra) accanto al mic/invio */
     .ar-voice-out-wrap {
       display: flex;
       flex-direction: column;
@@ -905,7 +898,6 @@
       transform: none;
     }
 
-    /* Barra sotto l'input: azioni rapide + privacy + disclaimer AI */
     #arChatFooterBar {
       padding: 8px 14px 12px;
       background: rgba(255,255,255,0.5);
@@ -951,7 +943,6 @@
       margin-top: 6px;
     }
 
-    /* Pulsanti azione nella chat (fallback, usati raramente) */
     .ar-action-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -976,7 +967,6 @@
       transform: scale(1.03);
     }
 
-    /* Messaggio con form integrato */
     .ar-msg.bot .ar-inline-form {
       margin: 10px 0 0;
       border-radius: 8px;
@@ -990,9 +980,6 @@
       display: block;
     }
 
-    /* --------------------------------------------------------------
-       RESPONSIVE MOBILE
-    -------------------------------------------------------------- */
     @media (max-width: 480px) {
       #arChatWindow {
         right: 8px;
@@ -1153,13 +1140,6 @@
       .language-selector .fi { font-size: 16px; }
     }
 
-    button:focus-visible,
-    a:focus-visible,
-    input:focus-visible,
-    select:focus-visible {
-      outline: 3px solid #C9A961;
-      outline-offset: 2px;
-    }
     .social-title { color: #B8962E; }
     .donation-box p { color: #3A2B1A; }
 
@@ -1171,10 +1151,6 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
-      }
-      [data-aos] {
-        opacity: 1 !important;
-        transform: none !important;
       }
       .ambient-layer { display: none !important; }
     }
@@ -1247,6 +1223,25 @@
   <script>
     function resizeIframe(iframe) {
       // Il CSS gestisce l'altezza dell'iframe.
+    }
+
+    // ============================================================
+    // OPEN/CLOSE POPUP (mancavano nella versione precedente:
+    // era la causa per cui il menu non apriva nulla)
+    // ============================================================
+    function openPopup(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    function closePopup(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.style.display = 'none';
+        document.body.style.overflow = '';
+      }
     }
   </script>
 
@@ -2270,6 +2265,16 @@
         }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
         items.forEach(function (el) { arRevealObserver.observe(el); });
+
+        // FALLBACK: se per qualche motivo (prefers-reduced-motion, tab in
+        // background su alcuni smartphone, ecc.) un elemento non riceve mai
+        // la classe aos-animate, lo forziamo comunque visibile dopo 2.5s
+        // così l'animazione fade non "blocca" mai il contenuto.
+        setTimeout(function () {
+          document.querySelectorAll('[data-aos]:not(.aos-animate)').forEach(function (el) {
+            el.classList.add('aos-animate');
+          });
+        }, 2500);
       });
 
       // ============================================================
@@ -2290,35 +2295,37 @@
       }
 
       // ============================================================
-      // SINTESI VOCALE - VOICE TOGGLE + VOCE ESPRESSIVA E NATURALE
+      // SINTESI VOCALE - VOICE TOGGLE + VOCE MASCHILE NATURALE
       // ============================================================
 
       var arVoiceEnabled = true;
       var arVoicesLoaded = false;
       var arItalianVoice = null;
 
-      // Punteggio di "qualità/naturalezza/espressività" di una voce italiana.
-      // Più alto = più simile a una voce neurale, naturale, calda ed espressiva.
+      // Punteggio di "qualità/naturalezza/espressività" di una voce italiana
+      // MASCHILE. Le voci "Online (Natural)" di Microsoft Edge sono neurali
+      // e le più naturali disponibili gratuitamente nel browser. Qui
+      // riconosciamo esplicitamente i nomi delle voci maschili italiane
+      // neurali di Edge, ed escludiamo in modo netto qualsiasi voce
+      // femminile, a prescindere dal resto del punteggio.
       function arScoreVoice(v) {
         var n = v.name.toLowerCase();
         var score = 0;
 
-        // Voci "Online (Natural)" di Microsoft Edge: le più realistiche disponibili gratis nel browser
-        if (n.includes('online (natural)')) score += 100;
-        if (n.includes('neural')) score += 90;
+        var maleNeuralNames = ['diego', 'benigno', 'cataldo', 'gianni', 'lisandro', 'palmiro', 'rinaldo', 'calimero'];
+        var femaleNeuralNames = ['elsa', 'isabella', 'fabiola', 'fiamma', 'imelda', 'irma', 'pierina', 'female'];
 
-        // Voci "Google italiano" di Chrome (motore Google, buona qualità)
-        if (n.includes('google') && n.includes('itali')) score += 70;
+        var isMaleNeural = maleNeuralNames.some(function (name) { return n.includes(name); });
+        var isFemaleNeural = femaleNeuralNames.some(function (name) { return n.includes(name); });
 
-        // Preferenza per timbri più caldi/espressivi quando riconoscibili dal nome
-                if (n.includes('diego') || n.includes('cosimo') || n.includes('giuseppe') ||
-            n.includes('benigno') || n.includes('standard-c') || n.includes('standard-a')) score += 15;
+        if (isFemaleNeural) return -1000;
 
-        // Esclude esplicitamente le voci femminili italiane più comuni
-        if (n.includes('elsa') || n.includes('isabella') || n.includes('female')) score -= 200;
+        if (n.includes('online (natural)') || n.includes('neural')) score += 60;
+        if (isMaleNeural) score += 80;
 
-        // Penalizza voci esplicitamente robotiche/compatte se troviamo di meglio
-        if (n.includes('compact') || n.includes('enhanced') === false && v.localService) score -= 3;
+        if (n.includes('google') && n.includes('itali')) score += 20;
+
+        if (n.includes('compact')) score -= 3;
 
         return score;
       }
@@ -2332,7 +2339,6 @@
           italianVoices.sort(function(a, b) { return arScoreVoice(b) - arScoreVoice(a); });
           arItalianVoice = italianVoices[0];
         } else if (voices.length > 0) {
-          // Nessuna voce italiana disponibile: meglio comunque una voce di qualità che nessuna voce
           arItalianVoice = voices[0];
         }
 
@@ -2345,13 +2351,9 @@
           arLoadVoices();
         };
         setTimeout(arLoadVoices, 300);
-        // Su alcuni browser (es. Edge) l'elenco voci arriva con un piccolo ritardo aggiuntivo
         setTimeout(arLoadVoices, 1200);
       }
 
-      // Spezza il testo in frasi/segmenti naturali per intonazione più umana:
-      // ogni segmento riceve una micro-pausa e una lieve variazione di intonazione,
-      // simulando meglio il modo in cui una persona reale scandisce un discorso.
       function arSplitIntoSegments(text) {
         var raw = text.split(/(?<=[.!?…])\s+|(?<=[,;:])\s+(?=\S)/);
         return raw.map(function(s) { return s.trim(); }).filter(Boolean);
@@ -2378,21 +2380,18 @@
           utterance.lang = arItalianVoice ? arItalianVoice.lang : 'it-IT';
           if (arItalianVoice) utterance.voice = arItalianVoice;
 
-          // PARAMETRI PER UNA VOCE PIÙ UMANA ED ESPRESSIVA
-          // Piccole variazioni di rate/pitch tra un segmento e l'altro
-          // imitano l'intonazione naturale del parlato umano, evitando la monotonia.
           var isQuestion = /[?]\s*$/.test(segment);
           var isExclaim = /[!]\s*$/.test(segment);
           var isLastOfEmphasisWord = segment.length < 18;
 
-          var baseRate = isPremiumVoice ? 1.02 : 0.99;
-          var basePitch = isPremiumVoice ? 1.06 : 1.02;
+          var baseRate = isPremiumVoice ? 1.0 : 0.97;
+          var basePitch = isPremiumVoice ? 0.94 : 0.9;
 
-          var rateJitter = ((idx % 3) - 1) * 0.015; // leggerissima variazione ritmica
-          var pitchJitter = ((idx % 4) - 1.5) * 0.02;
+          var rateJitter = ((idx % 3) - 1) * 0.015;
+          var pitchJitter = ((idx % 4) - 1.5) * 0.015;
 
-          utterance.rate = baseRate + rateJitter + (isLastOfEmphasisWord ? 0.03 : 0);
-          utterance.pitch = basePitch + pitchJitter + (isQuestion ? 0.06 : 0) + (isExclaim ? 0.04 : 0);
+          utterance.rate = baseRate + rateJitter + (isLastOfEmphasisWord ? 0.02 : 0);
+          utterance.pitch = basePitch + pitchJitter + (isQuestion ? 0.04 : 0) + (isExclaim ? 0.03 : 0);
           utterance.volume = 1.0;
 
           window.speechSynthesis.speak(utterance);
@@ -2429,7 +2428,7 @@
       var arSendSvg = '<path d="M4 12 20 4l-6.5 16-2.5-7-7-2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
 
       function arUpdateMicSendIcon() {
-        if (arIsRecording) return; // durante la registrazione l'icona resta gestita separatamente
+        if (arIsRecording) return;
         var input = document.getElementById('arChatInput');
         var icon = document.getElementById('arMicSendIcon');
         var btn = document.getElementById('arChatMicSend');
@@ -2526,8 +2525,8 @@
           arStopRecordingUI();
         };
 
+        // Nessun riavvio automatico: evita la trascrizione duplicata
         arRecognition.onend = function() {
-          // Niente più riavvio automatico: causava la trascrizione duplicata
           if (arIsRecording) {
             arStopRecording();
           }
@@ -2678,7 +2677,6 @@
         var box = document.getElementById('arChatMessages');
         var overlay = document.getElementById('arConsentOverlay');
 
-        // Rimuove tutti i messaggi tranne l'overlay di consenso
         Array.prototype.slice.call(box.children).forEach(function(child) {
           if (child.id !== 'arConsentOverlay') child.remove();
         });
@@ -2784,13 +2782,11 @@
         var consentGiven = getConsentGiven();
 
         if (!consentGiven) {
-          // Consenso non ancora dato: overlay visibile, input disattivato, nessun messaggio caricato.
           if (overlay) overlay.classList.remove('hidden');
           arSetInputEnabled(false);
           return;
         }
 
-        // Consenso già dato: nasconde l'overlay, sblocca l'input, mostra la cronologia.
         if (overlay) overlay.classList.add('hidden');
         arSetInputEnabled(true);
 
