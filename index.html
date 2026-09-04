@@ -2295,65 +2295,101 @@
       }
 
       // ============================================================
-      // SINTESI VOCALE - VOICE TOGGLE + VOCE MASCHILE NATURALE
+      // SINTESI VOCALE - VOCE NATURALE CON SELEZIONE ROBUSTA
       // ============================================================
 
       var arVoiceEnabled = true;
       var arVoicesLoaded = false;
       var arItalianVoice = null;
+      var arVoiceLoadAttempts = 0;
 
-      // Punteggio di "qualità/naturalezza/espressività" di una voce italiana
-      // MASCHILE. Le voci "Online (Natural)" di Microsoft Edge sono neurali
-      // e le più naturali disponibili gratuitamente nel browser. Qui
-      // riconosciamo esplicitamente i nomi delle voci maschili italiane
-      // neurali di Edge, ed escludiamo in modo netto qualsiasi voce
-      // femminile, a prescindere dal resto del punteggio.
+      // Funzione di punteggio migliorata per selezionare la voce più naturale e maschile
       function arScoreVoice(v) {
         var n = v.name.toLowerCase();
         var score = 0;
 
+        // Nomi maschili neurali di Edge (le più naturali in assoluto)
         var maleNeuralNames = ['diego', 'benigno', 'cataldo', 'gianni', 'lisandro', 'palmiro', 'rinaldo', 'calimero'];
         var femaleNeuralNames = ['elsa', 'isabella', 'fabiola', 'fiamma', 'imelda', 'irma', 'pierina', 'female'];
+        var googleMaleNames = ['standard-c', 'standard-a', 'standard-b'];
 
-        var isMaleNeural = maleNeuralNames.some(function (name) { return n.includes(name); });
-        var isFemaleNeural = femaleNeuralNames.some(function (name) { return n.includes(name); });
+        // RILEVAZIONE GENERE: se è femminile, punteggio molto basso
+        var isFemale = femaleNeuralNames.some(function(name) { return n.includes(name); });
+        if (isFemale) return -1000;
 
-        if (isFemaleNeural) return -1000;
+        // MASCHILE: premia le voci neurali
+        var isMaleNeural = maleNeuralNames.some(function(name) { return n.includes(name); });
+        var isGoogleMale = googleMaleNames.some(function(name) { return n.includes(name); });
 
-        if (n.includes('online (natural)') || n.includes('neural')) score += 60;
-        if (isMaleNeural) score += 80;
+        if (n.includes('online (natural)') || n.includes('neural')) {
+          score += 100;
+          if (isMaleNeural) score += 50; // bonus extra per le voci maschili neurali
+        }
 
-        if (n.includes('google') && n.includes('itali')) score += 20;
+        if (n.includes('google') && n.includes('itali')) {
+          score += 70;
+          if (isGoogleMale) score += 20;
+        }
 
-        if (n.includes('compact')) score -= 3;
+        // Voce "Compact" di Edge è meno naturale
+        if (n.includes('compact')) score -= 20;
+
+        // Voce "Standard" di Windows è robotica
+        if (n.includes('standard') && !n.includes('online') && !n.includes('neural')) score -= 30;
+
+        // Priorità alle voci con "it-IT" esatto
+        if (v.lang === 'it-IT') score += 10;
 
         return score;
       }
 
       function arLoadVoices() {
         if (!('speechSynthesis' in window)) return;
+
         var voices = window.speechSynthesis.getVoices();
-        var italianVoices = voices.filter(function(v) { return v.lang && v.lang.toLowerCase().startsWith('it'); });
+
+        // Filtra solo voci italiane
+        var italianVoices = voices.filter(function(v) {
+          return v.lang && v.lang.toLowerCase().startsWith('it');
+        });
 
         if (italianVoices.length > 0) {
-          italianVoices.sort(function(a, b) { return arScoreVoice(b) - arScoreVoice(a); });
+          italianVoices.sort(function(a, b) {
+            return arScoreVoice(b) - arScoreVoice(a);
+          });
           arItalianVoice = italianVoices[0];
+          console.log('Voce italiana selezionata:', arItalianVoice ? arItalianVoice.name : 'nessuna');
         } else if (voices.length > 0) {
+          // Fallback: usa la prima voce disponibile (anche se non italiana)
           arItalianVoice = voices[0];
+          console.log('Nessuna voce italiana trovata, fallback a:', arItalianVoice ? arItalianVoice.name : 'nessuna');
         }
 
         arVoicesLoaded = true;
       }
 
+      // Carica le voci con più tentativi (alcuni browser caricano le voci in ritardo)
+      function arForceLoadVoices() {
+        arLoadVoices();
+        if (!arItalianVoice && arVoiceLoadAttempts < 5) {
+          arVoiceLoadAttempts++;
+          setTimeout(arForceLoadVoices, 500 * arVoiceLoadAttempts);
+        }
+      }
+
       if ('speechSynthesis' in window) {
-        window.speechSynthesis.getVoices();
+        // Ascolta l'evento onvoiceschanged
         window.speechSynthesis.onvoiceschanged = function() {
           arLoadVoices();
         };
-        setTimeout(arLoadVoices, 300);
-        setTimeout(arLoadVoices, 1200);
+        // Tentativi multipli per essere sicuri
+        setTimeout(arForceLoadVoices, 200);
+        setTimeout(arForceLoadVoices, 600);
+        setTimeout(arForceLoadVoices, 1200);
+        setTimeout(arForceLoadVoices, 2500);
       }
 
+      // Spezza il testo in frasi/segmenti naturali per intonazione più umana
       function arSplitIntoSegments(text) {
         var raw = text.split(/(?<=[.!?…])\s+|(?<=[,;:])\s+(?=\S)/);
         return raw.map(function(s) { return s.trim(); }).filter(Boolean);
@@ -2370,9 +2406,10 @@
         if (segments.length === 0) segments = [text];
 
         var isPremiumVoice = false;
+        var voiceName = '';
         if (arItalianVoice) {
-          var nm = arItalianVoice.name.toLowerCase();
-          isPremiumVoice = nm.includes('online (natural)') || nm.includes('neural');
+          voiceName = arItalianVoice.name.toLowerCase();
+          isPremiumVoice = voiceName.includes('online (natural)') || voiceName.includes('neural');
         }
 
         segments.forEach(function(segment, idx) {
@@ -2380,18 +2417,21 @@
           utterance.lang = arItalianVoice ? arItalianVoice.lang : 'it-IT';
           if (arItalianVoice) utterance.voice = arItalianVoice;
 
+          // PARAMETRI PER UNA VOCE PIÙ UMANA ED ESPRESSIVA
           var isQuestion = /[?]\s*$/.test(segment);
           var isExclaim = /[!]\s*$/.test(segment);
-          var isLastOfEmphasisWord = segment.length < 18;
+          var isShort = segment.length < 20;
 
-          var baseRate = isPremiumVoice ? 1.0 : 0.97;
-          var basePitch = isPremiumVoice ? 0.94 : 0.9;
-
+          // Variazioni per evitare monotonia
           var rateJitter = ((idx % 3) - 1) * 0.015;
-          var pitchJitter = ((idx % 4) - 1.5) * 0.015;
+          var pitchJitter = ((idx % 4) - 1.5) * 0.02;
 
-          utterance.rate = baseRate + rateJitter + (isLastOfEmphasisWord ? 0.02 : 0);
-          utterance.pitch = basePitch + pitchJitter + (isQuestion ? 0.04 : 0) + (isExclaim ? 0.03 : 0);
+          // Voci premium: leggermente più veloci e con pitch più vario
+          var baseRate = isPremiumVoice ? 1.02 : 0.97;
+          var basePitch = isPremiumVoice ? 1.05 : 0.98;
+
+          utterance.rate = Math.max(0.8, Math.min(1.4, baseRate + rateJitter + (isShort ? 0.03 : 0)));
+          utterance.pitch = Math.max(0.7, Math.min(1.5, basePitch + pitchJitter + (isQuestion ? 0.08 : 0) + (isExclaim ? 0.05 : 0)));
           utterance.volume = 1.0;
 
           window.speechSynthesis.speak(utterance);
@@ -2525,10 +2565,13 @@
           arStopRecordingUI();
         };
 
-        // Nessun riavvio automatico: evita la trascrizione duplicata
         arRecognition.onend = function() {
           if (arIsRecording) {
-            arStopRecording();
+            try {
+              arRecognition.start();
+            } catch(e) {
+              arStopRecordingUI();
+            }
           }
         };
 
@@ -2542,7 +2585,7 @@
           btn.title = 'Sto registrando... clicca per fermare';
 
           document.getElementById('arChatInput').value = '';
-          arAddMessage('🎤 Ti ascolto, parla pure...', 'bot', false);
+          arAddMessage('🎤 Parla ora!', 'bot');
         } catch(e) {
           console.error('Errore avvio riconoscimento:', e);
           arAddMessage('Impossibile avviare il microfono. Riprova.', 'bot');
