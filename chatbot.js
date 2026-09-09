@@ -172,6 +172,13 @@
       justify-content: center;
       font-size: 16px;
       border: 1px solid rgba(201,169,97,0.4);
+      overflow: hidden;
+    }
+    #arChatHeader .header-left .avatar-small img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
     #arChatHeader .header-left .chat-title .name {
       font-size: 1rem;
@@ -320,6 +327,22 @@
       align-self: flex-start;
       color: #4A3B2A;
       border-top-left-radius: 4px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .ar-msg.bot .bot-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(201,169,97,0.4);
+      margin-top: 2px;
+    }
+    .ar-msg.bot .bot-content {
+      flex: 1;
+      min-width: 0;
     }
     .ar-msg.user {
       background: linear-gradient(135deg, #C9A961 0%, #B8962E 100%);
@@ -545,6 +568,8 @@
   /* ------------------------------------------------------------
      2) Markup del widget
   ------------------------------------------------------------ */
+  var AR_LOGO_URL = "https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/AI%20CHAT.png";
+
   var AR_CHAT_HTML =
     '<div id="arChatTooltip" onclick="arOpenFromTooltip()">' +
       '<span class="tt-close" onclick="event.stopPropagation();arDismissTooltip()">×</span>' +
@@ -554,15 +579,15 @@
     '<div id="arChatBadge">1</div>' +
 
     '<button id="arChatBtn" onclick="arToggleChat()" aria-label="Apri chat assistente BLESS">' +
-      '<img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/AI%20CHAT.png" alt="BLESS" id="arChatBtnImg">' +
+      '<img src="' + AR_LOGO_URL + '" alt="BLESS" id="arChatBtnImg">' +
     '</button>' +
 
     '<div id="arChatWindow">' +
       '<div id="arChatHeader">' +
         '<div class="header-left">' +
-          '<div class="avatar-small">✨</div>' +
+          '<div class="avatar-small"><img src="' + AR_LOGO_URL + '" alt="BLESS"></div>' +
           '<div class="chat-title">' +
-            '<span class="name">BLESS</span>' +
+            '<span class="name">BLESS </span>' +
             '<span class="sub">Assistente Virtuale A&amp;R</span>' +
           '</div>' +
         '</div>' +
@@ -631,7 +656,7 @@
   arInject();
 
   /* ------------------------------------------------------------
-     4) Logica del chatbot (invariata rispetto all'originale)
+     4) Logica del chatbot
   ------------------------------------------------------------ */
 
   // FIX CHAT COPERTA DALLA TASTIERA SU MOBILE
@@ -649,7 +674,7 @@
     window.visualViewport.addEventListener('scroll', arFixKeyboardOverlap);
   }
 
-  // SINTESI VOCALE
+  // SINTESI VOCALE — solo voce maschile, calma e morbida
   var arVoiceEnabled = true;
   var arVoicesLoaded = false;
   var arItalianVoice = null;
@@ -659,7 +684,7 @@
     'elsa', 'isabella', 'fabiola', 'fiamma', 'imelda', 'irma', 'pierina',
     'alice', 'federica', 'paola', 'silvia', 'valentina', 'giorgia',
     'chiara', 'laura', 'monica', 'francesca', 'martina', 'serena',
-    'female', 'donna', 'woman'
+    'google italiano', 'google it', 'female', 'donna', 'woman'
   ];
   var arMaleVoiceNames = [
     'diego', 'luca', 'giuseppe', 'benigno', 'calimero', 'cataldo',
@@ -668,26 +693,16 @@
     'antonio', 'male', 'uomo', 'man'
   ];
 
-  function arIsFemaleVoice(v) {
-    var n = v.name.toLowerCase();
-    return arFemaleVoiceNames.some(function (name) { return n.includes(name); });
-  }
-
   function arScoreVoice(v) {
     var n = v.name.toLowerCase();
     var score = 0;
     var isMaleKnown = arMaleVoiceNames.some(function (name) { return n.includes(name); });
+    if (!isMaleKnown) return -1000; // scarta tutto ciò che non è certamente maschile
 
-    if (n.includes('online (natural)') || n.includes('neural')) {
-      score += 100;
-      if (isMaleKnown) score += 50;
-    }
-    if (n.includes('google') && n.includes('itali')) score += 70;
-    if (isMaleKnown) score += 40;
+    if (n.includes('online (natural)') || n.includes('neural')) score += 100;
     if (n.includes('compact')) score -= 20;
     if (n.includes('standard') && !n.includes('online') && !n.includes('neural')) score -= 30;
     if (v.lang === 'it-IT') score += 10;
-
     return score;
   }
 
@@ -695,16 +710,20 @@
     if (!('speechSynthesis' in window)) return;
     var voices = window.speechSynthesis.getVoices();
 
-    var italianVoices = voices.filter(function (v) {
-      return v.lang && v.lang.toLowerCase().startsWith('it') && !arIsFemaleVoice(v);
+    var italianMale = voices.filter(function (v) {
+      return v.lang && v.lang.toLowerCase().startsWith('it') &&
+        arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
     });
 
-    if (italianVoices.length > 0) {
-      italianVoices.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
-      arItalianVoice = italianVoices[0];
+    if (italianMale.length > 0) {
+      italianMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
+      arItalianVoice = italianMale[0];
     } else {
-      var nonFemale = voices.filter(function (v) { return !arIsFemaleVoice(v); });
-      arItalianVoice = nonFemale.length > 0 ? nonFemale[0] : (voices[0] || null);
+      // fallback: qualsiasi voce esplicitamente maschile, anche non italiana
+      var anyMale = voices.filter(function (v) {
+        return arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
+      });
+      arItalianVoice = anyMale.length > 0 ? anyMale[0] : null;
     }
     arVoicesLoaded = true;
   }
@@ -732,37 +751,20 @@
 
   function arSpeak(text) {
     if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
+    if (!arItalianVoice) return; // nessuna voce maschile certa disponibile: resta muto
     window.speechSynthesis.cancel();
     if (!arVoicesLoaded) arLoadVoices();
 
     var segments = arSplitIntoSegments(text);
     if (segments.length === 0) segments = [text];
 
-    var isPremiumVoice = false;
-    if (arItalianVoice) {
-      var voiceName = arItalianVoice.name.toLowerCase();
-      isPremiumVoice = voiceName.includes('online (natural)') || voiceName.includes('neural');
-    }
-
-    segments.forEach(function (segment, idx) {
+    segments.forEach(function (segment) {
       var utterance = new SpeechSynthesisUtterance(segment);
-      utterance.lang = arItalianVoice ? arItalianVoice.lang : 'it-IT';
-      if (arItalianVoice) utterance.voice = arItalianVoice;
-
-      var isQuestion = /[?]\s*$/.test(segment);
-      var isExclaim = /[!]\s*$/.test(segment);
-      var isShort = segment.length < 20;
-
-      var rateJitter = ((idx % 3) - 1) * 0.015;
-      var pitchJitter = ((idx % 4) - 1.5) * 0.02;
-
-      var baseRate = isPremiumVoice ? 1.02 : 0.97;
-      var basePitch = isPremiumVoice ? 1.05 : 0.98;
-
-      utterance.rate = Math.max(0.8, Math.min(1.4, baseRate + rateJitter + (isShort ? 0.03 : 0)));
-      utterance.pitch = Math.max(0.7, Math.min(1.5, basePitch + pitchJitter + (isQuestion ? 0.08 : 0) + (isExclaim ? 0.05 : 0)));
+      utterance.lang = arItalianVoice.lang;
+      utterance.voice = arItalianVoice;
+      utterance.rate = 0.88;    // ritmo pacato, uniforme
+      utterance.pitch = 0.88;   // tono morbido e basso
       utterance.volume = 1.0;
-
       window.speechSynthesis.speak(utterance);
     });
   }
@@ -887,7 +889,6 @@
       btn.title = 'Sto registrando... clicca per fermare';
 
       document.getElementById('arChatInput').value = '';
-      arAddMessage('🎤 Parla ora!', 'bot');
     } catch (e) {
       arAddMessage('Impossibile avviare il microfono. Riprova.', 'bot');
       arStopRecordingUI();
@@ -1027,16 +1028,18 @@
       if (history.userName) {
         var welcomeDiv = document.createElement('div');
         welcomeDiv.className = 'ar-msg bot welcome-msg';
-        welcomeDiv.innerHTML = '👋 Bentornato <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?';
+        welcomeDiv.innerHTML = '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">👋 Bentornato <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?</div>';
         box.appendChild(welcomeDiv);
       }
     } else {
       var welcomeDiv2 = document.createElement('div');
       welcomeDiv2.className = 'ar-msg bot welcome-msg';
       welcomeDiv2.innerHTML =
+        '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">' +
         '👋 Ciao! Sono <strong>BLESS</strong>, l\'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>' +
         'Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>' +
-        'Come ti chiami? Così possiamo darti un trattamento personalizzato.';
+        'Come ti chiami? Così possiamo darti un trattamento personalizzato.' +
+        '</div>';
       box.appendChild(welcomeDiv2);
     }
     box.scrollTop = box.scrollHeight;
@@ -1082,11 +1085,11 @@
     var box = document.getElementById('arChatMessages');
     var div = document.createElement('div');
     div.className = 'ar-msg bot';
-    div.innerHTML = '<div class="ar-action-buttons">' +
+    div.innerHTML = '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content"><div class="ar-action-buttons">' +
       buttons.map(function (b) {
         return '<button onclick="arHandleAction(\'' + b.action + '\')">' + b.label + '</button>';
       }).join('') +
-      '</div>';
+      '</div></div>';
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
   }
@@ -1130,9 +1133,11 @@
     var div = document.createElement('div');
     div.className = 'ar-msg bot';
     div.innerHTML =
+      '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">' +
       '<div style="margin-bottom:6px;font-weight:600;">📝 Compila il modulo qui sotto:</div>' +
       '<div class="ar-inline-form"><iframe src="' + formUrl + '" allow="camera; microphone; display-capture"></iframe></div>' +
-      '<div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔒 I tuoi dati sono trattati secondo la nostra Privacy Policy.</div>';
+      '<div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔒 I tuoi dati sono trattati secondo la nostra Privacy Policy.</div>' +
+      '</div>';
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
   }
@@ -1144,7 +1149,7 @@
     var div = document.createElement('div');
     div.className = 'ar-msg ' + cls;
     if (cls === 'bot') {
-      div.innerHTML = text;
+      div.innerHTML = '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">' + text + '</div>';
     } else {
       div.innerHTML = '<span class="user-avatar">💛</span><span>' + text + '</span>';
     }
@@ -1204,7 +1209,11 @@
       var box = document.getElementById('arChatMessages');
       var div = document.createElement('div');
       div.className = 'ar-msg ' + cls;
-      if (cls === 'bot') { div.textContent = ''; } else { div.innerHTML = '<span class="user-avatar">💛</span><span></span>'; }
+      if (cls === 'bot') {
+        div.innerHTML = '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content"></div>';
+      } else {
+        div.innerHTML = '<span class="user-avatar">💛</span><span></span>';
+      }
       box.appendChild(div);
       var i = 0;
       isBotTyping = true;
@@ -1224,7 +1233,8 @@
         }
         if (i < text.length) {
           if (cls === 'bot') {
-            div.textContent += text.charAt(i);
+            var content = div.querySelector('.bot-content');
+            content.textContent += text.charAt(i);
             fullText += text.charAt(i);
           } else {
             var span = div.querySelector('span:last-child');
