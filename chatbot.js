@@ -766,18 +766,28 @@
     return raw.map(function (s) { return s.trim(); }).filter(Boolean);
   }
 
-  function arSpeak(text) {
+  /* ============================================================
+     SINTESI VOCALE — Edge TTS neurale via browser
+     Usa la voce neurale maschile italiana di Microsoft Edge
+     (it-IT-DiegoNeural) da QUALSIASI browser, gratis, senza API key.
+     Fallback automatico su speechSynthesis se la libreria non è
+     disponibile o l'endpoint Microsoft non risponde.
+     ============================================================ */
+  var arEdgeVoice = 'it-IT-DiegoNeural'; // voce neurale maschile italiana
+  var arEdgeAudioEl = null;              // elemento audio corrente
+  var arEdgeAbort = null;                // per annullare la richiesta in corso
+  var arEdgeUnavailable = false;         // se true, salta Edge e usa fallback
+
+  function arSpeakFallback(text) {
+    // vecchio motore: usato solo se Edge TTS non è disponibile
     if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
-    if (!arItalianVoice) return; // nessuna voce maschile certa disponibile: resta muto
+    if (!arItalianVoice) return;
     window.speechSynthesis.cancel();
     if (!arVoicesLoaded) arLoadVoices();
 
     var segments = arSplitIntoSegments(text);
     if (segments.length === 0) segments = [text];
 
-    // Ritmo e tono di base: pacato e maschile, ma non esagerato (un rate
-    // troppo lento o un pitch troppo basso suonano innaturali/"da robot",
-    // non da persona calma).
     var baseRate = 0.97;
     var basePitch = 0.93;
 
@@ -785,14 +795,94 @@
       var utterance = new SpeechSynthesisUtterance(segment);
       utterance.lang = arItalianVoice.lang;
       utterance.voice = arItalianVoice;
-      // Piccola variazione casuale di ritmo/tono tra una frase e l'altra:
-      // una voce umana non pronuncia mai due frasi in modo perfettamente
-      // identico. Questo micro-jitter spezza la monotonia sintetica.
       utterance.rate = +(baseRate + (Math.random() * 0.08 - 0.04)).toFixed(3);
       utterance.pitch = +(basePitch + (Math.random() * 0.08 - 0.04)).toFixed(3);
       utterance.volume = 1.0;
       window.speechSynthesis.speak(utterance);
     });
+  }
+
+  function arStopEdgeAudio() {
+    if (arEdgeAbort) {
+      try { arEdgeAbort.abort(); } catch (e) {}
+      arEdgeAbort = null;
+    }
+    if (arEdgeAudioEl) {
+      try {
+        arEdgeAudioEl.pause();
+        arEdgeAudioEl.src = '';
+      } catch (e) {}
+      arEdgeAudioEl = null;
+    }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+  window.arStopEdgeAudio = arStopEdgeAudio;
+
+  function arSpeak(text) {
+    if (!arVoiceEnabled) return;
+
+    // Ferma qualsiasi riproduzione in corso (Edge o fallback)
+    arStopEdgeAudio();
+
+    // Pulizia HTML: togliamo eventuali tag prima di mandare al TTS
+    var plainText = String(text || '').replace(/<[^>]*>/g, '').trim();
+    if (!plainText) return;
+
+    // Se Edge TTS è già stato marcato come non disponibile, vai diretto al fallback
+    if (arEdgeUnavailable || typeof window.EdgeTTS === 'undefined') {
+      if (typeof window.EdgeTTS === 'undefined' && !arEdgeUnavailable) {
+        // prima volta che scopriamo che manca: segniamo e usiamo fallback
+        arEdgeUnavailable = true;
+        console.warn('BLESS: libreria Edge TTS non disponibile, uso speechSynthesis.');
+      }
+      arSpeakFallback(plainText);
+      return;
+    }
+
+    // Prova Edge TTS (voce neurale maschile italiana)
+    try {
+      var controller = new AbortController();
+      arEdgeAbort = controller;
+
+      window.EdgeTTS.synthesize(plainText, arEdgeVoice, {
+        signal: controller.signal
+      }).then(function (audioBlob) {
+        arEdgeAbort = null;
+        if (!arVoiceEnabled) return;
+        if (!audioBlob) throw new Error('Audio vuoto');
+
+        var url = URL.createObjectURL(audioBlob);
+        var audio = new Audio(url);
+        arEdgeAudioEl = audio;
+
+        audio.onended = function () {
+          URL.revokeObjectURL(url);
+          arEdgeAudioEl = null;
+        };
+        audio.onerror = function () {
+          URL.revokeObjectURL(url);
+          arEdgeAudioEl = null;
+          // se la riproduzione fallisce, fallback silenzioso
+          arSpeakFallback(plainText);
+        };
+
+        audio.play().catch(function () {
+          // autoplay bloccato: fallback silenzioso
+          URL.revokeObjectURL(url);
+          arEdgeAudioEl = null;
+          arSpeakFallback(plainText);
+        });
+      }).catch(function (err) {
+        arEdgeAbort = null;
+        console.warn('BLESS: Edge TTS non riuscito, uso fallback.', err);
+        // Fallback solo se l'errore non è un abort volontario
+        if (err && err.name === 'AbortError') return;
+        arSpeakFallback(plainText);
+      });
+    } catch (e) {
+      console.warn('BLESS: errore avvio Edge TTS, uso fallback.', e);
+      arSpeakFallback(plainText);
+    }
   }
 
   function arToggleVoiceOutput() {
@@ -803,7 +893,7 @@
       btn.textContent = arVoiceEnabled ? '🔊' : '🔇';
       btn.setAttribute('aria-pressed', arVoiceEnabled ? 'true' : 'false');
     }
-    if (!arVoiceEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (!arVoiceEnabled) arStopEdgeAudio();
   }
   window.arToggleVoiceOutput = arToggleVoiceOutput;
 
@@ -1011,7 +1101,7 @@
   function arToggleChat() {
     var chatWin = document.getElementById('arChatWindow');
     var isOpen = chatWin.classList.contains('open');
-    if (!isOpen) { loadChatHistory(); } else { chatWin.style.transform = ''; }
+    if (!isOpen) { loadChatHistory(); } else { chatWin.style.transform = ''; arStopEdgeAudio(); }
     chatWin.classList.toggle('open');
     arDismissTooltip();
     arHideBadge();
