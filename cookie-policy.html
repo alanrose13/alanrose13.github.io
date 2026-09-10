@@ -120,18 +120,6 @@
       animation: fadeInUp 2s cubic-bezier(0.23, 1, 0.32, 1) both;
     }
 
-    /* ============================================================
-       AMBIENT LAYER (blob di sfondo)
-       Nessun filter: blur() — la sfumatura è già "cotta" nel gradiente
-       tramite stop intermedi ravvicinati. Animazione limitata a
-       opacity (compositor-only, nessun repaint) + un transform
-       leggero (solo scale, niente translate) perché comunque
-       economico su GPU quando il layer è già promosso.
-       will-change è gestito dinamicamente via IntersectionObserver:
-       viene aggiunto solo ai blob effettivamente in viewport e
-       rimosso quando escono, per non tenere impegnata la GPU su
-       elementi fermi/non visibili.
-    ============================================================ */
     .ambient-layer {
       position: fixed;
       inset: 0;
@@ -355,11 +343,6 @@
   </div>
 
   <script>
-    /* --------------------------------------------------------------
-       will-change dinamico sui blob ambient: aggiunto solo quando il
-       blob entra in viewport, rimosso quando esce. Evita di tenere
-       promossi a layer GPU elementi fuori schermo o già fermi.
-    -------------------------------------------------------------- */
     (function() {
       var blobs = document.querySelectorAll('.ambient-blob');
       if (!('IntersectionObserver' in window) || !blobs.length) return;
@@ -494,7 +477,7 @@
 
   <main>
     <h1>🍪 Cookie Policy</h1>
-    <p><strong>Ultimo aggiornamento: 31 Agosto 2026</strong></p>
+    <p><strong>Ultimo aggiornamento: 10 Settembre 2026</strong></p>
 
     <h2>Cosa sono i cookie</h2>
     <p>
@@ -508,7 +491,7 @@
     <p>Questo sito utilizza le seguenti categorie di cookie:</p>
     <ul>
       <li><strong>Cookie tecnici (necessari):</strong> essenziali per il funzionamento del sito. Consentono la navigazione e l'accesso alle funzionalità di base. Non richiedono il consenso dell'utente.</li>
-      <li><strong>Cookie statistici:</strong> raccolgono informazioni in forma aggregata su come gli utenti utilizzano il sito (numero di visitatori, pagine visitate, ecc.). Sono attivati solo previo consenso.</li>
+      <li><strong>Cookie statistici:</strong> raccolgono informazioni in forma aggregata su come gli utenti utilizzano il sito (numero di visitatori, pagine visitate, ecc.), e sono legati anche al caricamento del modulo di richiesta servizio. Sono attivati solo previo consenso.</li>
       <li><strong>Cookie di marketing:</strong> utilizzati per integrare contenuti multimediali di terze parti (YouTube, Spotify, SoundCloud) e per mostrare contenuti personalizzati. Sono attivati solo previo consenso.</li>
     </ul>
 
