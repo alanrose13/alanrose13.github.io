@@ -596,7 +596,7 @@
           '<span class="close" onclick="arToggleChat()">×</span>' +
         '</div>' +
       '</div>' +
-      '<div id="arChatMessages">' +
+      '<div id="arChatMessages" role="log" aria-live="polite" aria-relevant="additions">' +
         '<div id="arConsentOverlay">' +
           '<div class="consent-icon">🔒</div>' +
           '<h4>Prima di iniziare</h4>' +
@@ -1166,33 +1166,115 @@
   }
   window.arShowFormInChat = arShowFormInChat;
 
+  // --- SICUREZZA: sanitizzazione HTML -----------------------------------
+  // I messaggi utente e la cronologia salvata in localStorage finivano
+  // inseriti in pagina con innerHTML senza alcun controllo: un utente (o una
+  // risposta del bot manipolata via prompt injection) poteva quindi far
+  // eseguire codice arbitrario nel widget. Da qui in poi:
+  //  - il testo scritto dall'utente viene sempre trattato come testo puro
+  //    (mai come HTML, tramite textContent);
+  //  - il testo dei messaggi "bot" passa da una whitelist di tag sicuri
+  //    prima di essere inserito, scartando script/handler/attributi non
+  //    ammessi e i link con protocollo "javascript:".
+  function arEscapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = String(str == null ? '' : str);
+    return div.innerHTML;
+  }
+
+  var AR_SAFE_TAGS = ['B', 'STRONG', 'I', 'EM', 'BR', 'A', 'UL', 'OL', 'LI', 'P', 'SPAN'];
+  var AR_SAFE_ATTRS = { A: ['href', 'target', 'rel'] };
+
+  function arSanitizeBotHtml(html) {
+    var template = document.createElement('template');
+    template.innerHTML = String(html == null ? '' : html);
+
+    function clean(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+        if (child.nodeType === 1) { // elemento
+          var tag = child.tagName;
+          if (AR_SAFE_TAGS.indexOf(tag) === -1) {
+            // tag non ammesso: mantiene solo il testo al suo interno
+            node.replaceChild(document.createTextNode(child.textContent), child);
+            return;
+          }
+          var allowedAttrs = AR_SAFE_ATTRS[tag] || [];
+          Array.prototype.slice.call(child.attributes).forEach(function (attr) {
+            var name = attr.name.toLowerCase();
+            if (name.indexOf('on') === 0 || allowedAttrs.indexOf(name) === -1) {
+              child.removeAttribute(attr.name);
+            }
+          });
+          if (tag === 'A') {
+            var href = child.getAttribute('href') || '';
+            if (/^\s*javascript:/i.test(href)) {
+              child.removeAttribute('href');
+            }
+            child.setAttribute('target', '_blank');
+            child.setAttribute('rel', 'noopener');
+          }
+          clean(child);
+        } else if (child.nodeType !== 3) {
+          node.removeChild(child); // commenti e altri nodi non testuali
+        }
+      });
+    }
+    clean(template.content);
+    return template.innerHTML;
+  }
+
+  // Parole comuni che, subito dopo "mi chiamo/sono/io sono", NON indicano
+  // un nome proprio: evita di salvare come "nome utente" frasi come
+  // "sono felice", "sono qui", ecc.
+  var AR_NON_NAME_WORDS = [
+    'felice', 'contento', 'contenta', 'pronto', 'pronta', 'qui', 'qua',
+    'bene', 'male', 'stanco', 'stanca', 'curioso', 'curiosa', 'nuovo',
+    'nuova', 'interessato', 'interessata', 'sicuro', 'sicura', 'certo',
+    'certa', 'd\'accordo', 'daccordo', 'ok', 'io'
+  ];
+
   function arAddMessage(text, cls, saveToHistory) {
     if (saveToHistory === undefined) saveToHistory = true;
     var box = document.getElementById('arChatMessages');
     var div = document.createElement('div');
     div.className = 'ar-msg ' + cls;
     if (cls === 'bot') {
-      div.innerHTML = '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">' + text + '</div>';
+      var avatarImg = '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS">';
+      var content = document.createElement('div');
+      content.className = 'bot-content';
+      content.innerHTML = arSanitizeBotHtml(text);
+      div.innerHTML = avatarImg;
+      div.appendChild(content);
     } else {
-      div.innerHTML = '<span class="user-avatar">💛</span><span>' + text + '</span>';
+      var avatarSpan = document.createElement('span');
+      avatarSpan.className = 'user-avatar';
+      avatarSpan.textContent = '💛';
+      var textSpan = document.createElement('span');
+      textSpan.textContent = text; // testo utente: SEMPRE testo puro, mai HTML
+      div.appendChild(avatarSpan);
+      div.appendChild(textSpan);
     }
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
 
     if (saveToHistory && cls === 'user') {
       addMessageToHistory('user', text);
-      var nameMatch = text.match(/^(mi chiamo|sono|io sono)\s+([A-Za-zÀ-ÖØ-öø-ÿ\s]+)$/i);
+      var nameMatch = text.match(/^(?:mi chiamo|sono|io sono)\s+([A-Za-zÀ-ÖØ-öø-ÿ']+(?:\s[A-Za-zÀ-ÖØ-öø-ÿ']+){0,2})$/i);
       if (nameMatch) {
-        var name = nameMatch[2].trim();
-        saveUserName(name);
-        var msgs = box.querySelectorAll('.ar-msg.bot');
-        if (msgs.length > 0) {
-          var lastBot = msgs[msgs.length - 1];
-          if (lastBot.textContent.includes('Come ti chiami')) lastBot.remove();
+        var name = nameMatch[1].trim();
+        var firstWord = name.split(/\s+/)[0].toLowerCase();
+        var looksLikeName = AR_NON_NAME_WORDS.indexOf(firstWord) === -1;
+        if (looksLikeName) {
+          saveUserName(name);
+          var msgs = box.querySelectorAll('.ar-msg.bot');
+          if (msgs.length > 0) {
+            var lastBot = msgs[msgs.length - 1];
+            if (lastBot.textContent.includes('Come ti chiami')) lastBot.remove();
+          }
+          setTimeout(function () {
+            arAddMessage('Piacere di conoscerti <strong>' + arEscapeHtml(name) + '</strong>! Sono qui per aiutarti. Cosa ti serve? Trovi Servizi, Musica e le altre scorciatoie appena sotto il campo di scrittura.', 'bot', false);
+          }, 300);
         }
-        setTimeout(function () {
-          arAddMessage('Piacere di conoscerti <strong>' + name + '</strong>! Sono qui per aiutarti. Cosa ti serve? Trovi Servizi, Musica e le altre scorciatoie appena sotto il campo di scrittura.', 'bot', false);
-        }, 300);
       }
     } else if (saveToHistory && cls === 'bot') {
       if (!text.includes('Bentornato') && !text.includes('Piacere di conoscerti') && !text.includes('Come ti chiami')) {
