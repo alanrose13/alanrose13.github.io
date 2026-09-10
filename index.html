@@ -466,6 +466,82 @@
       top: auto !important;
       z-index: 9998 !important;
     }
+
+    /* ============================================================
+       SIDE NEWSLETTER — appare lateralmente durante lo scroll
+    ============================================================ */
+    #sideNewsletter {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translate(-110%, -50%);
+      width: 260px;
+      background: var(--c);
+      border: 1px solid rgba(201,169,97,.45);
+      border-left: none;
+      border-radius: 0 12px 12px 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+      padding: 18px 16px 16px;
+      z-index: 9990;
+      transition: transform .45s cubic-bezier(.23,1,.32,1), opacity .45s ease;
+      opacity: 0;
+      pointer-events: none;
+      color: var(--m);
+    }
+    #sideNewsletter.side-nl-visible {
+      transform: translate(0, -50%);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #sideNewsletter.side-nl-hidden {
+      transform: translate(-110%, -50%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #sideNewsletter h4 {
+      color: var(--o);
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+    #sideNewsletter p {
+      font-size: .8rem;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    #sideNewsletter input[type="email"] {
+      width: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
+      border: 1px solid rgba(201,169,97,.5);
+      border-radius: 6px;
+      color: var(--m);
+      padding: 8px 10px;
+      font-size: .82rem;
+      margin-bottom: 8px;
+    }
+    #sideNewsletter .btn {
+      width: 100%;
+      margin: 0;
+      padding: 8px 12px;
+      font-size: .85rem;
+    }
+    .side-nl-close {
+      position: absolute;
+      top: 4px;
+      right: 8px;
+      font-size: 20px;
+      line-height: 1;
+      color: #888;
+      cursor: pointer;
+    }
+    .side-nl-close:hover { color: var(--m); }
+
+    @media (max-width: 480px) {
+      #sideNewsletter {
+        width: 210px;
+        padding: 14px 12px 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1378,6 +1454,44 @@
             activate(el);
           });
         }, 2000);
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      function showSideNewsletter() {
+        var el = document.getElementById('sideNewsletter');
+        if (!el) return;
+        if (sessionStorage.getItem('arSideNlDismissed') === '1') return;
+        el.classList.add('side-nl-visible');
+        el.classList.remove('side-nl-hidden');
+      }
+
+      function dismissSideNewsletter() {
+        var el = document.getElementById('sideNewsletter');
+        if (!el) return;
+        el.classList.add('side-nl-hidden');
+        el.classList.remove('side-nl-visible');
+        sessionStorage.setItem('arSideNlDismissed', '1');
+      }
+      window.dismissSideNewsletter = dismissSideNewsletter;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        if (sessionStorage.getItem('arSideNlDismissed') === '1') return;
+
+        var triggered = false;
+        function onScroll() {
+          if (triggered) return;
+          var scrolled = window.scrollY || document.documentElement.scrollTop;
+          var half = (document.documentElement.scrollHeight - window.innerHeight) / 2;
+          if (scrolled >= half && half > 0) {
+            triggered = true;
+            showSideNewsletter();
+            window.removeEventListener('scroll', onScroll);
+          }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
       });
     })();
   </script>
