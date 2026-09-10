@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Cookie Policy - Alan & Rose</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7/css/flag-icons.min.css">
+
+  <!-- Google Consent Mode v2 -->
+  <script data-cookieconsent="ignore">
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag("consent", "default", {
+      ad_personalization: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      analytics_storage: "denied",
+      functionality_storage: "denied",
+      personalization_storage: "denied",
+      security_storage: "granted",
+      wait_for_update: 500
+    });
+    gtag("set", "ads_data_redaction", true);
+    gtag("set", "url_passthrough", false);
+  </script>
+
+  <!-- Cookiebot -->
+  <script id="Cookiebot"
+    src="https://consent.cookiebot.com/uc.js"
+    data-cbid="8334eeb1-c7e5-4724-9092-2141fc8d67aa"
+    data-blockingmode="auto"
+    type="text/javascript">
+  </script>
+
+  <style>
+    :root {
+      --o: #C9A961;
+      --m: #4A3B2A;
+      --c: #F5F1E8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--m);
+      background-color: #F5F1E8;
+      line-height: 1.6;
+      overflow-x: hidden;
+      animation: pageDissolve 1.6s ease both;
+    }
+    @keyframes pageDissolve {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    header {
+      background: var(--m);
+      padding: 70px 20px 20px;
+      text-align: center;
+      animation: fadeInDown 1.8s cubic-bezier(0.23, 1, 0.32, 1) both;
+    }
+    @media (min-width: 481px) {
+      header { padding: 20px 170px; }
+    }
+    header a {
+      color: var(--o);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: opacity .5s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    header a:hover { opacity: .75; }
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+      position: relative;
+      z-index: 1;
+      animation: fadeInPage 2.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+    }
+    h1 {
+      border-bottom: 2px solid var(--o);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    h1:hover {
+      transform: translateX(4px);
+      color: #B8962E;
+    }
+    h2 {
+      margin: 30px 0 12px;
+      color: var(--o);
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    h2:hover {
+      transform: translateX(4px);
+      color: #B8962E;
+    }
+    p { margin-bottom: 12px; }
+    ul { margin: 10px 0 16px 20px; }
+    li { margin-bottom: 6px; }
+    a.inline { color: var(--o); transition: opacity .5s cubic-bezier(0.25,0.46,0.45,0.94); }
+    a.inline:hover { opacity: .75; }
+    #CookieDeclaration {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      animation: softGlow 4s ease-in-out infinite alternate;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--m);
+      font-size: .85rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 2s cubic-bezier(0.23, 1, 0.32, 1) both;
+    }
+
+    .ambient-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .ambient-blob {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.18;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(201,169,97,0.42) 0%,
+        rgba(201,169,97,0.30) 18%,
+        rgba(201,169,97,0.16) 36%,
+        rgba(201,169,97,0.06) 55%,
+        rgba(201,169,97,0) 72%);
+      animation: ambientFade 12s ease-in-out infinite alternate,
+                 ambientScale 46s ease-in-out infinite;
+    }
+    .ambient-blob.in-view { will-change: opacity, transform; }
+    .ambient-blob.b1 { width: 420px; height: 420px; top: -8%; left: -8%; animation-duration: 11s, 50s; }
+    .ambient-blob.b2 {
+      width: 360px; height: 360px; top: 30%; right: -10%;
+      background: radial-gradient(circle at 60% 40%,
+        rgba(74,59,42,0.28) 0%,
+        rgba(74,59,42,0.20) 18%,
+        rgba(74,59,42,0.10) 36%,
+        rgba(74,59,42,0.04) 55%,
+        rgba(74,59,42,0) 72%);
+      animation-duration: 13s, 56s; animation-delay: -3s, -6s;
+    }
+    .ambient-blob.b3 {
+      width: 320px; height: 320px; bottom: -10%; left: 18%;
+      background: radial-gradient(circle at 40% 60%,
+        rgba(201,169,97,0.36) 0%,
+        rgba(201,169,97,0.26) 18%,
+        rgba(201,169,97,0.13) 36%,
+        rgba(201,169,97,0.05) 55%,
+        rgba(201,169,97,0) 72%);
+      animation-duration: 12.5s, 52s; animation-delay: -7s, -14s;
+    }
+    .ambient-blob.b4 {
+      width: 260px; height: 260px; bottom: 12%; right: 8%;
+      background: radial-gradient(circle at 50% 50%,
+        rgba(74,59,42,0.20) 0%,
+        rgba(74,59,42,0.14) 18%,
+        rgba(74,59,42,0.07) 36%,
+        rgba(74,59,42,0.03) 55%,
+        rgba(74,59,42,0) 72%);
+      animation-duration: 10s, 40s; animation-delay: -4s, -20s;
+    }
+    @keyframes ambientFade {
+      0%   { opacity: 0.12; }
+      100% { opacity: 0.24; }
+    }
+    @keyframes ambientScale {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+    @media (max-width: 768px) {
+      .ambient-blob.b1, .ambient-blob.b2, .ambient-blob.b3 { width: 240px; height: 240px; }
+      .ambient-blob.b4 { width: 180px; height: 180px; }
+    }
+    @media (min-width: 1400px) {
+      .ambient-layer { display: none; }
+    }
+
+    .language-selector {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 9999;
+      background: rgba(245, 241, 232, 0.92);
+      padding: 6px 14px;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid rgba(201,169,97,0.25);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .language-selector .fi {
+      font-size: 20px;
+      border-radius: 3px;
+      box-shadow: 0 0 1px rgba(0,0,0,.3);
+      flex-shrink: 0;
+    }
+    .language-selector select {
+      border: none;
+      background: transparent;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 14px;
+      color: #4A3B2A;
+      cursor: pointer;
+      padding: 4px 8px;
+      outline: none;
+      font-weight: 600;
+      appearance: auto;
+      -webkit-appearance: auto;
+      max-width: 130px;
+    }
+    .language-selector select option {
+      background: #fff;
+      color: #4A3B2A;
+      padding: 4px 8px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .goog-te-banner-frame,
+    .skiptranslate,
+    .goog-te-gadget-simple,
+    .goog-te-spinner-pos,
+    .goog-te-balloon-frame,
+    #goog-gt-tt,
+    .goog-te-menu-frame,
+    .goog-te-menu2 {
+      display: none !important;
+    }
+    body {
+      top: 0 !important;
+    }
+
+    @media (max-width: 480px) {
+      .language-selector {
+        top: 8px;
+        right: 8px;
+        padding: 4px 10px;
+        font-size: 12px;
+        gap: 4px;
+      }
+      .language-selector select { font-size: 12px; padding: 2px 4px; max-width: 90px; }
+      .language-selector .fi { font-size: 16px; }
+    }
+
+    @keyframes fadeInPage {
+      from { opacity: 0; transform: translateY(10px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes softGlow {
+      0% { box-shadow: 0 4px 12px rgba(201,169,97,0.08); }
+      100% { box-shadow: 0 8px 30px rgba(201,169,97,0.15); }
+    }
+
+    @media (min-width: 900px) {
+      header { animation-duration: 2.4s; animation-timing-function: ease-out; }
+      main { animation-duration: 2.6s; animation-timing-function: ease-out; }
+      footer { animation-duration: 2.4s; animation-timing-function: ease-out; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .ambient-layer { display: none !important; }
+    }
+
+    /* --------------------------------------------------------------
+       LOGO FISSO IN ALTO A SINISTRA
+    -------------------------------------------------------------- */
+    #arFixedLogo {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 9999;
+    }
+    #arFixedLogo img {
+      width: 62px; height: 62px; border-radius: 50%;
+      object-fit: cover; display: block;
+      border: 2px solid rgba(201,169,97,0.6);
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
+    @media (max-width: 480px) {
+      #arFixedLogo { top: 8px; left: 8px; }
+      #arFixedLogo img { width: 44px; height: 44px; }
+    }
+
+    #CybotCookiebotDialogPoweredByText,
+    .CookiebotWidget,
+    #CookiebotWidget {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 20px !important;
+      right: auto !important;
+      top: auto !important;
+      z-index: 9998 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-layer" aria-hidden="true">
+    <div class="ambient-blob b1"></div>
+    <div class="ambient-blob b2"></div>
+    <div class="ambient-blob b3"></div>
+    <div class="ambient-blob b4"></div>
+  </div>
+
+  <div class="language-selector" id="languageSelector">
+    <span class="fi" id="currentFlag"></span>
+    <select id="languageSelect" onchange="changeLanguage(this.value)"></select>
+  </div>
+
+  <div id="arFixedLogo">
+    <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Favicon%20Circular%20no%20Bord.png" alt="Alan & Rose">
+  </div>
+
+  <script>
+    (function() {
+      var blobs = document.querySelectorAll('.ambient-blob');
+      if (!('IntersectionObserver' in window) || !blobs.length) return;
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          entry.target.classList.toggle('in-view', entry.isIntersecting);
+        });
+      }, { threshold: 0 });
+      blobs.forEach(function(b) { io.observe(b); });
+    })();
+
+    const langMap = {
+      it: ['it', 'Italiano'],
+      en: ['gb', 'English'],
+      es: ['es', 'Español'],
+      fr: ['fr', 'Français'],
+      de: ['de', 'Deutsch'],
+      pt: ['pt', 'Português'],
+      ar: ['sa', 'العربية'],
+      ru: ['ru', 'Русский'],
+      'zh-CN': ['cn', '中文'],
+      ja: ['jp', '日本語'],
+      ko: ['kr', '한국어'],
+      hi: ['in', 'हिन्दी'],
+      nl: ['nl', 'Nederlands'],
+      pl: ['pl', 'Polski'],
+      tr: ['tr', 'Türkçe'],
+      sv: ['se', 'Svenska'],
+      el: ['gr', 'Ελληνικά'],
+      cs: ['cz', 'Čeština'],
+      ro: ['ro', 'Română'],
+      hu: ['hu', 'Magyar'],
+      uk: ['ua', 'Українська'],
+      vi: ['vn', 'Tiếng Việt'],
+      th: ['th', 'ไทย'],
+      id: ['id', 'Bahasa Indonesia'],
+      he: ['il', 'עברית'],
+      fi: ['fi', 'Suomi'],
+      da: ['dk', 'Dansk'],
+      no: ['no', 'Norsk'],
+      sk: ['sk', 'Slovenčina'],
+      bg: ['bg', 'Български'],
+      hr: ['hr', 'Hrvatski'],
+      sr: ['rs', 'Српски'],
+      fa: ['ir', 'فارسی'],
+      ur: ['pk', 'اردو'],
+      bn: ['bd', 'বাংলা'],
+      ta: ['in', 'தமிழ்'],
+      sw: ['ke', 'Kiswahili'],
+      ms: ['my', 'Bahasa Melayu'],
+      fil: ['ph', 'Filipino'],
+      ca: ['es-ct', 'Català'],
+      lt: ['lt', 'Lietuvių'],
+      lv: ['lv', 'Latviešu'],
+      et: ['ee', 'Eesti'],
+      sl: ['si', 'Slovenščina']
+    };
+
+    function buildLanguageOptions() {
+      const sel = document.getElementById('languageSelect');
+      sel.innerHTML = '';
+      Object.keys(langMap).forEach(function(code) {
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = langMap[code][1];
+        sel.appendChild(opt);
+      });
+    }
+
+    function detectBrowserLanguage() {
+      const raw = (navigator.language || navigator.languages?.[0] || 'it').toLowerCase();
+      const base = raw.split('-')[0];
+      if (base === 'zh') return 'zh-CN';
+      return Object.keys(langMap).includes(base) ? base : 'it';
+    }
+
+    function setFlag(code) {
+      const info = langMap[code] || langMap['it'];
+      const flagEl = document.getElementById('currentFlag');
+      flagEl.className = 'fi fi-' + info[0];
+    }
+
+    function setLangCookie(lang) {
+      const value = '/it/' + lang;
+      const hostname = window.location.hostname;
+      document.cookie = 'googtrans=' + value + '; path=/;';
+      document.cookie = 'googtrans=' + value + '; path=/; domain=' + hostname + ';';
+      document.cookie = 'googtrans=' + value + '; path=/; domain=.' + hostname + ';';
+    }
+
+    function getLangFromCookie() {
+      const match = document.cookie.match(/googtrans=\/it\/([a-zA-Z-]+)/);
+      return match ? match[1] : null;
+    }
+
+    function changeLanguage(lang) {
+      if (lang === 'it') {
+        document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+        document.cookie = 'googtrans=; path=/; domain=' + window.location.hostname + '; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+      } else {
+        setLangCookie(lang);
+      }
+      window.location.reload();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      buildLanguageOptions();
+      const cookieLang = getLangFromCookie();
+      const defaultLang = (cookieLang && langMap[cookieLang]) ? cookieLang : detectBrowserLanguage();
+      document.getElementById('languageSelect').value = defaultLang;
+      setFlag(defaultLang);
+    });
+  </script>
+
+  <div id="google_translate_element" style="display:none;"></div>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'it',
+        includedLanguages: 'it,en,es,fr,de,pt,ar,ru,zh-CN,ja,ko,hi,nl,pl,tr,sv,el,cs,ro,hu,uk,vi,th,id,he,fi,da,no,sk,bg,hr,sr,fa,ur,bn,ta,sw,ms,fil,ca,lt,lv,et,sl',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false,
+        multilanguagePage: true
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" data-cookieconsent="preferences" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <header>
+    <a href="index.html">← Torna al sito Alan & Rose</a>
+  </header>
+
+  <main>
+    <h1>🍪 Cookie Policy</h1>
+    <p><strong>Ultimo aggiornamento: 10 Settembre 2026</strong></p>
+
+    <h2>Cosa sono i cookie</h2>
+    <p>
+      I cookie sono piccoli file di testo che i siti web visitati inviano al browser dell'utente,
+      dove vengono memorizzati per essere poi ritrasmessi agli stessi siti alla visita successiva.
+      I cookie permettono di riconoscere il dispositivo dell'utente e di ricordare alcune informazioni
+      utili per migliorare l'esperienza di navigazione.
+    </p>
+
+    <h2>Tipologie di cookie utilizzati</h2>
+    <p>Questo sito utilizza le seguenti categorie di cookie:</p>
+    <ul>
+      <li><strong>Cookie tecnici (necessari):</strong> essenziali per il funzionamento del sito. Consentono la navigazione e l'accesso alle funzionalità di base. Non richiedono il consenso dell'utente.</li>
+      <li><strong>Cookie statistici:</strong> raccolgono informazioni in forma aggregata su come gli utenti utilizzano il sito (numero di visitatori, pagine visitate, ecc.), e sono legati anche al caricamento del modulo di richiesta servizio. Sono attivati solo previo consenso.</li>
+      <li><strong>Cookie di marketing:</strong> utilizzati per integrare contenuti multimediali di terze parti (YouTube, Spotify, SoundCloud) e per mostrare contenuti personalizzati. Sono attivati solo previo consenso.</li>
+    </ul>
+
+    <h2>Cookie utilizzati su questo sito</h2>
+    <p>
+      Questo sito utilizza <strong>Cookiebot</strong> per la gestione del consenso ai cookie,
+      in conformità al Regolamento UE 2016/679 (GDPR) e alla normativa ePrivacy.
+      Qui sotto trovi l'elenco completo e sempre aggiornato di tutti i cookie effettivamente
+      installati, generato automaticamente da Cookiebot in base alla scansione del sito.
+    </p>
+
+    <div id="CookieDeclaration"></div>
+    <script
+      src="https://consent.cookiebot.com/8334eeb1-c7e5-4724-9092-2141fc8d67aa/cd.js"
+      type="text/javascript"
+      async>
+    </script>
+
+    <h2>Come gestire le preferenze sui cookie</h2>
+    <p>
+      Puoi modificare in qualsiasi momento le tue preferenze sui cookie in uno dei seguenti modi:
+    </p>
+    <ul>
+      <li>
+        <strong>Dal banner di consenso:</strong> al primo accesso al sito, puoi scegliere quali categorie di cookie accettare.
+      </li>
+      <li>
+        <strong>Dal pulsante Cookiebot:</strong> cliccando sul tasto <strong>"Impostazioni Cookie"</strong> visibile in basso a sinistra su ogni pagina del sito (o cliccando su <a href="javascript:Cookiebot.renew()" class="inline">questo link</a>).
+      </li>
+      <li>
+        <strong>Dalle impostazioni del browser:</strong> puoi configurare il tuo browser per accettare o rifiutare tutti i cookie, o per ricevere un avviso quando un cookie viene inviato.
+      </li>
+    </ul>
+
+    <h2>Diritti degli utenti</h2>
+    <p>
+      Ai sensi del GDPR (artt. 15-21), l'utente ha il diritto di:
+    </p>
+    <ul>
+      <li><strong>Accesso:</strong> ottenere la conferma del trattamento dei propri dati</li>
+      <li><strong>Rettifica:</strong> correggere dati inesatti o incompleti</li>
+      <li><strong>Cancellazione:</strong> ottenere la cancellazione dei propri dati</li>
+      <li><strong>Limitazione:</strong> ottenere la limitazione del trattamento</li>
+      <li><strong>Portabilità:</strong> ricevere i dati in formato strutturato</li>
+      <li><strong>Opposizione:</strong> opporsi al trattamento</li>
+      <li><strong>Reclamo:</strong> presentare un reclamo al Garante Privacy</li>
+    </ul>
+    <p>Per esercitare questi diritti, contattaci a <a href="mailto:alanrose.13@yahoo.com" class="inline">alanrose.13@yahoo.com</a>.</p>
+
+    <h2>Titolare del trattamento</h2>
+    <p>
+      <strong>Alfio Ragusa</strong>, operante con il nome commerciale "Alan & Rose" (A&R) —
+      Email: <a href="mailto:alanrose.13@yahoo.com" class="inline">alanrose.13@yahoo.com</a>
+    </p>
+
+    <h2>Modifiche alla Cookie Policy</h2>
+    <p>
+      La presente Cookie Policy può essere soggetta a modifiche. Ti invitiamo a consultarla periodicamente.
+      La data dell'ultimo aggiornamento è indicata in cima alla pagina.
+    </p>
+  </main>
+
+  <footer>
+    <strong>Alan & Rose</strong> | Prestazione Occasionale art.2222 c.c.<br>
+    © 2026 Tutti i diritti riservati
+  </footer>
+
+  <!-- CHATBOT BLESS (script esterno) -->
+  <script src="https://cdn.jsdelivr.net/gh/alanrose13/alanrose13.github.io@main/chatbot.js"></script>
+
+</body>
+</html>
