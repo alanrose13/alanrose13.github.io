@@ -690,19 +690,27 @@
     'diego', 'luca', 'giuseppe', 'benigno', 'calimero', 'cataldo',
     'gianni', 'lisandro', 'palmiro', 'rinaldo', 'cosimo', 'marco',
     'roberto', 'fabio', 'matteo', 'nicola', 'giorgio', 'mario',
-    'antonio', 'male', 'uomo', 'man'
+    'antonio', 'alessandro', 'valerio', 'riccardo', 'enrico',
+    'male', 'uomo', 'man'
   ];
 
+  // Punteggio di qualità: privilegia sempre le voci "neurali"/online, che sono
+  // sintetizzate con IA e suonano molto più umane rispetto alle voci di
+  // sistema classiche (SAPI/eSpeak), le quali restano meccaniche per natura.
   function arScoreVoice(v) {
     var n = v.name.toLowerCase();
     var score = 0;
     var isMaleKnown = arMaleVoiceNames.some(function (name) { return n.includes(name); });
     if (!isMaleKnown) return -1000; // scarta tutto ciò che non è certamente maschile
 
-    if (n.includes('online (natural)') || n.includes('neural')) score += 100;
-    if (n.includes('compact')) score -= 20;
-    if (n.includes('standard') && !n.includes('online') && !n.includes('neural')) score -= 30;
+    if (n.includes('online (natural)') || n.includes('neural')) score += 150;
+    if (n.includes('premium') || n.includes('enhanced') || n.includes('plus')) score += 60;
+    if (n.includes('compact')) score -= 80;
+    if (n.includes('standard') && !n.includes('online') && !n.includes('neural')) score -= 60;
     if (v.lang === 'it-IT') score += 10;
+    // le voci "non locali" (localService === false) sono quasi sempre voci di
+    // rete generate con modelli neurali, quindi più naturali di quelle offline
+    if (v.localService === false) score += 20;
     return score;
   }
 
@@ -744,8 +752,14 @@
     setTimeout(arForceLoadVoices, 2500);
   }
 
+  // Divide SOLO a fine frase (. ! ? …), MAI su virgole o due punti.
+  // Spezzare a ogni virgola (come faceva la versione precedente) costringe il
+  // motore vocale a "resettare" intonazione e respiro decine di volte per
+  // messaggio: è la causa principale dell'effetto "a scatti" robotico.
+  // Lasciando la virgola dentro la stessa frase, il motore gestisce da solo
+  // la pausa breve, con una prosodia molto più naturale.
   function arSplitIntoSegments(text) {
-    var raw = text.split(/(?<=[.!?…])\s+|(?<=[,;:])\s+(?=\S)/);
+    var raw = text.split(/(?<=[.!?…])\s+/);
     return raw.map(function (s) { return s.trim(); }).filter(Boolean);
   }
 
@@ -758,12 +772,21 @@
     var segments = arSplitIntoSegments(text);
     if (segments.length === 0) segments = [text];
 
+    // Ritmo e tono di base: pacato e maschile, ma non esagerato (un rate
+    // troppo lento o un pitch troppo basso suonano innaturali/"da robot",
+    // non da persona calma).
+    var baseRate = 0.97;
+    var basePitch = 0.93;
+
     segments.forEach(function (segment) {
       var utterance = new SpeechSynthesisUtterance(segment);
       utterance.lang = arItalianVoice.lang;
       utterance.voice = arItalianVoice;
-      utterance.rate = 0.88;    // ritmo pacato, uniforme
-      utterance.pitch = 0.88;   // tono morbido e basso
+      // Piccola variazione casuale di ritmo/tono tra una frase e l'altra:
+      // una voce umana non pronuncia mai due frasi in modo perfettamente
+      // identico. Questo micro-jitter spezza la monotonia sintetica.
+      utterance.rate = +(baseRate + (Math.random() * 0.08 - 0.04)).toFixed(3);
+      utterance.pitch = +(basePitch + (Math.random() * 0.08 - 0.04)).toFixed(3);
       utterance.volume = 1.0;
       window.speechSynthesis.speak(utterance);
     });
