@@ -210,49 +210,6 @@
       min-height: 0;
     }
 
-    .transparent-box.comments-box {
-      max-height: 480px;
-      overflow-y: auto;
-      padding: 16px;
-      font-size: .85rem;
-    }
-    .transparent-box.comments-box::-webkit-scrollbar { width: 5px; display: block; }
-    .transparent-box.comments-box::-webkit-scrollbar-thumb {
-      background: rgba(201,169,97,0.35);
-      border-radius: 10px;
-    }
-    .transparent-box.comments-box #HCB_comment_box { font-size: .85rem; }
-    .transparent-box.comments-box .ar-msg { font-size: .8rem; }
-
-    #HCB_comment_box { font-family: 'Segoe UI', sans-serif; text-align: center; color: var(--m); padding: 10px 0; }
-    #HCB_comment_box #hcb_form_name,
-    #HCB_comment_box #hcb_form_email,
-    #HCB_comment_box #hcb_form_website,
-    #HCB_comment_box #hcb_form_content,
-    #HCB_comment_box textarea,
-    #HCB_comment_box input.text {
-      font-family: 'Segoe UI', sans-serif;
-      background: #fff; border: 1px solid rgba(201,169,97,.5);
-      border-radius: 6px; color: var(--m); padding: 8px 10px;
-    }
-    #HCB_comment_box .text-blur { color: #b5a692; }
-    #HCB_comment_box .text-focus { color: var(--m); }
-    #HCB_comment_box #hcb_submit,
-    #HCB_comment_box .submit {
-      background: var(--o); border: 1px solid var(--m);
-      border-radius: 6px; color: var(--m); font-weight: 700;
-      cursor: pointer; padding: 8px 18px;
-    }
-    #HCB_comment_box #hcb_submit:hover,
-    #HCB_comment_box .submit:hover { background: var(--m); color: #fff; }
-    #HCB_comment_box blockquote {
-      background: var(--bg); border-left: 3px solid var(--o);
-      border-radius: 0 8px 8px 0; text-align: left;
-      padding: 10px 16px; margin: 12px 0;
-    }
-    #HCB_comment_box .author-name { color: var(--o); font-weight: 700; }
-    #HCB_comment_box .hcb-comment-body { color: var(--m); }
-    #HCB_comment_box .hcb-comment-tb a { color: var(--o); }
     iframe { scrollbar-width: none; }
     iframe::-webkit-scrollbar { display: none; }
 
@@ -310,18 +267,6 @@
     .popup-close { position: absolute; top: 10px; right: 15px; font-size: 30px; color: #555; cursor: pointer; z-index: 5; }
     #CookieDeclaration { margin-top: 20px; }
 
-    .gdpr-comment-consent {
-      background: var(--bg); padding: 16px 20px; border-radius: 8px;
-      margin-bottom: 20px; display: flex; align-items: flex-start;
-      gap: 10px; font-size: .95rem; border: 1px solid rgba(201,169,97,.3);
-    }
-    .gdpr-comment-consent input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; }
-    .gdpr-comment-consent label { cursor: pointer; }
-    .gdpr-comment-consent a { color: var(--o); text-decoration: underline; }
-
-    .hcb-comment-list { display: block !important; }
-    .hcb-comment-count { display: block !important; }
-
     @media (max-width: 768px) {
       .bv { height: auto; aspect-ratio: 16/9; }
       section { padding: 40px 15px; }
@@ -334,7 +279,6 @@
       .donation-box img { max-width: 160px; }
       .transparent-box { padding: 12px; }
       .transparent-box.form-box { height: 520px; }
-      .transparent-box.comments-box { max-height: 380px; }
     }
     @media (max-width: 480px) {
       h2 { font-size: 1.3rem; }
@@ -343,13 +287,10 @@
       .soc img { width: 32px; }
       .newsletter-box { padding: 16px; }
       .popup-box { padding: 20px 16px; }
-      .gdpr-comment-consent { font-size: .85rem; padding: 12px; }
       .donation-box img { max-width: 140px; }
       .donation-box { padding: 16px; }
       .transparent-box { padding: 10px; }
       .transparent-box.form-box { height: 440px; }
-      .transparent-box.comments-box { max-height: 320px; font-size: .8rem; }
-      .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
     }
 
     /* ============================================================
@@ -865,7 +806,7 @@
   </section>
 
   <section id="cont" data-aos="fade-up">
-    <h2>Contatti & Commenti</h2>
+    <h2>Contatti</h2>
     <p style="text-align:center;margin-bottom:20px">
       Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
     </p>
@@ -877,74 +818,6 @@
 
     <div class="btn-upload-wrap">
       <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
-    </div>
-
-    <h3 style="text-align:center;margin:40px 0 15px">Lascia un Commento</h3>
-
-    <div class="gdpr-comment-consent">
-      <input type="checkbox" id="gdprCommentConsent">
-      <label for="gdprCommentConsent">
-        Acconsento al trattamento dei miei dati personali per la pubblicazione del commento, come da
-        <a href="#" onclick="openPopup('privacyPopup');return false;">Privacy Policy</a> (art. 13 GDPR).
-      </label>
-    </div>
-
-    <div class="transparent-box comments-box" id="commentBoxWrapper">
-      <div id="HCB_comment_box">Caricamento commenti...</div>
-      <script type="text/plain" data-cookieconsent="statistics">
-        if (!window.hcb_user) { hcb_user = {}; }
-        hcb_user.comments_header = "Commenti";
-        hcb_user.name_label = "Nome";
-        hcb_user.content_label = "Scrivi qui il tuo commento";
-        hcb_user.submit = "Commenta";
-        hcb_user.no_comments_msg = "Nessun commento, per ora. Scrivi il primo!";
-        hcb_user.add = "Aggiungi un commento";
-        hcb_user.again = "Scrivi un altro commento";
-        hcb_user.said = "ha scritto:";
-        hcb_user.showing = "Da";
-        hcb_user.to = "a";
-        hcb_user.website_label = "sito web (facoltativo)";
-        hcb_user.email_label = "email";
-        hcb_user.anonymous = "Anonimo";
-        hcb_user.subscribe = "Avvisami delle risposte via email";
-        hcb_user.add_image = "Aggiungi immagine";
-        hcb_user.are_you_sure = "Vuoi segnalare questo commento come inappropriato?";
-        hcb_user.reply = "Rispondi";
-        hcb_user.flag = "Segnala";
-        hcb_user.like = "Mi piace";
-        hcb_user.days_ago = "giorni fa";
-        hcb_user.hours_ago = "ore fa";
-        hcb_user.minutes_ago = "minuti fa";
-        hcb_user.within_the_last_minute = "meno di un minuto fa";
-        hcb_user.msg_thankyou = "Grazie per il tuo commento!";
-        hcb_user.msg_approval_required = "Grazie per il tuo commento! Sarà visibile dopo l'approvazione di un moderatore.";
-        hcb_user.err_bad_html = "Il commento contiene codice HTML non valido.";
-        hcb_user.err_bad_email = "Inserisci un indirizzo email valido.";
-        hcb_user.err_too_frequent = "Attendi qualche secondo prima di pubblicare un altro commento.";
-        hcb_user.err_comment_empty = "Il commento non è stato pubblicato perché era vuoto.";
-        hcb_user.err_denied = "Il tuo commento non è stato accettato.";
-        hcb_user.err_spam = "Il tuo commento è stato rilevato come spam.";
-        hcb_user.err_blocked = "Il tuo commento è stato bloccato dalle norme del sito.";
-        hcb_user.moderation = 'pre';
-      </script>
-      <script type="text/plain" data-cookieconsent="statistics" id="hcb">
-        /*<!--*/
-        if (!window.hcb_user) { hcb_user = {}; }
-        (function () {
-          var s = document.createElement("script"),
-              l = hcb_user.PAGE || ("" + window.location).replace(/'/g, "%27"),
-              h = "https://www.htmlcommentbox.com";
-          s.setAttribute("type", "text/javascript");
-          s.setAttribute("src", h + "/jread?page=" + encodeURIComponent(l).replace("+", "%2B") + "&mod=%241%24wqVtlRwE%24A6W7wQj2L1q8sZ1b2q3r4&opts=16762&num=10&ts=" + Date.now());
-          if (typeof s !== "undefined") document.getElementsByTagName("head")[0].appendChild(s);
-        })();
-        /*-->*/
-      </script>
-    </div>
-
-    <h3 style="text-align:center;margin:40px 0 15px">Lascia una Recensione</h3>
-    <div class="transparent-box form-box review-form">
-      <iframe id="formRecensione" loading="lazy" data-cookieconsent="statistics" data-cookieblock-src="https://docs.google.com/forms/d/e/1FAIpQLScF3kpcfjS0sH5l00J4keIfKEYKzzOD8IvkffyFt_9kk0oiSA/viewform?embedded=true" scrolling="yes" style="width:100%;border:0;border-radius:8px;" onload="resizeIframe(this)">Caricamento…</iframe>
     </div>
   </section>
 
@@ -1123,7 +996,7 @@
     <div class="popup-box" onclick="event.stopPropagation()">
       <span class="popup-close" onclick="closePopup('contPopup')">×</span>
       <section>
-        <h2>Contatti & Commenti</h2>
+        <h2>Contatti</h2>
         <p style="text-align:center;margin-bottom:20px">
           Email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>
         </p>
@@ -1134,11 +1007,6 @@
         <div class="btn-upload-wrap">
           <a href="https://forms.gle/ujEQkZNHPWEmJY3t7" target="_blank" class="btn">Upload File</a>
         </div>
-        <p style="text-align:center;margin-top:25px">
-          Per lasciare un commento o una recensione, scorri fino alla sezione
-          <a onclick="closePopup('contPopup');document.getElementById('cont').scrollIntoView({behavior:'smooth'});" style="color:var(--o);cursor:pointer;font-weight:600;">"Contatti & Commenti"</a>
-          più in basso nella pagina.
-        </p>
       </section>
     </div>
   </div>
@@ -1274,7 +1142,7 @@
     <div class="popup-box" onclick="event.stopPropagation()">
       <span class="popup-close" onclick="closePopup('privacyPopup')">×</span>
       <h2 style="color:#4A3B2A;border-bottom:2px solid #C9A961;padding-bottom:10px;">Informativa sulla privacy</h2>
-      <p style="font-size:0.85rem;color:#666;margin-bottom:20px;"><strong>Data di entrata in vigore:</strong> 31/08/2026</p>
+      <p style="font-size:0.85rem;color:#666;margin-bottom:20px;"><strong>Data di entrata in vigore:</strong> 10/09/2026</p>
 
       <div style="font-size:0.9rem;line-height:1.7;color:#333;">
 
@@ -1387,13 +1255,6 @@
                 <td style="border:1px solid #ddd;padding:8px;"><a href="https://groq.com/privacy-policy/" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>HTML Comment Box</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">HTML Comment Box</td>
-                <td style="border:1px solid #ddd;padding:8px;">Commenti, Feedback</td>
-                <td style="border:1px solid #ddd;padding:8px;">Nome, email, IP</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://www.htmlcommentbox.com/static/privacy.html" target="_blank" style="color:#C9A961;">Link</a></td>
-              </tr>
-              <tr>
                 <td style="border:1px solid #ddd;padding:8px;"><strong>Google Fonts</strong></td>
                 <td style="border:1px solid #ddd;padding:8px;">Google Ireland Limited</td>
                 <td style="border:1px solid #ddd;padding:8px;">Font e personalizzazione</td>
@@ -1435,7 +1296,7 @@
         <p>Per informazioni più dettagliate sui cookie che utilizziamo, visitate la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;">Cookie Policy</a>.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Aggiornamenti e modifiche delle politiche</h3>
-        <p>Potremmo aggiornare questa informativa sulla privacy di tanto in tanto. In caso di modifiche sostanziali, chiederemo il consenso esplicito dell'utente prima di attuare le modifiche. Data di entrata in vigore: <strong>31/08/2026</strong>.</p>
+        <p>Potremmo aggiornare questa informativa sulla privacy di tanto in tanto. In caso di modifiche sostanziali, chiederemo il consenso esplicito dell'utente prima di attuare le modifiche. Data di entrata in vigore: <strong>10/09/2026</strong>.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Contatti</h3>
         <p>In caso di domande o dubbi sulla nostra politica sulla privacy, non esitate a contattarci a <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
