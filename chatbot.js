@@ -630,7 +630,7 @@
           '<button onclick="arHandleAction(\'mostraFormRichiesta\')">📝 Richiedi Servizio</button>' +
         '</div>' +
         '<div class="ar-privacy-note">' +
-          '🔒 I dati che mi scrivi sono trattati secondo la nostra <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.' +
+          '🔒 I dati che mi scrivi restano salvati solo sul tuo dispositivo e vengono elaborati da un servizio IA esterno per generare le risposte, secondo la nostra <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.' +
         '</div>' +
         '<div class="ai-disclaimer">' +
           '🤖 BLESS è un assistente IA: le risposte potrebbero non essere sempre accurate, verifica sempre le informazioni importanti.' +
@@ -674,18 +674,14 @@
     window.visualViewport.addEventListener('scroll', arFixKeyboardOverlap);
   }
 
-  // SINTESI VOCALE — solo voce maschile, calma e morbida
+  // SINTESI VOCALE — solo voce maschile, la più "umana" disponibile GRATIS
+  // nel browser (nessun servizio TTS a pagamento: usiamo solo
+  // window.speechSynthesis, l'API vocale nativa, gratuita, del browser).
   var arVoiceEnabled = true;
   var arVoicesLoaded = false;
   var arItalianVoice = null;
   var arVoiceLoadAttempts = 0;
 
-  var arFemaleVoiceNames = [
-    'elsa', 'isabella', 'fabiola', 'fiamma', 'imelda', 'irma', 'pierina',
-    'alice', 'federica', 'paola', 'silvia', 'valentina', 'giorgia',
-    'chiara', 'laura', 'monica', 'francesca', 'martina', 'serena',
-    'google italiano', 'google it', 'female', 'donna', 'woman'
-  ];
   var arMaleVoiceNames = [
     'diego', 'luca', 'giuseppe', 'benigno', 'calimero', 'cataldo',
     'gianni', 'lisandro', 'palmiro', 'rinaldo', 'cosimo', 'marco',
@@ -694,23 +690,28 @@
     'male', 'uomo', 'man'
   ];
 
-  // Punteggio di qualità: privilegia sempre le voci "neurali"/online, che sono
-  // sintetizzate con IA e suonano molto più umane rispetto alle voci di
-  // sistema classiche (SAPI/eSpeak), le quali restano meccaniche per natura.
+  // Punteggio di qualità/"umanità": le voci online/neurali (Microsoft
+  // "Online (Natural)", Google "Wavenet"/"Neural2", ecc.) sono generate con
+  // modelli neurali e restano gratuite nel browser (il costo è a carico del
+  // fornitore del sistema operativo/browser, non nostro): suonano molto più
+  // umane delle voci offline classiche (SAPI/eSpeak), che restano meccaniche
+  // per natura. Questo punteggio spinge il motore a scegliere sempre la
+  // voce maschile più naturale tra quelle disponibili gratis sul dispositivo.
   function arScoreVoice(v) {
     var n = v.name.toLowerCase();
     var score = 0;
     var isMaleKnown = arMaleVoiceNames.some(function (name) { return n.includes(name); });
     if (!isMaleKnown) return -1000; // scarta tutto ciò che non è certamente maschile
 
-    if (n.includes('online (natural)') || n.includes('neural')) score += 150;
+    // Voci neurali/online: le più naturali in assoluto, restano gratuite.
+    if (n.includes('online (natural)') || n.includes('neural2') || n.includes('neural') || n.includes('wavenet')) score += 200;
     if (n.includes('premium') || n.includes('enhanced') || n.includes('plus')) score += 60;
-    if (n.includes('compact')) score -= 80;
-    if (n.includes('standard') && !n.includes('online') && !n.includes('neural')) score -= 60;
+    if (n.includes('compact')) score -= 100;
+    if (n.includes('standard') && !n.includes('online') && !n.includes('neural') && !n.includes('wavenet')) score -= 60;
     if (v.lang === 'it-IT') score += 10;
     // le voci "non locali" (localService === false) sono quasi sempre voci di
     // rete generate con modelli neurali, quindi più naturali di quelle offline
-    if (v.localService === false) score += 20;
+    if (v.localService === false) score += 30;
     return score;
   }
 
@@ -727,10 +728,12 @@
       italianMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
       arItalianVoice = italianMale[0];
     } else {
-      // fallback: qualsiasi voce esplicitamente maschile, anche non italiana
+      // fallback: qualsiasi voce esplicitamente maschile, anche non italiana,
+      // scegliendo comunque la più naturale disponibile
       var anyMale = voices.filter(function (v) {
         return arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
       });
+      anyMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
       arItalianVoice = anyMale.length > 0 ? anyMale[0] : null;
     }
     arVoicesLoaded = true;
@@ -1158,7 +1161,7 @@
     div.innerHTML =
       '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">' +
       '<div style="margin-bottom:6px;font-weight:600;">📝 Compila il modulo qui sotto:</div>' +
-      '<div class="ar-inline-form"><iframe src="' + formUrl + '" allow="camera; microphone; display-capture"></iframe></div>' +
+      '<div class="ar-inline-form"><iframe src="' + formUrl + '"></iframe></div>' +
       '<div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔒 I tuoi dati sono trattati secondo la nostra Privacy Policy.</div>' +
       '</div>';
     box.appendChild(div);
@@ -1401,6 +1404,24 @@
     arShowTyping();
 
     try {
+      // Costruisce il contesto della conversazione: gli ultimi scambi
+      // recenti (da localStorage) vengono inclusi nella richiesta, così il
+      // bot "ricorda" cosa si sono detti finora nella stessa sessione,
+      // invece di rispondere ogni volta senza contesto.
+      var history = getChatHistory();
+      var contextMessages = [];
+      if (history && history.messages && history.messages.length > 0) {
+        var recent = history.messages.slice(-16); // ultimi ~8 scambi
+        contextMessages = recent
+          .filter(function (m) { return m.role === 'user' || m.role === 'bot'; })
+          .map(function (m) {
+            return {
+              role: m.role === 'bot' ? 'assistant' : 'user',
+              content: m.content.replace(/<[^>]*>/g, '') // niente HTML nel contesto inviato al modello
+            };
+          });
+      }
+
       var response = await fetch(AR_WORKER_URL + '/groq/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1411,10 +1432,9 @@
           messages: [
             {
               role: 'system',
-              content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati in chat (nome, email, descrizione, ecc.): la conversazione non viene conservata da nessuna parte, quindi raccoglierli sarebbe inutile. Accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. Menziona la Privacy Policy solo se chiesto o se l\'utente parla di dati personali.\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruito al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".\n\n**IMPORTANTE: Tutti i tuoi messaggi devono essere al MASCHILE.** Non usare mai "pronta", "sono pronta", "disponibile" al femminile. Usa sempre "pronto", "sono pronto", "disponibile" al maschile.'
-            },
-            { role: 'user', content: msg }
-          ],
+              content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati sensibili aggiuntivi in chat (numeri di carte, documenti, ecc.): accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. **PRIVACY**: se l\'utente chiede dove finiscono i suoi messaggi, spiega con chiarezza che la conversazione resta salvata solo sul suo dispositivo (nel browser) per poterla ritrovare più tardi, e che ogni messaggio viene elaborato da un servizio esterno di intelligenza artificiale per generare le risposte. Rimanda alla Privacy Policy del sito per i dettagli. Non dire mai che "la conversazione non viene conservata da nessuna parte".\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruito al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n10. **CONTESTO**: nei messaggi precedenti di questa conversazione (se presenti) trovi lo storico recente della chat: usalo per ricordare cosa l\'utente ti ha già detto (nome, richieste, preferenze) invece di richiederlo di nuovo.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".\n\n**IMPORTANTE: Tutti i tuoi messaggi devono essere al MASCHILE.** Non usare mai "pronta", "sono pronta", "disponibile" al femminile. Usa sempre "pronto", "sono pronto", "disponibile" al maschile.'
+            }
+          ].concat(contextMessages, [{ role: 'user', content: msg }]),
           stream: false,
           temperature: 0.7,
           max_tokens: 600
