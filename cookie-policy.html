@@ -122,6 +122,15 @@
 
     /* ============================================================
        AMBIENT LAYER (blob di sfondo)
+       Nessun filter: blur() — la sfumatura è già "cotta" nel gradiente
+       tramite stop intermedi ravvicinati. Animazione limitata a
+       opacity (compositor-only, nessun repaint) + un transform
+       leggero (solo scale, niente translate) perché comunque
+       economico su GPU quando il layer è già promosso.
+       will-change è gestito dinamicamente via IntersectionObserver:
+       viene aggiunto solo ai blob effettivamente in viewport e
+       rimosso quando escono, per non tenere impegnata la GPU su
+       elementi fermi/non visibili.
     ============================================================ */
     .ambient-layer {
       position: fixed;
@@ -133,37 +142,58 @@
     .ambient-blob {
       position: absolute;
       border-radius: 50%;
-      filter: blur(40px);
-      opacity: 0.22;
-      background: radial-gradient(circle at 30% 30%, rgba(201,169,97,0.55), rgba(201,169,97,0) 70%);
-      animation: ambientDrift 46s ease-in-out infinite;
-      will-change: transform;
+      opacity: 0.18;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(201,169,97,0.42) 0%,
+        rgba(201,169,97,0.30) 18%,
+        rgba(201,169,97,0.16) 36%,
+        rgba(201,169,97,0.06) 55%,
+        rgba(201,169,97,0) 72%);
+      animation: ambientFade 12s ease-in-out infinite alternate,
+                 ambientScale 46s ease-in-out infinite;
     }
-    .ambient-blob.b1 { width: 420px; height: 420px; top: -8%; left: -8%; animation-duration: 50s; }
+    .ambient-blob.in-view { will-change: opacity, transform; }
+    .ambient-blob.b1 { width: 420px; height: 420px; top: -8%; left: -8%; animation-duration: 11s, 50s; }
     .ambient-blob.b2 {
       width: 360px; height: 360px; top: 30%; right: -10%;
-      background: radial-gradient(circle at 60% 40%, rgba(74,59,42,0.30), rgba(74,59,42,0) 70%);
-      animation-duration: 56s; animation-delay: -6s;
+      background: radial-gradient(circle at 60% 40%,
+        rgba(74,59,42,0.28) 0%,
+        rgba(74,59,42,0.20) 18%,
+        rgba(74,59,42,0.10) 36%,
+        rgba(74,59,42,0.04) 55%,
+        rgba(74,59,42,0) 72%);
+      animation-duration: 13s, 56s; animation-delay: -3s, -6s;
     }
     .ambient-blob.b3 {
       width: 320px; height: 320px; bottom: -10%; left: 18%;
-      background: radial-gradient(circle at 40% 60%, rgba(201,169,97,0.4), rgba(201,169,97,0) 70%);
-      animation-duration: 52s; animation-delay: -14s;
+      background: radial-gradient(circle at 40% 60%,
+        rgba(201,169,97,0.36) 0%,
+        rgba(201,169,97,0.26) 18%,
+        rgba(201,169,97,0.13) 36%,
+        rgba(201,169,97,0.05) 55%,
+        rgba(201,169,97,0) 72%);
+      animation-duration: 12.5s, 52s; animation-delay: -7s, -14s;
     }
     .ambient-blob.b4 {
       width: 260px; height: 260px; bottom: 12%; right: 8%;
-      background: radial-gradient(circle at 50% 50%, rgba(74,59,42,0.22), rgba(74,59,42,0) 70%);
-      animation-duration: 40s; animation-delay: -20s;
+      background: radial-gradient(circle at 50% 50%,
+        rgba(74,59,42,0.20) 0%,
+        rgba(74,59,42,0.14) 18%,
+        rgba(74,59,42,0.07) 36%,
+        rgba(74,59,42,0.03) 55%,
+        rgba(74,59,42,0) 72%);
+      animation-duration: 10s, 40s; animation-delay: -4s, -20s;
     }
-    @keyframes ambientDrift {
-      0%   { transform: translate(0, 0) scale(1); }
-      25%  { transform: translate(4%, 6%) scale(1.08); }
-      50%  { transform: translate(-3%, 3%) scale(0.96); }
-      75%  { transform: translate(-5%, -4%) scale(1.04); }
-      100% { transform: translate(0, 0) scale(1); }
+    @keyframes ambientFade {
+      0%   { opacity: 0.12; }
+      100% { opacity: 0.24; }
+    }
+    @keyframes ambientScale {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.06); }
+      100% { transform: scale(1); }
     }
     @media (max-width: 768px) {
-      .ambient-blob { filter: blur(28px); opacity: 0.22; }
       .ambient-blob.b1, .ambient-blob.b2, .ambient-blob.b3 { width: 240px; height: 240px; }
       .ambient-blob.b4 { width: 180px; height: 180px; }
     }
@@ -325,6 +355,22 @@
   </div>
 
   <script>
+    /* --------------------------------------------------------------
+       will-change dinamico sui blob ambient: aggiunto solo quando il
+       blob entra in viewport, rimosso quando esce. Evita di tenere
+       promossi a layer GPU elementi fuori schermo o già fermi.
+    -------------------------------------------------------------- */
+    (function() {
+      var blobs = document.querySelectorAll('.ambient-blob');
+      if (!('IntersectionObserver' in window) || !blobs.length) return;
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          entry.target.classList.toggle('in-view', entry.isIntersecting);
+        });
+      }, { threshold: 0 });
+      blobs.forEach(function(b) { io.observe(b); });
+    })();
+
     const langMap = {
       it: ['it', 'Italiano'],
       en: ['gb', 'English'],
