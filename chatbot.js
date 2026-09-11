@@ -71,20 +71,22 @@
     }
     #arChatBadge.hidden { display: none; }
 
+    /* --- FIX #2: tooltip "Chatta con noi!" con i colori del sito/chat --- */
     #arChatTooltip {
       position: fixed;
       bottom: 96px;
       right: 14px;
       max-width: 190px;
-      background: #fff;
-      color: #4A3B2A;
+      background: linear-gradient(135deg, #4A3B2A 0%, #3A2B1A 100%);
+      color: #F5F1E8;
       font-family: 'Segoe UI', sans-serif;
       font-size: .85rem;
       font-weight: 600;
       padding: 10px 14px;
       border-radius: 14px;
       border-bottom-right-radius: 4px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      box-shadow: 0 8px 24px rgba(0,0,0,.2), 0 0 30px rgba(201,169,97,0.1);
+      border: 1px solid rgba(201,169,97,0.4);
       z-index: 10001;
       cursor: pointer;
       opacity: 0;
@@ -103,8 +105,8 @@
       right: -6px;
       width: 18px;
       height: 18px;
-      background: #4A3B2A;
-      color: #fff;
+      background: #C9A961;
+      color: #4A3B2A;
       border-radius: 50%;
       font-size: 12px;
       display: flex;
@@ -674,7 +676,7 @@
     window.visualViewport.addEventListener('scroll', arFixKeyboardOverlap);
   }
 
-  // SINTESI VOCALE — fallback speechSynthesis (usato solo se Piper non è disponibile)
+  // SINTESI VOCALE — voce del browser (usata come PRIMA SCELTA se di buona qualità)
   var arVoiceEnabled = true;
   var arVoicesLoaded = false;
   var arItalianVoice = null;
@@ -701,6 +703,14 @@
     if (v.lang === 'it-IT') score += 10;
     if (v.localService === false) score += 30;
     return score;
+  }
+
+  // Una voce è considerata "di buona qualità" solo se è Natural/Neural/Wavenet.
+  // Se sì, la preferiamo a Piper (che per l'italiano maschile ha solo il modello x_low, elettronico).
+  function arIsHighQualityVoice(v) {
+    if (!v) return false;
+    var n = v.name.toLowerCase();
+    return n.includes('online (natural)') || n.includes('neural2') || n.includes('neural') || n.includes('wavenet');
   }
 
   function arLoadVoices() {
@@ -749,7 +759,8 @@
   /* ============================================================
      SINTESI VOCALE — Piper TTS (WebAssembly, offline, gratis)
      Voce neurale maschile italiana it_IT-riccardo-x_low.
-     Gira interamente nel browser: nessun server, nessun account.
+     Usata come RIPIEGO quando il browser non offre una voce
+     naturale/neurale italiana maschile di buona qualità.
      ============================================================ */
 
   var AR_PIPER_VOICE = 'it_IT-riccardo-x_low';
@@ -823,6 +834,16 @@
     var plainText = String(text || '').replace(/<[^>]*>/g, '').trim();
     if (!plainText) return;
 
+    // PRIORITÀ 1: se il browser offre una voce naturale/neurale italiana maschile, usala.
+    // Suona molto meglio del modello Piper "x_low" (l'unico disponibile per l'italiano maschile).
+    if (!arVoicesLoaded) arLoadVoices();
+
+    if (arIsHighQualityVoice(arItalianVoice)) {
+      arSpeakFallback(plainText);
+      return;
+    }
+
+    // PRIORITÀ 2: Piper (offline, ma qualità x_low = suono elettronico)
     if (arPiperUnavailable) {
       arSpeakFallback(plainText);
       return;
@@ -1263,7 +1284,7 @@
   var AR_BLESSED_REPLACEMENT =
     'Evita di dire brutte parole. Dio ti ama, e ama che il tuo parlare pulito non sia un obbligo ma un\'opportunità per essere davanti agli altri uno splendore di Dio, così chiunque ti vede come un esempio da seguire e sarai amato/a.';
 
-  var AR_BLASFEMY_PATTERNS = [
+  var AR_BLASPHEMY_PATTERNS = [
     // ============ ITALIANO STANDARD ============
     /\b(?:dio|d10|ddio)\s+(?:bono|bon[ou]|can[e]?|porc[oa]|maiale|boia|ladro|bestia|serpente|impiccat[oa]|strozzat[oa]|santo\s+no)\b/gi,
     /\b(?:porco|porca)\s+(?:dio|ddio|d10|madonna|maronna|giuda|giuda\s+no)\b/gi,
@@ -1309,11 +1330,24 @@
     /\b(?:verdomme|godverdomme|klootzak|kut|neuken|shit|fuck|bitch|cazzo|stronzo|stronza|vaffanculo|fanculo|coglione|cogliona|minchia|minchione|zoccola|troia|puttana|mignotta|bagascia|squaldrina|bastardo|bastarda|idiota|imbecille|deficiente|ritardato|handicappato|negro|negra|frocio|finocchio|ricchione|terrone|zingaro\s*di\s*merda|sporco\s*negro)\b/gi
   ];
 
+  // --- FIX #1: confini \b Unicode-safe -----------------------------------
+  // \b in JavaScript riconosce come "di parola" solo [A-Za-z0-9_], quindi le
+  // lettere accentate (ò, è, à, ì...) rompono il matching e molti pattern
+  // dialettali sopra non scattavano mai. Questa funzione converte i \b in
+  // lookaround che considerano anche le lettere accentate (flag 'u').
+  function arFixBoundary(re) {
+    var src = re.source;
+    if (src.slice(0, 2) === '\\b') src = '(?<![\\p{L}\\p{N}_])' + src.slice(2);
+    if (src.slice(-2) === '\\b') src = src.slice(0, -2) + '(?![\\p{L}\\p{N}_])';
+    return new RegExp(src, 'giu');
+  }
+  var AR_BLASPHEMY_PATTERNS_FIXED = AR_BLASPHEMY_PATTERNS.map(arFixBoundary);
+
   // Sostituisce le bestemmie con la frase di incoraggiamento.
   function arFilterBlasphemy(text) {
     if (!text) return text;
     var out = String(text);
-    AR_BLASFEMY_PATTERNS.forEach(function (re) {
+    AR_BLASPHEMY_PATTERNS_FIXED.forEach(function (re) {
       out = out.replace(re, AR_BLESSED_REPLACEMENT);
     });
     return out;
