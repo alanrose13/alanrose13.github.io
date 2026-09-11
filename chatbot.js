@@ -674,9 +674,7 @@
     window.visualViewport.addEventListener('scroll', arFixKeyboardOverlap);
   }
 
-  // SINTESI VOCALE — solo voce maschile, la più "umana" disponibile GRATIS
-  // nel browser (nessun servizio TTS a pagamento: usiamo solo
-  // window.speechSynthesis, l'API vocale nativa, gratuita, del browser).
+  // SINTESI VOCALE — fallback speechSynthesis (usato solo se Piper non è disponibile)
   var arVoiceEnabled = true;
   var arVoicesLoaded = false;
   var arItalianVoice = null;
@@ -690,27 +688,17 @@
     'male', 'uomo', 'man'
   ];
 
-  // Punteggio di qualità/"umanità": le voci online/neurali (Microsoft
-  // "Online (Natural)", Google "Wavenet"/"Neural2", ecc.) sono generate con
-  // modelli neurali e restano gratuite nel browser (il costo è a carico del
-  // fornitore del sistema operativo/browser, non nostro): suonano molto più
-  // umane delle voci offline classiche (SAPI/eSpeak), che restano meccaniche
-  // per natura. Questo punteggio spinge il motore a scegliere sempre la
-  // voce maschile più naturale tra quelle disponibili gratis sul dispositivo.
   function arScoreVoice(v) {
     var n = v.name.toLowerCase();
     var score = 0;
     var isMaleKnown = arMaleVoiceNames.some(function (name) { return n.includes(name); });
-    if (!isMaleKnown) return -1000; // scarta tutto ciò che non è certamente maschile
+    if (!isMaleKnown) return -1000;
 
-    // Voci neurali/online: le più naturali in assoluto, restano gratuite.
     if (n.includes('online (natural)') || n.includes('neural2') || n.includes('neural') || n.includes('wavenet')) score += 200;
     if (n.includes('premium') || n.includes('enhanced') || n.includes('plus')) score += 60;
     if (n.includes('compact')) score -= 100;
     if (n.includes('standard') && !n.includes('online') && !n.includes('neural') && !n.includes('wavenet')) score -= 60;
     if (v.lang === 'it-IT') score += 10;
-    // le voci "non locali" (localService === false) sono quasi sempre voci di
-    // rete generate con modelli neurali, quindi più naturali di quelle offline
     if (v.localService === false) score += 30;
     return score;
   }
@@ -728,8 +716,6 @@
       italianMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
       arItalianVoice = italianMale[0];
     } else {
-      // fallback: qualsiasi voce esplicitamente maschile, anche non italiana,
-      // scegliendo comunque la più naturale disponibile
       var anyMale = voices.filter(function (v) {
         return arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
       });
@@ -755,34 +741,64 @@
     setTimeout(arForceLoadVoices, 2500);
   }
 
-  // Divide SOLO a fine frase (. ! ? …), MAI su virgole o due punti.
-  // Spezzare a ogni virgola (come faceva la versione precedente) costringe il
-  // motore vocale a "resettare" intonazione e respiro decine di volte per
-  // messaggio: è la causa principale dell'effetto "a scatti" robotico.
-  // Lasciando la virgola dentro la stessa frase, il motore gestisce da solo
-  // la pausa breve, con una prosodia molto più naturale.
   function arSplitIntoSegments(text) {
     var raw = text.split(/(?<=[.!?…])\s+/);
     return raw.map(function (s) { return s.trim(); }).filter(Boolean);
   }
 
   /* ============================================================
-     SINTESI VOCALE — Edge TTS neurale via Worker Cloudflare
-     Il browser chiama il TUO worker (route /tts), che proxa
-     Edge TTS di Microsoft e restituisce un MP3 con la voce
-     neurale maschile italiana it-IT-DiegoNeural.
-     Funziona su Chrome, Firefox, Safari, Edge, mobile.
-     Fallback automatico su speechSynthesis se il worker non
-     risponde (es. 5xx) o se la richiesta fallisce.
+     SINTESI VOCALE — Piper TTS (WebAssembly, offline, gratis)
+     Voce neurale maschile italiana it_IT-riccardo-x_low.
+     Gira interamente nel browser dell'utente: nessun server,
+     nessun account, nessuna API key, nessun costo.
+     Primo uso: scarica ~20 MB di modello, poi cache offline.
+     Fallback automatico su speechSynthesis se Piper non è
+     disponibile (browser vecchi, rete bloccata, ecc.).
      ============================================================ */
-  var AR_TTS_ENDPOINT = 'https://ai.alanrose-13-1eb.workers.dev/tts';
-  var arEdgeVoice = 'it-IT-DiegoNeural'; // voce neurale maschile italiana
-  var arEdgeAudioEl = null;              // elemento audio corrente
-  var arEdgeAbort = null;                // per annullare la richiesta in corso
-  var arEdgeUnavailable = false;         // se true, salta Edge e usa fallback
+
+  var AR_PIPER_VOICE = 'it_IT-riccardo-x_low';
+  var arPiperModule = null;
+  var arPiperLoading = null;
+  var arPiperAudioEl = null;
+  var arPiperAbort = null;
+  var arPiperUnavailable = false;
+
+  function arLoadPiper() {
+    if (arPiperModule) return Promise.resolve(arPiperModule);
+    if (arPiperLoading) return arPiperLoading;
+
+    arPiperLoading = import('https://cdn.jsdelivr.net/npm/@mintplex-labs/piper-tts-web@1.0.4/+esm')
+      .then(function (mod) {
+        arPiperModule = mod;
+        return mod;
+      })
+      .catch(function (err) {
+        arPiperLoading = null;
+        throw err;
+      });
+
+    return arPiperLoading;
+  }
+
+  function arStopEdgeAudio() {
+    // Nome mantenuto per compatibilità con il resto del widget.
+    if (arPiperAbort) {
+      try { arPiperAbort.abort(); } catch (e) {}
+      arPiperAbort = null;
+    }
+    if (arPiperAudioEl) {
+      try {
+        arPiperAudioEl.pause();
+        arPiperAudioEl.src = '';
+      } catch (e) {}
+      arPiperAudioEl = null;
+    }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+  window.arStopEdgeAudio = arStopEdgeAudio;
 
   function arSpeakFallback(text) {
-    // vecchio motore: usato solo se il worker Edge TTS non è disponibile
+    // speechSynthesis: usato solo se Piper non è disponibile
     if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
     if (!arItalianVoice) { arLoadVoices(); return; }
     window.speechSynthesis.cancel();
@@ -805,95 +821,70 @@
     });
   }
 
-  function arStopEdgeAudio() {
-    if (arEdgeAbort) {
-      try { arEdgeAbort.abort(); } catch (e) {}
-      arEdgeAbort = null;
-    }
-    if (arEdgeAudioEl) {
-      try {
-        arEdgeAudioEl.pause();
-        arEdgeAudioEl.src = '';
-      } catch (e) {}
-      arEdgeAudioEl = null;
-    }
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-  }
-  window.arStopEdgeAudio = arStopEdgeAudio;
-
   function arSpeak(text) {
     if (!arVoiceEnabled) return;
 
-    // Ferma qualsiasi riproduzione in corso (Edge o fallback)
     arStopEdgeAudio();
 
-    // Pulizia HTML: togliamo eventuali tag prima di mandare al TTS
     var plainText = String(text || '').replace(/<[^>]*>/g, '').trim();
     if (!plainText) return;
 
-    // Se il worker è già stato marcato come non disponibile, vai diretto al fallback
-    if (arEdgeUnavailable) {
+    if (arPiperUnavailable) {
       arSpeakFallback(plainText);
       return;
     }
 
-    // Edge TTS ha un limite di ~10k caratteri per richiesta: spezziamo a fine frase
-    // e concateniamo i segmenti audio risultanti (riproduzione sequenziale).
     var segments = arSplitIntoSegments(plainText);
     if (segments.length === 0) segments = [plainText];
 
     var controller = new AbortController();
-    arEdgeAbort = controller;
+    arPiperAbort = controller;
 
-    // Chiama il worker per OGNI segmento, in sequenza, e riproduce concatenato
     (async function playAll() {
       try {
-        for (var i = 0; i < segments.length; i++) {
-          if (!arVoiceEnabled) { arEdgeAbort = null; return; }
+        var mod = await arLoadPiper();
 
-          var res = await fetch(AR_TTS_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: segments[i], voice: arEdgeVoice }),
-            signal: controller.signal
+        // La libreria @mintplex-labs/piper-tts-web espone predict({text, voiceId})
+        if (typeof mod.predict !== 'function') {
+          throw new Error('Piper: funzione predict non trovata');
+        }
+
+        for (var i = 0; i < segments.length; i++) {
+          if (!arVoiceEnabled || controller.signal.aborted) { arPiperAbort = null; return; }
+
+          var blob = await mod.predict({
+            text: segments[i],
+            voiceId: AR_PIPER_VOICE
           });
 
-          if (!res.ok) throw new Error('Worker TTS status ' + res.status);
-
-          var blob = await res.blob();
-          if (!blob || blob.size === 0) throw new Error('Audio vuoto');
+          if (!blob || blob.size === 0) throw new Error('Piper: audio vuoto');
 
           var url = URL.createObjectURL(blob);
           var audio = new Audio(url);
-          arEdgeAudioEl = audio;
+          arPiperAudioEl = audio;
 
           await new Promise(function (resolve, reject) {
             audio.onended = function () {
               URL.revokeObjectURL(url);
-              arEdgeAudioEl = null;
+              arPiperAudioEl = null;
               resolve();
             };
             audio.onerror = function () {
               URL.revokeObjectURL(url);
-              arEdgeAudioEl = null;
-              reject(new Error('Audio play error'));
+              arPiperAudioEl = null;
+              reject(new Error('Piper: errore riproduzione'));
             };
             audio.play().catch(reject);
           });
 
-          // Se l'utente ha disattivato la voce durante la riproduzione, stop
-          if (!arVoiceEnabled) { arEdgeAbort = null; return; }
+          if (!arVoiceEnabled) { arPiperAbort = null; return; }
         }
-        arEdgeAbort = null;
+        arPiperAbort = null;
       } catch (err) {
-        arEdgeAbort = null;
+        arPiperAbort = null;
         if (err && err.name === 'AbortError') return;
-        console.warn('BLESS: Edge TTS non riuscito, uso fallback.', err);
-        // Se il worker risponde 5xx, marchiamo Edge TTS come non disponibile
-        // per non ritentare ad ogni messaggio (evita spam di richieste).
-        if (err && String(err.message || '').indexOf('Worker TTS status 5') === 0) {
-          arEdgeUnavailable = true;
-        }
+        console.warn('BLESS: Piper TTS non riuscito, uso fallback.', err);
+        arPiperUnavailable = true;
         arSpeakFallback(plainText);
       }
     })();
@@ -1274,15 +1265,6 @@
   window.arShowFormInChat = arShowFormInChat;
 
   // --- SICUREZZA: sanitizzazione HTML -----------------------------------
-  // I messaggi utente e la cronologia salvata in localStorage finivano
-  // inseriti in pagina con innerHTML senza alcun controllo: un utente (o una
-  // risposta del bot manipolata via prompt injection) poteva quindi far
-  // eseguire codice arbitrario nel widget. Da qui in poi:
-  //  - il testo scritto dall'utente viene sempre trattato come testo puro
-  //    (mai come HTML, tramite textContent);
-  //  - il testo dei messaggi "bot" passa da una whitelist di tag sicuri
-  //    prima di essere inserito, scartando script/handler/attributi non
-  //    ammessi e i link con protocollo "javascript:".
   function arEscapeHtml(str) {
     var div = document.createElement('div');
     div.textContent = String(str == null ? '' : str);
@@ -1298,10 +1280,9 @@
 
     function clean(node) {
       Array.prototype.slice.call(node.childNodes).forEach(function (child) {
-        if (child.nodeType === 1) { // elemento
+        if (child.nodeType === 1) {
           var tag = child.tagName;
           if (AR_SAFE_TAGS.indexOf(tag) === -1) {
-            // tag non ammesso: mantiene solo il testo al suo interno
             node.replaceChild(document.createTextNode(child.textContent), child);
             return;
           }
@@ -1322,7 +1303,7 @@
           }
           clean(child);
         } else if (child.nodeType !== 3) {
-          node.removeChild(child); // commenti e altri nodi non testuali
+          node.removeChild(child);
         }
       });
     }
@@ -1330,9 +1311,6 @@
     return template.innerHTML;
   }
 
-  // Parole comuni che, subito dopo "mi chiamo/sono/io sono", NON indicano
-  // un nome proprio: evita di salvare come "nome utente" frasi come
-  // "sono felice", "sono qui", ecc.
   var AR_NON_NAME_WORDS = [
     'felice', 'contento', 'contenta', 'pronto', 'pronta', 'qui', 'qua',
     'bene', 'male', 'stanco', 'stanca', 'curioso', 'curiosa', 'nuovo',
@@ -1357,7 +1335,7 @@
       avatarSpan.className = 'user-avatar';
       avatarSpan.textContent = '💛';
       var textSpan = document.createElement('span');
-      textSpan.textContent = text; // testo utente: SEMPRE testo puro, mai HTML
+      textSpan.textContent = text;
       div.appendChild(avatarSpan);
       div.appendChild(textSpan);
     }
@@ -1508,20 +1486,16 @@
     arShowTyping();
 
     try {
-      // Costruisce il contesto della conversazione: gli ultimi scambi
-      // recenti (da localStorage) vengono inclusi nella richiesta, così il
-      // bot "ricorda" cosa si sono detti finora nella stessa sessione,
-      // invece di rispondere ogni volta senza contesto.
       var history = getChatHistory();
       var contextMessages = [];
       if (history && history.messages && history.messages.length > 0) {
-        var recent = history.messages.slice(-16); // ultimi ~8 scambi
+        var recent = history.messages.slice(-16);
         contextMessages = recent
           .filter(function (m) { return m.role === 'user' || m.role === 'bot'; })
           .map(function (m) {
             return {
               role: m.role === 'bot' ? 'assistant' : 'user',
-              content: m.content.replace(/<[^>]*>/g, '') // niente HTML nel contesto inviato al modello
+              content: m.content.replace(/<[^>]*>/g, '')
             };
           });
       }
