@@ -749,11 +749,7 @@
   /* ============================================================
      SINTESI VOCALE — Piper TTS (WebAssembly, offline, gratis)
      Voce neurale maschile italiana it_IT-riccardo-x_low.
-     Gira interamente nel browser dell'utente: nessun server,
-     nessun account, nessuna API key, nessun costo.
-     Primo uso: scarica ~20 MB di modello, poi cache offline.
-     Fallback automatico su speechSynthesis se Piper non è
-     disponibile (browser vecchi, rete bloccata, ecc.).
+     Gira interamente nel browser: nessun server, nessun account.
      ============================================================ */
 
   var AR_PIPER_VOICE = 'it_IT-riccardo-x_low';
@@ -781,7 +777,6 @@
   }
 
   function arStopEdgeAudio() {
-    // Nome mantenuto per compatibilità con il resto del widget.
     if (arPiperAbort) {
       try { arPiperAbort.abort(); } catch (e) {}
       arPiperAbort = null;
@@ -798,7 +793,6 @@
   window.arStopEdgeAudio = arStopEdgeAudio;
 
   function arSpeakFallback(text) {
-    // speechSynthesis: usato solo se Piper non è disponibile
     if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
     if (!arItalianVoice) { arLoadVoices(); return; }
     window.speechSynthesis.cancel();
@@ -844,7 +838,6 @@
       try {
         var mod = await arLoadPiper();
 
-        // La libreria @mintplex-labs/piper-tts-web espone predict({text, voiceId})
         if (typeof mod.predict !== 'function') {
           throw new Error('Piper: funzione predict non trovata');
         }
