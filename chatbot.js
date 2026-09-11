@@ -767,21 +767,24 @@
   }
 
   /* ============================================================
-     SINTESI VOCALE — Edge TTS neurale via browser
-     Usa la voce neurale maschile italiana di Microsoft Edge
-     (it-IT-DiegoNeural) da QUALSIASI browser, gratis, senza API key.
-     Fallback automatico su speechSynthesis se la libreria non è
-     disponibile o l'endpoint Microsoft non risponde.
+     SINTESI VOCALE — Edge TTS neurale via Worker Cloudflare
+     Il browser chiama il TUO worker (route /tts), che proxa
+     Edge TTS di Microsoft e restituisce un MP3 con la voce
+     neurale maschile italiana it-IT-DiegoNeural.
+     Funziona su Chrome, Firefox, Safari, Edge, mobile.
+     Fallback automatico su speechSynthesis se il worker non
+     risponde (es. 5xx) o se la richiesta fallisce.
      ============================================================ */
+  var AR_TTS_ENDPOINT = 'https://ai.alanrose-13-1eb.workers.dev/tts';
   var arEdgeVoice = 'it-IT-DiegoNeural'; // voce neurale maschile italiana
   var arEdgeAudioEl = null;              // elemento audio corrente
   var arEdgeAbort = null;                // per annullare la richiesta in corso
   var arEdgeUnavailable = false;         // se true, salta Edge e usa fallback
 
   function arSpeakFallback(text) {
-    // vecchio motore: usato solo se Edge TTS non è disponibile
+    // vecchio motore: usato solo se il worker Edge TTS non è disponibile
     if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
-    if (!arItalianVoice) return;
+    if (!arItalianVoice) { arLoadVoices(); return; }
     window.speechSynthesis.cancel();
     if (!arVoicesLoaded) arLoadVoices();
 
@@ -828,61 +831,72 @@
     var plainText = String(text || '').replace(/<[^>]*>/g, '').trim();
     if (!plainText) return;
 
-    // Se Edge TTS è già stato marcato come non disponibile, vai diretto al fallback
-    if (arEdgeUnavailable || typeof window.EdgeTTS === 'undefined') {
-      if (typeof window.EdgeTTS === 'undefined' && !arEdgeUnavailable) {
-        // prima volta che scopriamo che manca: segniamo e usiamo fallback
-        arEdgeUnavailable = true;
-        console.warn('BLESS: libreria Edge TTS non disponibile, uso speechSynthesis.');
-      }
+    // Se il worker è già stato marcato come non disponibile, vai diretto al fallback
+    if (arEdgeUnavailable) {
       arSpeakFallback(plainText);
       return;
     }
 
-    // Prova Edge TTS (voce neurale maschile italiana)
-    try {
-      var controller = new AbortController();
-      arEdgeAbort = controller;
+    // Edge TTS ha un limite di ~10k caratteri per richiesta: spezziamo a fine frase
+    // e concateniamo i segmenti audio risultanti (riproduzione sequenziale).
+    var segments = arSplitIntoSegments(plainText);
+    if (segments.length === 0) segments = [plainText];
 
-      window.EdgeTTS.synthesize(plainText, arEdgeVoice, {
-        signal: controller.signal
-      }).then(function (audioBlob) {
+    var controller = new AbortController();
+    arEdgeAbort = controller;
+
+    // Chiama il worker per OGNI segmento, in sequenza, e riproduce concatenato
+    (async function playAll() {
+      try {
+        for (var i = 0; i < segments.length; i++) {
+          if (!arVoiceEnabled) { arEdgeAbort = null; return; }
+
+          var res = await fetch(AR_TTS_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: segments[i], voice: arEdgeVoice }),
+            signal: controller.signal
+          });
+
+          if (!res.ok) throw new Error('Worker TTS status ' + res.status);
+
+          var blob = await res.blob();
+          if (!blob || blob.size === 0) throw new Error('Audio vuoto');
+
+          var url = URL.createObjectURL(blob);
+          var audio = new Audio(url);
+          arEdgeAudioEl = audio;
+
+          await new Promise(function (resolve, reject) {
+            audio.onended = function () {
+              URL.revokeObjectURL(url);
+              arEdgeAudioEl = null;
+              resolve();
+            };
+            audio.onerror = function () {
+              URL.revokeObjectURL(url);
+              arEdgeAudioEl = null;
+              reject(new Error('Audio play error'));
+            };
+            audio.play().catch(reject);
+          });
+
+          // Se l'utente ha disattivato la voce durante la riproduzione, stop
+          if (!arVoiceEnabled) { arEdgeAbort = null; return; }
+        }
         arEdgeAbort = null;
-        if (!arVoiceEnabled) return;
-        if (!audioBlob) throw new Error('Audio vuoto');
-
-        var url = URL.createObjectURL(audioBlob);
-        var audio = new Audio(url);
-        arEdgeAudioEl = audio;
-
-        audio.onended = function () {
-          URL.revokeObjectURL(url);
-          arEdgeAudioEl = null;
-        };
-        audio.onerror = function () {
-          URL.revokeObjectURL(url);
-          arEdgeAudioEl = null;
-          // se la riproduzione fallisce, fallback silenzioso
-          arSpeakFallback(plainText);
-        };
-
-        audio.play().catch(function () {
-          // autoplay bloccato: fallback silenzioso
-          URL.revokeObjectURL(url);
-          arEdgeAudioEl = null;
-          arSpeakFallback(plainText);
-        });
-      }).catch(function (err) {
+      } catch (err) {
         arEdgeAbort = null;
-        console.warn('BLESS: Edge TTS non riuscito, uso fallback.', err);
-        // Fallback solo se l'errore non è un abort volontario
         if (err && err.name === 'AbortError') return;
+        console.warn('BLESS: Edge TTS non riuscito, uso fallback.', err);
+        // Se il worker risponde 5xx, marchiamo Edge TTS come non disponibile
+        // per non ritentare ad ogni messaggio (evita spam di richieste).
+        if (err && String(err.message || '').indexOf('Worker TTS status 5') === 0) {
+          arEdgeUnavailable = true;
+        }
         arSpeakFallback(plainText);
-      });
-    } catch (e) {
-      console.warn('BLESS: errore avvio Edge TTS, uso fallback.', e);
-      arSpeakFallback(plainText);
-    }
+      }
+    })();
   }
 
   function arToggleVoiceOutput() {
