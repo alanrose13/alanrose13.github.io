@@ -166,14 +166,14 @@
     #arChatHeader .header-left .avatar-small {
       width: 32px;
       height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #F5F1E8 0%, #C9A961 100%);
+      background: none;
+      border: none;
+      border-radius: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
-      border: 1px solid rgba(201,169,97,0.4);
-      overflow: hidden;
+      font-size: 20px;
+      overflow: visible;
     }
     #arChatHeader .header-left .chat-title .name {
       font-size: 1rem;
@@ -533,7 +533,7 @@
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn img { width: 48px; height: 48px; }
       #arChatHeader { padding: 12px 14px; }
-      #arChatHeader .header-left .avatar-small { width: 28px; height: 28px; font-size: 14px; }
+      #arChatHeader .header-left .avatar-small { width: 28px; height: 28px; font-size: 18px; }
       #arChatHeader .header-left .chat-title .name { font-size: .9rem; }
       #arChatHeader .header-left .chat-title .sub { font-size: .6rem; }
       #arChatClearBtn { font-size: .62rem; }
@@ -1044,7 +1044,7 @@
       if (history.userName) {
         var welcomeDiv = document.createElement('div');
         welcomeDiv.className = 'ar-msg bot welcome-msg';
-        welcomeDiv.innerHTML = '<div class="avatar-small" style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#F5F1E8 0%,#C9A961 100%);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px;border:1px solid rgba(201,169,97,0.4);">✨</div><div class="bot-content">👋 Bentornato <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?</div>';
+        welcomeDiv.innerHTML = '<div class="avatar-small" style="width:26px;height:26px;background:none;border:none;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-top:2px;">✨</div><div class="bot-content">👋 Bentornato <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?</div>';
         box.appendChild(welcomeDiv);
       }
     } else {
