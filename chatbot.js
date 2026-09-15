@@ -611,12 +611,10 @@
         '</div>' +
       '</div>' +
       '<div id="arChatInputRow">' +
-        '<textarea id="arChatInput" rows="1" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon(); arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
-        '<button id="arChatMicSend" onclick="arMicSendClick()" title="Parla ora" aria-label="Registra audio o invia messaggio">' +
+        '<textarea id="arChatInput" rows="1" placeholder="Scrivi un messaggio..." oninput="arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
+        '<button id="arChatMicSend" onclick="arSendMessage()" title="Invia messaggio" aria-label="Invia messaggio">' +
           '<svg id="arMicSendIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-            '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
-            '<path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
-            '<path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<path d="M4 12 20 4l-6.5 16-2.5-7-7-2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
           '</svg>' +
         '</button>' +
         '<div class="ar-voice-out-wrap">' +
@@ -676,10 +674,11 @@
     window.visualViewport.addEventListener('scroll', arFixKeyboardOverlap);
   }
 
-  // SINTESI VOCALE — voce del browser (usata come PRIMA SCELTA se di buona qualità)
+  // SINTESI VOCALE — voce del browser (unica, fissa, sempre la stessa)
   var arVoiceEnabled = true;
   var arVoicesLoaded = false;
   var arItalianVoice = null;
+  var arVoiceLocked = false;
   var arVoiceLoadAttempts = 0;
 
   var arMaleVoiceNames = [
@@ -705,39 +704,39 @@
     return score;
   }
 
-  // Una voce è considerata "di buona qualità" solo se è Natural/Neural/Wavenet.
-  // Se sì, la preferiamo a Piper (che per l'italiano maschile ha solo il modello x_low, elettronico).
-  function arIsHighQualityVoice(v) {
-    if (!v) return false;
-    var n = v.name.toLowerCase();
-    return n.includes('online (natural)') || n.includes('neural2') || n.includes('neural') || n.includes('wavenet');
-  }
-
   function arLoadVoices() {
     if (!('speechSynthesis' in window)) return;
+    if (arVoiceLocked) return; // voce già scelta: non ricalcolare mai più
     var voices = window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return;
 
     var italianMale = voices.filter(function (v) {
       return v.lang && v.lang.toLowerCase().startsWith('it') &&
         arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
     });
 
+    var chosen = null;
     if (italianMale.length > 0) {
       italianMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
-      arItalianVoice = italianMale[0];
+      chosen = italianMale[0];
     } else {
       var anyMale = voices.filter(function (v) {
         return arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
       });
       anyMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
-      arItalianVoice = anyMale.length > 0 ? anyMale[0] : null;
+      chosen = anyMale.length > 0 ? anyMale[0] : (voices[0] || null);
+    }
+
+    if (chosen) {
+      arItalianVoice = chosen;
+      arVoiceLocked = true; // blocca la scelta: la voce non cambierà più durante la sessione
     }
     arVoicesLoaded = true;
   }
 
   function arForceLoadVoices() {
     arLoadVoices();
-    if (!arItalianVoice && arVoiceLoadAttempts < 5) {
+    if (!arVoiceLocked && arVoiceLoadAttempts < 5) {
       arVoiceLoadAttempts++;
       setTimeout(arForceLoadVoices, 500 * arVoiceLoadAttempts);
     }
@@ -756,152 +755,37 @@
     return raw.map(function (s) { return s.trim(); }).filter(Boolean);
   }
 
-  /* ============================================================
-     SINTESI VOCALE — Piper TTS (WebAssembly, offline, gratis)
-     Voce neurale maschile italiana it_IT-riccardo-x_low.
-     Usata come RIPIEGO quando il browser non offre una voce
-     naturale/neurale italiana maschile di buona qualità.
-     ============================================================ */
-
-  var AR_PIPER_VOICE = 'it_IT-riccardo-x_low';
-  var arPiperModule = null;
-  var arPiperLoading = null;
-  var arPiperAudioEl = null;
-  var arPiperAbort = null;
-  var arPiperUnavailable = false;
-
-  function arLoadPiper() {
-    if (arPiperModule) return Promise.resolve(arPiperModule);
-    if (arPiperLoading) return arPiperLoading;
-
-    arPiperLoading = import('https://cdn.jsdelivr.net/npm/@mintplex-labs/piper-tts-web@1.0.4/+esm')
-      .then(function (mod) {
-        arPiperModule = mod;
-        return mod;
-      })
-      .catch(function (err) {
-        arPiperLoading = null;
-        throw err;
-      });
-
-    return arPiperLoading;
-  }
-
   function arStopEdgeAudio() {
-    if (arPiperAbort) {
-      try { arPiperAbort.abort(); } catch (e) {}
-      arPiperAbort = null;
-    }
-    if (arPiperAudioEl) {
-      try {
-        arPiperAudioEl.pause();
-        arPiperAudioEl.src = '';
-      } catch (e) {}
-      arPiperAudioEl = null;
-    }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   }
   window.arStopEdgeAudio = arStopEdgeAudio;
 
-  function arSpeakFallback(text) {
-    if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
-    if (!arItalianVoice) { arLoadVoices(); return; }
-    window.speechSynthesis.cancel();
-    if (!arVoicesLoaded) arLoadVoices();
-
-    var segments = arSplitIntoSegments(text);
-    if (segments.length === 0) segments = [text];
-
-    var baseRate = 0.97;
-    var basePitch = 0.93;
-
-    segments.forEach(function (segment) {
-      var utterance = new SpeechSynthesisUtterance(segment);
-      utterance.lang = arItalianVoice.lang;
-      utterance.voice = arItalianVoice;
-      utterance.rate = +(baseRate + (Math.random() * 0.08 - 0.04)).toFixed(3);
-      utterance.pitch = +(basePitch + (Math.random() * 0.08 - 0.04)).toFixed(3);
-      utterance.volume = 1.0;
-      window.speechSynthesis.speak(utterance);
-    });
-  }
-
+  // Voce fissa: sempre la stessa voce del browser, stesso tono/velocità, nessuna variazione casuale.
   function arSpeak(text) {
-    if (!arVoiceEnabled) return;
-
-    arStopEdgeAudio();
+    if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
 
     var plainText = String(text || '').replace(/<[^>]*>/g, '').trim();
     if (!plainText) return;
 
-    // PRIORITÀ 1: se il browser offre una voce naturale/neurale italiana maschile, usala.
-    // Suona molto meglio del modello Piper "x_low" (l'unico disponibile per l'italiano maschile).
     if (!arVoicesLoaded) arLoadVoices();
-
-    if (arIsHighQualityVoice(arItalianVoice)) {
-      arSpeakFallback(plainText);
-      return;
-    }
-
-    // PRIORITÀ 2: Piper (offline, ma qualità x_low = suono elettronico)
-    if (arPiperUnavailable) {
-      arSpeakFallback(plainText);
-      return;
-    }
 
     var segments = arSplitIntoSegments(plainText);
     if (segments.length === 0) segments = [plainText];
 
-    var controller = new AbortController();
-    arPiperAbort = controller;
-
-    (async function playAll() {
-      try {
-        var mod = await arLoadPiper();
-
-        if (typeof mod.predict !== 'function') {
-          throw new Error('Piper: funzione predict non trovata');
-        }
-
-        for (var i = 0; i < segments.length; i++) {
-          if (!arVoiceEnabled || controller.signal.aborted) { arPiperAbort = null; return; }
-
-          var blob = await mod.predict({
-            text: segments[i],
-            voiceId: AR_PIPER_VOICE
-          });
-
-          if (!blob || blob.size === 0) throw new Error('Piper: audio vuoto');
-
-          var url = URL.createObjectURL(blob);
-          var audio = new Audio(url);
-          arPiperAudioEl = audio;
-
-          await new Promise(function (resolve, reject) {
-            audio.onended = function () {
-              URL.revokeObjectURL(url);
-              arPiperAudioEl = null;
-              resolve();
-            };
-            audio.onerror = function () {
-              URL.revokeObjectURL(url);
-              arPiperAudioEl = null;
-              reject(new Error('Piper: errore riproduzione'));
-            };
-            audio.play().catch(reject);
-          });
-
-          if (!arVoiceEnabled) { arPiperAbort = null; return; }
-        }
-        arPiperAbort = null;
-      } catch (err) {
-        arPiperAbort = null;
-        if (err && err.name === 'AbortError') return;
-        console.warn('BLESS: Piper TTS non riuscito, uso fallback.', err);
-        arPiperUnavailable = true;
-        arSpeakFallback(plainText);
+    segments.forEach(function (segment) {
+      var utterance = new SpeechSynthesisUtterance(segment);
+      if (arItalianVoice) {
+        utterance.voice = arItalianVoice;
+        utterance.lang = arItalianVoice.lang;
+      } else {
+        utterance.lang = 'it-IT';
       }
-    })();
+      utterance.rate = 0.97;
+      utterance.pitch = 0.93;
+      utterance.volume = 1.0;
+      window.speechSynthesis.speak(utterance);
+    });
   }
 
   function arToggleVoiceOutput() {
@@ -922,129 +806,6 @@
     el.style.height = Math.min(el.scrollHeight, 100) + 'px';
   }
   window.arAutoResizeInput = arAutoResizeInput;
-
-  // MICROFONO / INVIO
-  var arMicSvg = '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
-  var arSendSvg = '<path d="M4 12 20 4l-6.5 16-2.5-7-7-2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
-
-  function arUpdateMicSendIcon() {
-    if (arIsRecording) return;
-    var input = document.getElementById('arChatInput');
-    var icon = document.getElementById('arMicSendIcon');
-    var btn = document.getElementById('arChatMicSend');
-    if (!input || !icon || !btn) return;
-
-    if (input.value.trim().length > 0) {
-      icon.innerHTML = arSendSvg;
-      btn.title = 'Invia messaggio';
-      btn.setAttribute('aria-label', 'Invia messaggio');
-    } else {
-      icon.innerHTML = arMicSvg;
-      btn.title = 'Parla ora';
-      btn.setAttribute('aria-label', 'Registra audio');
-    }
-  }
-  window.arUpdateMicSendIcon = arUpdateMicSendIcon;
-
-  function arMicSendClick() {
-    var input = document.getElementById('arChatInput');
-    if (arIsRecording) { arStopRecording(); return; }
-    if (input && input.value.trim().length > 0) {
-      arSendMessage();
-    } else {
-      arToggleVoiceRecording();
-    }
-  }
-  window.arMicSendClick = arMicSendClick;
-
-  // TRASCRIZIONE VOCALE
-  var arRecognition = null;
-  var arIsRecording = false;
-  var arFinalTranscript = '';
-
-  function arToggleVoiceRecording() {
-    if (arIsRecording) arStopRecording(); else arStartRecording();
-  }
-
-  function arStartRecording() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      arAddMessage('Il tuo browser non supporta il riconoscimento vocale. Prova con Chrome o Edge.', 'bot');
-      return;
-    }
-
-    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    arRecognition = new SpeechRecognition();
-    arRecognition.lang = 'it-IT';
-    arRecognition.continuous = true;
-    arRecognition.interimResults = true;
-    arRecognition.maxAlternatives = 1;
-
-    arFinalTranscript = '';
-    var interimTranscript = '';
-
-    arRecognition.onresult = function (event) {
-      interimTranscript = '';
-      for (var i = event.resultIndex; i < event.results.length; i++) {
-        var transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          arFinalTranscript += transcript + ' ';
-        } else {
-          interimTranscript += transcript;
-        }
-      }
-
-      var input = document.getElementById('arChatInput');
-      input.value = arFinalTranscript ? (arFinalTranscript + interimTranscript) : interimTranscript;
-      input.selectionStart = input.selectionEnd = input.value.length;
-      arAutoResizeInput(input);
-    };
-
-    arRecognition.onerror = function (event) {
-      if (event.error === 'not-allowed') {
-        arAddMessage('Permesso microfono negato. Abilita il microfono nelle impostazioni del browser.', 'bot');
-      } else if (event.error !== 'no-speech') {
-        arAddMessage('Errore nel riconoscimento vocale. Riprova.', 'bot');
-      }
-      arStopRecordingUI();
-    };
-
-    arRecognition.onend = function () {
-      if (arIsRecording) {
-        try { arRecognition.start(); } catch (e) { arStopRecordingUI(); }
-      }
-    };
-
-    try {
-      arRecognition.start();
-      arIsRecording = true;
-      var btn = document.getElementById('arChatMicSend');
-      var icon = document.getElementById('arMicSendIcon');
-      icon.innerHTML = arMicSvg;
-      btn.classList.add('recording');
-      btn.title = 'Sto registrando... clicca per fermare';
-
-      document.getElementById('arChatInput').value = '';
-    } catch (e) {
-      arAddMessage('Impossibile avviare il microfono. Riprova.', 'bot');
-      arStopRecordingUI();
-    }
-  }
-
-  function arStopRecording() {
-    if (arRecognition) { try { arRecognition.stop(); } catch (e) {} }
-    var input = document.getElementById('arChatInput');
-    var text = input.value.trim();
-    arStopRecordingUI();
-    if (text) { arSendMessage(); } else { arAddMessage('Non ho rilevato alcun parlato. Riprova o scrivi il tuo messaggio.', 'bot'); }
-  }
-
-  function arStopRecordingUI() {
-    arIsRecording = false;
-    var btn = document.getElementById('arChatMicSend');
-    if (btn) btn.classList.remove('recording');
-    arUpdateMicSendIcon();
-    if (arRecognition) { try { arRecognition.stop(); } catch (e) {} arRecognition = null; }
-  }
 
   // CRONOLOGIA CHAT - localStorage
   function getChatHistory() {
@@ -1569,7 +1330,6 @@
       arStopTyping();
       if (currentBotMessage) { currentBotMessage.remove(); currentBotMessage = null; }
     }
-    if (arIsRecording) arStopRecordingUI();
 
     input.disabled = true;
     document.getElementById('arChatMicSend').disabled = true;
@@ -1577,7 +1337,6 @@
     arAddMessage(msg, 'user');
     input.value = '';
     arAutoResizeInput(input);
-    arUpdateMicSendIcon();
     arShowTyping();
 
     try {
@@ -1642,7 +1401,6 @@
     } finally {
       input.disabled = false;
       document.getElementById('arChatMicSend').disabled = false;
-      arUpdateMicSendIcon();
       input.focus();
     }
   }
@@ -1651,7 +1409,6 @@
   window.arOpenFromTooltip = arOpenFromTooltip;
   window.arDismissTooltip = arDismissTooltip;
   window.arHideBadge = arHideBadge;
-  window.arToggleVoiceRecording = arToggleVoiceRecording;
   window.arSpeak = arSpeak;
 
 })();
