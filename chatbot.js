@@ -611,10 +611,12 @@
         '</div>' +
       '</div>' +
       '<div id="arChatInputRow">' +
-        '<textarea id="arChatInput" rows="1" placeholder="Scrivi un messaggio..." oninput="arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
-        '<button id="arChatMicSend" onclick="arSendMessage()" title="Invia messaggio" aria-label="Invia messaggio">' +
+        '<textarea id="arChatInput" rows="1" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon(); arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
+        '<button id="arChatMicSend" onclick="arMicSendClick()" title="Parla ora" aria-label="Registra audio o invia messaggio">' +
           '<svg id="arMicSendIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-            '<path d="M4 12 20 4l-6.5 16-2.5-7-7-2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
+            '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
           '</svg>' +
         '</button>' +
         '<div class="ar-voice-out-wrap">' +
@@ -806,6 +808,130 @@
     el.style.height = Math.min(el.scrollHeight, 100) + 'px';
   }
   window.arAutoResizeInput = arAutoResizeInput;
+
+  // MICROFONO / INVIO
+  var arMicSvg = '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+  var arSendSvg = '<path d="M4 12 20 4l-6.5 16-2.5-7-7-2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
+
+  function arUpdateMicSendIcon() {
+    if (arIsRecording) return;
+    var input = document.getElementById('arChatInput');
+    var icon = document.getElementById('arMicSendIcon');
+    var btn = document.getElementById('arChatMicSend');
+    if (!input || !icon || !btn) return;
+
+    if (input.value.trim().length > 0) {
+      icon.innerHTML = arSendSvg;
+      btn.title = 'Invia messaggio';
+      btn.setAttribute('aria-label', 'Invia messaggio');
+    } else {
+      icon.innerHTML = arMicSvg;
+      btn.title = 'Parla ora';
+      btn.setAttribute('aria-label', 'Registra audio');
+    }
+  }
+  window.arUpdateMicSendIcon = arUpdateMicSendIcon;
+
+  function arMicSendClick() {
+    var input = document.getElementById('arChatInput');
+    if (arIsRecording) { arStopRecording(); return; }
+    if (input && input.value.trim().length > 0) {
+      arSendMessage();
+    } else {
+      arToggleVoiceRecording();
+    }
+  }
+  window.arMicSendClick = arMicSendClick;
+
+  // TRASCRIZIONE VOCALE (riconoscimento vocale nativo del browser, gratuito, nessuna chiamata a Groq)
+  var arRecognition = null;
+  var arIsRecording = false;
+  var arFinalTranscript = '';
+
+  function arToggleVoiceRecording() {
+    if (arIsRecording) arStopRecording(); else arStartRecording();
+  }
+
+  function arStartRecording() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      arAddMessage('Il tuo browser non supporta il riconoscimento vocale. Prova con Chrome o Edge, oppure usa il microfono della tastiera.', 'bot');
+      return;
+    }
+
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    arRecognition = new SpeechRecognition();
+    arRecognition.lang = 'it-IT';
+    arRecognition.continuous = true;
+    arRecognition.interimResults = true;
+    arRecognition.maxAlternatives = 1;
+
+    arFinalTranscript = '';
+    var interimTranscript = '';
+
+    arRecognition.onresult = function (event) {
+      interimTranscript = '';
+      for (var i = event.resultIndex; i < event.results.length; i++) {
+        var transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          arFinalTranscript += transcript + ' ';
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      var input = document.getElementById('arChatInput');
+      input.value = arFinalTranscript ? (arFinalTranscript + interimTranscript) : interimTranscript;
+      input.selectionStart = input.selectionEnd = input.value.length;
+      arAutoResizeInput(input);
+    };
+
+    arRecognition.onerror = function (event) {
+      if (event.error === 'not-allowed') {
+        arAddMessage('Permesso microfono negato. Abilita il microfono nelle impostazioni del browser.', 'bot');
+      } else if (event.error !== 'no-speech') {
+        arAddMessage('Errore nel riconoscimento vocale. Riprova.', 'bot');
+      }
+      arStopRecordingUI();
+    };
+
+    arRecognition.onend = function () {
+      if (arIsRecording) {
+        try { arRecognition.start(); } catch (e) { arStopRecordingUI(); }
+      }
+    };
+
+    try {
+      arRecognition.start();
+      arIsRecording = true;
+      var btn = document.getElementById('arChatMicSend');
+      var icon = document.getElementById('arMicSendIcon');
+      icon.innerHTML = arMicSvg;
+      btn.classList.add('recording');
+      btn.title = 'Sto registrando... clicca per fermare';
+
+      document.getElementById('arChatInput').value = '';
+    } catch (e) {
+      arAddMessage('Impossibile avviare il microfono. Riprova.', 'bot');
+      arStopRecordingUI();
+    }
+  }
+
+  function arStopRecording() {
+    if (arRecognition) { try { arRecognition.stop(); } catch (e) {} }
+    var input = document.getElementById('arChatInput');
+    var text = input.value.trim();
+    arStopRecordingUI();
+    if (text) { arSendMessage(); } else { arAddMessage('Non ho rilevato alcun parlato. Riprova o scrivi il tuo messaggio.', 'bot'); }
+  }
+
+  function arStopRecordingUI() {
+    arIsRecording = false;
+    var btn = document.getElementById('arChatMicSend');
+    if (btn) btn.classList.remove('recording');
+    arUpdateMicSendIcon();
+    if (arRecognition) { try { arRecognition.stop(); } catch (e) {} arRecognition = null; }
+  }
+  window.arToggleVoiceRecording = arToggleVoiceRecording;
 
   // CRONOLOGIA CHAT - localStorage
   function getChatHistory() {
@@ -1330,6 +1456,7 @@
       arStopTyping();
       if (currentBotMessage) { currentBotMessage.remove(); currentBotMessage = null; }
     }
+    if (arIsRecording) arStopRecordingUI();
 
     input.disabled = true;
     document.getElementById('arChatMicSend').disabled = true;
@@ -1337,6 +1464,7 @@
     arAddMessage(msg, 'user');
     input.value = '';
     arAutoResizeInput(input);
+    arUpdateMicSendIcon();
     arShowTyping();
 
     try {
@@ -1358,7 +1486,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'qwen/qwen3.6-27b',
+          model: 'qwen/qwen3.8-27b',
           reasoning_format: 'hidden',
           reasoning_effort: 'none',
           messages: [
@@ -1401,6 +1529,7 @@
     } finally {
       input.disabled = false;
       document.getElementById('arChatMicSend').disabled = false;
+      arUpdateMicSendIcon();
       input.focus();
     }
   }
@@ -1409,6 +1538,7 @@
   window.arOpenFromTooltip = arOpenFromTooltip;
   window.arDismissTooltip = arDismissTooltip;
   window.arHideBadge = arHideBadge;
+  window.arToggleVoiceRecording = arToggleVoiceRecording;
   window.arSpeak = arSpeak;
 
 })();
