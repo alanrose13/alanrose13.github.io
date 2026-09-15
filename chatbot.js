@@ -161,7 +161,7 @@
     #arChatHeader .header-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
     }
     #arChatHeader .header-left .avatar-small {
       width: 32px;
@@ -184,6 +184,8 @@
       font-size: 0.65rem;
       opacity: 0.7;
       font-weight: 400;
+      display: block;
+      margin-top: 3px;
     }
     #arChatHeader .header-right {
       display: flex;
@@ -753,11 +755,66 @@
 
   function arStopEdgeAudio() {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (arCurrentServerAudio) {
+      try { arCurrentServerAudio.pause(); } catch (e) {}
+      arCurrentServerAudio = null;
+    }
   }
   window.arStopEdgeAudio = arStopEdgeAudio;
 
-  // Voce fissa: sempre la stessa voce del browser, stesso tono/velocità, nessuna variazione casuale.
-  function arSpeak(text) {
+  // --- VOCE SERVER-SIDE (TTS umano, unica per tutti i dispositivi) ------
+  // Chiede al Worker un MP3 generato lato server: stessa identica voce
+  // maschile su qualunque browser/OS. Se la chiamata fallisce (rete,
+  // servizio non configurato, ecc.) ripiega sulla voce del browser
+  // (arSpeakBrowser), così l'utente sente comunque qualcosa.
+  var AR_TTS_URL = "https://ai.alanrose-13-1eb.workers.dev/tts";
+  var arAudioCache = {};      // testo -> blob URL, valida per la sessione
+  var arCurrentServerAudio = null;
+
+  function arPlayBlobUrl(url) {
+    if (arCurrentServerAudio) { try { arCurrentServerAudio.pause(); } catch (e) {} arCurrentServerAudio = null; }
+    var audio = new Audio(url);
+    arCurrentServerAudio = audio;
+    audio.play().catch(function () { /* riproduzione bloccata dal browser: ignorato */ });
+  }
+
+  async function arPlayServerVoice(rawText) {
+    if (!arVoiceEnabled) return;
+    var text = String(rawText || '').replace(/<[^>]*>/g, '').trim();
+    if (!text) return;
+
+    if (arAudioCache[text]) {
+      arPlayBlobUrl(arAudioCache[text]);
+      return;
+    }
+
+    try {
+      var response = await fetch(AR_TTS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text })
+      });
+      if (!response.ok) throw new Error('TTS non disponibile (' + response.status + ')');
+      var data = await response.json();
+      if (!data || !data.audio) throw new Error('Audio mancante nella risposta TTS');
+
+      var binary = atob(data.audio);
+      var bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      var blob = new Blob([bytes], { type: 'audio/mpeg' });
+      var url = URL.createObjectURL(blob);
+      arAudioCache[text] = url;
+      arPlayBlobUrl(url);
+    } catch (err) {
+      // Fallback: voce del browser (meno naturale ma sempre disponibile).
+      arSpeakBrowser(text);
+    }
+  }
+  window.arPlayServerVoice = arPlayServerVoice;
+
+  // Voce di riserva (solo se il TTS server-side non risponde): sempre la
+  // stessa voce del browser, stesso tono/velocità, nessuna variazione casuale.
+  function arSpeakBrowser(text) {
     if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
 
@@ -1340,7 +1397,7 @@
       if (!text.includes('Bentornato') && !text.includes('Piacere di conoscerti') && !text.includes('Come ti chiami')) {
         addMessageToHistory('bot', text);
         if (!text.includes('<a') && !text.includes('iframe')) {
-          arSpeak(text.replace(/<[^>]*>/g, ''));
+          arPlayServerVoice(text);
         }
       }
     }
@@ -1392,7 +1449,6 @@
           typingInterval = null;
           if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
             addMessageToHistory('bot', fullText);
-            arSpeak(fullText.replace(/<[^>]*>/g, ''));
           }
           resolve();
           return;
@@ -1415,7 +1471,6 @@
           currentBotMessage = null;
           if (fullText && !fullText.includes('Bentornato') && !fullText.includes('Piacere di conoscerti') && !fullText.includes('Come ti chiami')) {
             addMessageToHistory('bot', fullText);
-            arSpeak(fullText.replace(/<[^>]*>/g, ''));
           }
           resolve();
         }
@@ -1519,6 +1574,9 @@
       reply = cleanBotResponse(reply);
       reply = reply.replace(/sono pronta/gi, 'sono pronto');
 
+      // Avvia subito la voce (in parallelo alla digitazione), così non c'è
+      // più il ritardo di prima: prima parlava solo a testo già scritto.
+      arPlayServerVoice(arFilterBlasphemy(reply));
       await arTypeMessage(reply, 'bot', 20);
 
     } catch (err) {
@@ -1537,6 +1595,6 @@
   window.arDismissTooltip = arDismissTooltip;
   window.arHideBadge = arHideBadge;
   window.arToggleVoiceRecording = arToggleVoiceRecording;
-  window.arSpeak = arSpeak;
+  window.arSpeakBrowser = arSpeakBrowser;
 
 })();
