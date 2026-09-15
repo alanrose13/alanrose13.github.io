@@ -560,6 +560,10 @@
   </footer>
 
   <!-- CHATBOT BLESS (script esterno) -->
-  <script src="https://cdn.jsdelivr.net/gh/alanrose13/alanrose13.github.io@main/chatbot.js?v=6"></script>
+<script>
+  var s = document.createElement('script');
+  s.src = 'chatbot.js?v=' + Date.now();
+  document.body.appendChild(s);
+</script>
 </body>
 </html>
