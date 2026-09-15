@@ -157,40 +157,62 @@
       font-weight: 700;
       border-bottom: 1px solid rgba(201,169,97,0.2);
       flex-shrink: 0;
+      flex-wrap: nowrap;
+      gap: 10px;
     }
     #arChatHeader .header-left {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       gap: 6px;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1 1 auto;
     }
     #arChatHeader .header-left .avatar-small {
-      width: 32px;
-      height: 32px;
+      width: auto;
+      height: auto;
       background: none;
       border: none;
       border-radius: 0;
-      display: flex;
-      align-items: center;
+      display: inline-flex;
+      align-items: baseline;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
       overflow: visible;
+      flex-shrink: 0;
+    }
+    #arChatHeader .header-left .chat-title {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     #arChatHeader .header-left .chat-title .name {
       font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     #arChatHeader .header-left .chat-title .sub {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       opacity: 0.7;
       font-weight: 400;
-      display: block;
-      margin-top: 3px;
+      display: inline;
+      margin-top: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     #arChatHeader .header-right {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0;
     }
     #arChatHeader span.close {
       cursor: pointer;
@@ -214,6 +236,8 @@
       transition: .2s;
       font-family: 'Segoe UI', sans-serif;
       font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     #arChatClearBtn:hover { opacity: 1; background: rgba(255,255,255,0.1); }
 
@@ -534,11 +558,13 @@
       }
       #arChatBtn { right: 15px; bottom: 15px; width: 60px; height: 60px; }
       #arChatBtn img { width: 48px; height: 48px; }
-      #arChatHeader { padding: 12px 14px; }
-      #arChatHeader .header-left .avatar-small { width: 28px; height: 28px; font-size: 18px; }
-      #arChatHeader .header-left .chat-title .name { font-size: .9rem; }
-      #arChatHeader .header-left .chat-title .sub { font-size: .6rem; }
-      #arChatClearBtn { font-size: .62rem; }
+      #arChatHeader { padding: 12px 10px; gap: 6px; }
+      #arChatHeader .header-left { gap: 4px; }
+      #arChatHeader .header-left .avatar-small { font-size: 15px; }
+      #arChatHeader .header-left .chat-title { gap: 4px; }
+      #arChatHeader .header-left .chat-title .name { font-size: .85rem; }
+      #arChatHeader .header-left .chat-title .sub { font-size: .58rem; }
+      #arChatClearBtn { font-size: .58rem; }
       #arChatMessages { padding: 12px; gap: 6px; }
       .ar-msg { font-size: .85rem; max-width: 90%; padding: 9px 12px; }
       .ar-msg.user .user-avatar { width: 24px; height: 24px; font-size: 12px; }
@@ -557,6 +583,8 @@
       #arConsentOverlay .consent-check-row { font-size: .7rem; padding: 10px 12px; }
     }
     @media (max-width: 360px) {
+      #arChatHeader .header-left .chat-title .name { font-size: .78rem; }
+      #arChatHeader .header-left .chat-title .sub { font-size: .54rem; }
       #arChatInput { font-size: .8rem; }
       .ar-quick-actions button { font-size: .64rem; padding: 4px 8px; }
     }
@@ -583,9 +611,9 @@
     '<div id="arChatWindow">' +
       '<div id="arChatHeader">' +
         '<div class="header-left">' +
-          '<div class="avatar-small">✨</div>' +
+          '<span class="avatar-small">✨</span>' +
           '<div class="chat-title">' +
-            '<span class="name">BLESS </span>' +
+            '<span class="name">BLESS</span>' +
             '<span class="sub">Assistente Virtuale A&amp;R</span>' +
           '</div>' +
         '</div>' +
@@ -762,12 +790,38 @@
   }
   window.arStopEdgeAudio = arStopEdgeAudio;
 
+  // --- SBLOCCO AUTOPLAY AUDIO -------------------------------------------
+  // Molti browser (specialmente in modalità incognito/ospite) bloccano
+  // silenziosamente audio.play() se non parte da un'interazione diretta
+  // dell'utente. Qui "sblocchiamo" l'elemento audio al primo tocco/click
+  // sulla pagina, riproducendo un suono silenzioso: da quel momento in poi
+  // anche le riproduzioni innescate dopo una fetch (asincrone) funzionano.
+  var arAudioUnlocked = false;
+  function arUnlockAudioOnce() {
+    if (arAudioUnlocked) return;
+    arAudioUnlocked = true;
+    try {
+      var silent = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSiJrDCQBTcU3icRQEBGqSKcjJnDgAA//tSxBaAPAAAaQAAAAAAAA0gAAABFAGoAAAAA');
+      silent.volume = 0.01;
+      var p = silent.play();
+      if (p && p.catch) p.catch(function () {});
+    } catch (e) {}
+    document.removeEventListener('click', arUnlockAudioOnce);
+    document.removeEventListener('touchstart', arUnlockAudioOnce);
+  }
+  document.addEventListener('click', arUnlockAudioOnce, { once: true });
+  document.addEventListener('touchstart', arUnlockAudioOnce, { once: true });
+
   // --- VOCE SERVER-SIDE (TTS umano, unica per tutti i dispositivi) ------
   // Chiede al Worker un MP3 generato lato server: stessa identica voce
-  // maschile su qualunque browser/OS. Se la chiamata fallisce (rete,
-  // servizio non configurato, ecc.) ripiega sulla voce del browser
-  // (arSpeakBrowser), così l'utente sente comunque qualcosa.
+  // maschile su qualunque browser/OS. È la voce PRIORITARIA e va usata
+  // sempre. La voce robotica del browser (arSpeakBrowser) scatta SOLO se
+  // questa chiamata fallisce davvero (rete offline, worker irraggiungibile,
+  // errore del servizio) — mai per un blocco silenzioso dell'autoplay,
+  // che viene gestito a parte con arUnlockAudioOnce().
   var AR_TTS_URL = "https://ai.alanrose-13-1eb.workers.dev/tts";
+  var AR_TTS_TIMEOUT_MS = 8000;
+  var AR_TTS_MAX_RETRIES = 1;
   var arAudioCache = {};      // testo -> blob URL, valida per la sessione
   var arCurrentServerAudio = null;
 
@@ -775,7 +829,33 @@
     if (arCurrentServerAudio) { try { arCurrentServerAudio.pause(); } catch (e) {} arCurrentServerAudio = null; }
     var audio = new Audio(url);
     arCurrentServerAudio = audio;
-    audio.play().catch(function () { /* riproduzione bloccata dal browser: ignorato */ });
+    var playPromise = audio.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(function (err) {
+        // Riproduzione bloccata dal browser (autoplay): non è un errore del
+        // servizio TTS, quindi NON si passa alla voce robotica di fallback.
+        console.warn('BLESS: riproduzione audio bloccata dal browser, in attesa di interazione utente.', err);
+      });
+    }
+  }
+
+  function arFetchWithTimeout(url, options, timeoutMs) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+    return fetch(url, Object.assign({}, options, { signal: controller.signal }))
+      .finally(function () { clearTimeout(timer); });
+  }
+
+  async function arRequestServerVoice(text, attempt) {
+    var response = await arFetchWithTimeout(AR_TTS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text })
+    }, AR_TTS_TIMEOUT_MS);
+    if (!response.ok) throw new Error('TTS non disponibile (' + response.status + ')');
+    var data = await response.json();
+    if (!data || !data.audio) throw new Error('Audio mancante nella risposta TTS');
+    return data.audio;
   }
 
   async function arPlayServerVoice(rawText) {
@@ -788,32 +868,36 @@
       return;
     }
 
-    try {
-      var response = await fetch(AR_TTS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text })
-      });
-      if (!response.ok) throw new Error('TTS non disponibile (' + response.status + ')');
-      var data = await response.json();
-      if (!data || !data.audio) throw new Error('Audio mancante nella risposta TTS');
-
-      var binary = atob(data.audio);
-      var bytes = new Uint8Array(binary.length);
-      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-      var blob = new Blob([bytes], { type: 'audio/mpeg' });
-      var url = URL.createObjectURL(blob);
-      arAudioCache[text] = url;
-      arPlayBlobUrl(url);
-    } catch (err) {
-      // Fallback: voce del browser (meno naturale ma sempre disponibile).
-      arSpeakBrowser(text);
+    var lastErr = null;
+    for (var attempt = 0; attempt <= AR_TTS_MAX_RETRIES; attempt++) {
+      try {
+        var base64 = await arRequestServerVoice(text, attempt);
+        var binary = atob(base64);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        var blob = new Blob([bytes], { type: 'audio/mpeg' });
+        var url = URL.createObjectURL(blob);
+        arAudioCache[text] = url;
+        arPlayBlobUrl(url);
+        return; // successo: usciamo, niente fallback
+      } catch (err) {
+        lastErr = err;
+        // Solo un breve retry se il worker non ha risposto in tempo/è caduto
+        // una volta sola (es. cold start): niente attesa prima dell'ultimo
+        // tentativo fallito.
+      }
     }
+
+    // Il servizio TTS server-side non ha funzionato dopo i tentativi:
+    // qui, e SOLO qui, si passa alla voce del browser come ultima risorsa.
+    console.warn('BLESS: voce server non disponibile, uso la voce di riserva del browser.', lastErr);
+    arSpeakBrowser(text);
   }
   window.arPlayServerVoice = arPlayServerVoice;
 
-  // Voce di riserva (solo se il TTS server-side non risponde): sempre la
-  // stessa voce del browser, stesso tono/velocità, nessuna variazione casuale.
+  // Voce di riserva (solo se il TTS server-side non risponde dopo i
+  // tentativi): sempre la stessa voce del browser, stesso tono/velocità,
+  // nessuna variazione casuale.
   function arSpeakBrowser(text) {
     if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
