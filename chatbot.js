@@ -71,7 +71,6 @@
     }
     #arChatBadge.hidden { display: none; }
 
-    /* --- FIX #2: tooltip "Chatta con noi!" con i colori del sito/chat --- */
     #arChatTooltip {
       position: fixed;
       bottom: 96px;
@@ -175,12 +174,6 @@
       font-size: 16px;
       border: 1px solid rgba(201,169,97,0.4);
       overflow: hidden;
-    }
-    #arChatHeader .header-left .avatar-small img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
     }
     #arChatHeader .header-left .chat-title .name {
       font-size: 1rem;
@@ -571,6 +564,7 @@
      2) Markup del widget
   ------------------------------------------------------------ */
   var AR_LOGO_URL = "https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/AI%20CHAT.png";
+  var AR_MAX_MSG_LENGTH = 1000;
 
   var AR_CHAT_HTML =
     '<div id="arChatTooltip" onclick="arOpenFromTooltip()">' +
@@ -587,7 +581,7 @@
     '<div id="arChatWindow">' +
       '<div id="arChatHeader">' +
         '<div class="header-left">' +
-          '<div class="avatar-small"><img src="' + AR_LOGO_URL + '" alt="BLESS"></div>' +
+          '<div class="avatar-small">✨</div>' +
           '<div class="chat-title">' +
             '<span class="name">BLESS </span>' +
             '<span class="sub">Assistente Virtuale A&amp;R</span>' +
@@ -611,7 +605,7 @@
         '</div>' +
       '</div>' +
       '<div id="arChatInputRow">' +
-        '<textarea id="arChatInput" rows="1" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon(); arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
+        '<textarea id="arChatInput" rows="1" maxlength="' + AR_MAX_MSG_LENGTH + '" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon(); arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
         '<button id="arChatMicSend" onclick="arMicSendClick()" title="Parla ora" aria-label="Registra audio o invia messaggio">' +
           '<svg id="arMicSendIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
             '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
@@ -880,7 +874,7 @@
       }
 
       var input = document.getElementById('arChatInput');
-      input.value = arFinalTranscript ? (arFinalTranscript + interimTranscript) : interimTranscript;
+      input.value = (arFinalTranscript ? (arFinalTranscript + interimTranscript) : interimTranscript).slice(0, AR_MAX_MSG_LENGTH);
       input.selectionStart = input.selectionEnd = input.value.length;
       arAutoResizeInput(input);
     };
@@ -1050,7 +1044,7 @@
       if (history.userName) {
         var welcomeDiv = document.createElement('div');
         welcomeDiv.className = 'ar-msg bot welcome-msg';
-        welcomeDiv.innerHTML = '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">👋 Bentornato <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?</div>';
+        welcomeDiv.innerHTML = '<div class="avatar-small" style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#F5F1E8 0%,#C9A961 100%);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px;border:1px solid rgba(201,169,97,0.4);">✨</div><div class="bot-content">👋 Bentornato <strong>' + history.userName + '</strong>! Come posso aiutarti oggi?</div>';
         box.appendChild(welcomeDiv);
       }
     } else {
@@ -1168,6 +1162,10 @@
   // --- FILTRO BESTEMMIE / BLASFEMIE (multilingua) -----------------------
   // Sostituisce ogni bestemmia/blasfemia con una frase di incoraggiamento.
   // Include italiano, tutti i principali dialetti italiani e le lingue straniere.
+  // NB: le parole religiose "neutre" (es. "santissimo", "sacramento", "ostia
+  // santa/consacrata") NON vengono più filtrate da sole: scattano solo se
+  // abbinate a un termine chiaramente offensivo, per non censurare BLESS
+  // quando parla di teologia/Bibbia (vedi regola 8 del system prompt).
   var AR_BLESSED_REPLACEMENT =
     'Evita di dire brutte parole. Dio ti ama, e ama che il tuo parlare pulito non sia un obbligo ma un\'opportunità per essere davanti agli altri uno splendore di Dio, così chiunque ti vede come un esempio da seguire e sarai amato/a.';
 
@@ -1177,44 +1175,43 @@
     /\b(?:porco|porca)\s+(?:dio|ddio|d10|madonna|maronna|giuda|giuda\s+no)\b/gi,
     /\b(?:madonna|madò|mado|maronna|maronn|mariàng|mariang)\s+(?:santa|puttana|porca|cane|cagna|boia|ladra|impiccata|strozzata|bestia|maiala|serpente|delle\s+grazie\s+no|lurda|becera)\b/gi,
     /\b(?:gesù|gesu|gesù\s+cristo|gesu\s+cristo|cristo)\s+(?:porco|cane|boia|ladro|impiccato|strozzato|bestia|maiale|serpente)\b/gi,
-    /\b(?:santissimo|santissimu|ssantissimo|sacramento|sacramentu|ssacramento|sagramento|sagramendu)\s*(?:no|sacramento)?\b/gi,
-    /\b(?:ostia|ostia\s+santa|ostia\s+consacrata|ostia\s+porca|ostia\s+cane|ostia\s+boia|ostia\s+ladra|ostia\s+impiccata|ostia\s+strozzata)\b/gi,
+    /\b(?:ostia)\s+(?:porca|cane|boia|ladra|impiccata|strozzata)\b/gi,
 
     // ============ DIALETTO VENETO / FRIULANO ============
     /\b(?:dio\s+can|dio\s+cane|dio\s+boia|dio\s+porco|dio\s+maiale|dio\s+bestia|dio\s+serpente|dio\s+impicà|dio\s+strozzà|dio\s+ladro|dio\s+santo\s+no|madonna\s+santa\s+no|madonna\s+puttana|madonna\s+lurda|madonna\s+cagna|madonna\s+becera|porco\s+dio|porca\s+madonna|porco\s+can|porca\s+maronna|porca\s+lurda|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
 
     // ============ DIALETTO NAPOLETANO / CAMPANO ============
-    /\b(?:ddio|dio\s+ca|dio\s+cane|dio\s+can|dio\s+putt|dio\s+boia|dio\s+ladro|dio\s+mpicciat|dio\s+mpicc|dio\s+strozz|dio\s+serpente|dio\s+bestia|dio\s+maiale|maronna|maronn|maronna\s+santa|maronna\s+putt|maronna\s+cane|maronna\s+boia|maronna\s+ladra|maronna\s+mpicciat|maronna\s+strozz|maronna\s+bestia|maronna\s+maiala|maronna\s+serpente|santissimo|ssantissimo|santissimu|ssacramento|sacramento|sagramento|sagramendu|ostia|ostia\s+santa|ostia\s+consacrata|porco\s+ddio|porca\s+maronna|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
+    /\b(?:dio\s+ca|dio\s+cane|dio\s+can|dio\s+putt|dio\s+boia|dio\s+ladro|dio\s+mpicciat|dio\s+mpicc|dio\s+strozz|dio\s+serpente|dio\s+bestia|dio\s+maiale|maronna\s+santa|maronna\s+putt|maronna\s+cane|maronna\s+boia|maronna\s+ladra|maronna\s+mpicciat|maronna\s+strozz|maronna\s+bestia|maronna\s+maiala|maronna\s+serpente|porco\s+ddio|porca\s+maronna|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
 
     // ============ DIALETTO SICILIANO ============
-    /\b(?:diu|dio\s+can|dio\s+cani|dio\s+boia|dio\s+ladru|dio\s+mpiccatu|dio\s+strozzatu|dio\s+serpenti|dio\s+bestia|dio\s+maiali|matri|matri\s+santa|matri\s+putt|matri\s+cani|matri\s+boia|matri\s+ladra|matri\s+mpiccata|matri\s+strozzata|matri\s+bestia|matri\s+maiala|matri\s+serpenti|santissimu|ssantissimu|sacramentu|ssacramentu|sagrammentu|ostia|ostia\s+santa|ostia\s+consacrata|porcu\s+diu|porca\s+matri|porcu\s+dio|porca\s+madonna|porcu\s+giuda|porcu\s+giuda\s+no)\b/gi,
+    /\b(?:dio\s+can|dio\s+cani|dio\s+boia|dio\s+ladru|dio\s+mpiccatu|dio\s+strozzatu|dio\s+serpenti|dio\s+bestia|dio\s+maiali|matri\s+santa|matri\s+putt|matri\s+cani|matri\s+boia|matri\s+ladra|matri\s+mpiccata|matri\s+strozzata|matri\s+bestia|matri\s+maiala|matri\s+serpenti|porcu\s+diu|porca\s+matri|porcu\s+dio|porca\s+madonna|porcu\s+giuda|porcu\s+giuda\s+no)\b/gi,
 
     // ============ DIALETTO ROMANO / LAZIALE ============
-    /\b(?:ddio|dio\s+cane|dio\s+can|dio\s+boia|dio\s+ladro|dio\s+impiccato|dio\s+strozzato|dio\s+serpente|dio\s+bestia|dio\s+maiale|madonna|madonna\s+santa|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpente|santissimo|ssantissimo|sacramento|ssacramento|sagramento|ostia|ostia\s+santa|ostia\s+consacrata|porco\s+ddio|porca\s+madonna|porco\s+dio|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
+    /\b(?:dio\s+cane|dio\s+can|dio\s+boia|dio\s+ladro|dio\s+impiccato|dio\s+strozzato|dio\s+serpente|dio\s+bestia|dio\s+maiale|madonna\s+santa\s+putt|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpente|porco\s+ddio|porca\s+madonna|porco\s+dio|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
 
     // ============ DIALETTO TOSCANO ============
-    /\b(?:dio\s+cane|dio\s+can|dio\s+boia|dio\s+ladro|dio\s+impiccato|dio\s+strozzato|dio\s+serpente|dio\s+bestia|dio\s+maiale|madonna|madonna\s+santa|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpente|santissimo|ssantissimo|sacramento|ssacramento|sagramento|ostia|ostia\s+santa|ostia\s+consacrata|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
+    /\b(?:dio\s+cane|dio\s+can|dio\s+boia|dio\s+ladro|dio\s+impiccato|dio\s+strozzato|dio\s+serpente|dio\s+bestia|dio\s+maiale|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpente|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
 
     // ============ DIALETTO PIEMONTESE / LOMBARDO ============
-    /\b(?:dio\s+can|dio\s+cane|dio\s+boia|dio\s+ladru|dio\s+impicà|dio\s+strozzà|dio\s+serpent|dio\s+bestia|dio\s+maial|madonna|madonna\s+santa|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpent|santissimo|ssantissimo|sacrament|ssacrament|sagrament|ostia|ostia\s+santa|ostia\s+consacrata|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
+    /\b(?:dio\s+can|dio\s+cane|dio\s+boia|dio\s+ladru|dio\s+impicà|dio\s+strozzà|dio\s+serpent|dio\s+bestia|dio\s+maial|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpent|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
 
     // ============ INGLESE ============
-    /\b(?:god\s*damn|goddamn|goddam|god\s*damn\s*it|jesus\s*christ|jesus\s*f+u+c*k+i+n+g*\s*christ|christ\s*almighty|holy\s*shit|holy\s*f+u+c*k*|bloody\s*hell|f+u+c*k+|sh[i1]t|b[i1]tch|bastard|asshole|motherf+u+c*k+er|d[a4]mn|hell)\b/gi,
+    /\b(?:god\s*damn|goddamn|goddam|god\s*damn\s*it|jesus\s*f+u+c*k+i+n+g*\s*christ|christ\s*almighty|holy\s*shit|holy\s*f+u+c*k*|bloody\s*hell|f+u+c*k+|sh[i1]t|b[i1]tch|asshole|motherf+u+c*k+er)\b/gi,
 
     // ============ FRANCESE ============
-    /\b(?:merde\s*alors|putain\s*de\s*merde|putain|bordel\s*de\s*merde|bordel|merde|salope|encul[ée]|connard|connasse|fils\s*de\s*pute|nique\s*ta\s*m[èe]re|sacr[ée]\s*bleu|nom\s*de\s*dieu|bon\s*dieu|sacr[ée]|pute)\b/gi,
+    /\b(?:merde\s*alors|putain\s*de\s*merde|putain|bordel\s*de\s*merde|bordel|merde|salope|encul[ée]|connard|connasse|fils\s*de\s*pute|nique\s*ta\s*m[èe]re|nom\s*de\s*dieu|bon\s*dieu|pute)\b/gi,
 
     // ============ SPAGNOLO ============
-    /\b(?:puta\s*madre|me\s*cago\s*en\s*dios|hostia\s*puta|hostia\s*de\s*dios|hostia|joder|co[ñn]o|carajo|mierda|puta|puto|gilipollas|cabron|cabr[óo]n|hijo\s*de\s*puta|la\s*puta\s*madre|a\s*la\s*puta\s*madre)\b/gi,
+    /\b(?:puta\s*madre|me\s*cago\s*en\s*dios|hostia\s*puta|hostia\s*de\s*dios|joder|co[ñn]o|carajo|mierda|puta|puto|gilipollas|cabron|cabr[óo]n|hijo\s*de\s*puta|la\s*puta\s*madre|a\s*la\s*puta\s*madre)\b/gi,
 
     // ============ TEDESCO ============
-    /\b(?:gott\s*verdammt|gottesl[äa]sterung|verdammt|schei[ßs]+e|scheisse|scheiss|arschloch|fick|ficken|hurensohn|wichser|mistst[üu]ck|bl[öo]dsinn|himmel\s*herrgott|herrgott\s*sakrament|kreuz\s*donnerwetter|kreuzdonnerwetter)\b/gi,
+    /\b(?:gott\s*verdammt|gottesl[äa]sterung|verdammt|schei[ßs]+e|scheisse|scheiss|arschloch|fick|ficken|hurensohn|wichser|himmel\s*herrgott|herrgott\s*sakrament|kreuz\s*donnerwetter|kreuzdonnerwetter)\b/gi,
 
     // ============ PORTOGHESE ============
-    /\b(?:porra|caralho|foda[- ]?se|filho\s*da\s*puta|puta\s*que\s*pariu|puta\s*merda|merda|bosta|c[óo]rn[oa]|vai\s*para\s*o\s*caralho|arrombado)\b/gi,
+    /\b(?:porra|caralho|foda[- ]?se|filho\s*da\s*puta|puta\s*que\s*pariu|puta\s*merda|bosta|vai\s*para\s*o\s*caralho|arrombado)\b/gi,
 
     // ============ ALTRE LINGUE EUROPEE + INSULTI ============
-    /\b(?:verdomme|godverdomme|klootzak|kut|neuken|shit|fuck|bitch|cazzo|stronzo|stronza|vaffanculo|fanculo|coglione|cogliona|minchia|minchione|zoccola|troia|puttana|mignotta|bagascia|squaldrina|bastardo|bastarda|idiota|imbecille|deficiente|ritardato|handicappato|negro|negra|frocio|finocchio|ricchione|terrone|zingaro\s*di\s*merda|sporco\s*negro)\b/gi
+    /\b(?:verdomme|godverdomme|klootzak|kut|neuken|cazzo|stronzo|stronza|vaffanculo|fanculo|coglione|cogliona|minchia|minchione|zoccola|troia|puttana|mignotta|bagascia|squaldrina|bastardo|bastarda|idiota|imbecille|deficiente|ritardato|handicappato|negro|negra|frocio|finocchio|ricchione|terrone|zingaro\s*di\s*merda|sporco\s*negro)\b/gi
   ];
 
   // --- FIX #1: confini \b Unicode-safe -----------------------------------
@@ -1449,8 +1446,9 @@
     var msg = input.value.trim();
     if (!msg) return;
 
-    // Filtro bestemmie sul messaggio dell'utente prima dell'invio.
-    msg = arFilterBlasphemy(msg);
+    if (msg.length > AR_MAX_MSG_LENGTH) {
+      msg = msg.slice(0, AR_MAX_MSG_LENGTH);
+    }
 
     if (isBotTyping) {
       arStopTyping();
@@ -1461,6 +1459,8 @@
     input.disabled = true;
     document.getElementById('arChatMicSend').disabled = true;
 
+    // Il messaggio dell'utente viene mostrato/salvato così com'è;
+    // il filtro bestemmie si applica solo a ciò che BLESS scrive.
     arAddMessage(msg, 'user');
     input.value = '';
     arAutoResizeInput(input);
@@ -1518,8 +1518,6 @@
       var reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : 'Mi dispiace, non ho capito. Puoi riformulare?';
       reply = cleanBotResponse(reply);
       reply = reply.replace(/sono pronta/gi, 'sono pronto');
-      // Filtro bestemmie anche sulle risposte del bot prima di mostrarle.
-      reply = arFilterBlasphemy(reply);
 
       await arTypeMessage(reply, 'bot', 20);
 
