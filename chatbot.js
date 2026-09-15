@@ -1224,7 +1224,7 @@
   // abbinate a un termine chiaramente offensivo, per non censurare BLESS
   // quando parla di teologia/Bibbia (vedi regola 8 del system prompt).
   var AR_BLESSED_REPLACEMENT =
-    'Evita di dire brutte parole. Dio ti ama, e ama che il tuo parlare pulito non sia un obbligo ma un\'opportunità per essere davanti agli altri uno splendore di Dio, così chiunque ti vede come un esempio da seguire e sarai amato/a.';
+    'Evita di dire brutte parole. Dio ti ama, e ama che il tuo parlare pulito non sia un obbligo ma un\'opportunità per essere davanti agli altri uno splendore di Dio, così chiunque ti vede ti imita come un esempio da seguire e sarai amato/a.';
 
   var AR_BLASPHEMY_PATTERNS = [
     // ============ ITALIANO STANDARD ============
