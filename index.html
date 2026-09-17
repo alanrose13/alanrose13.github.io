@@ -97,11 +97,12 @@
 
     /* ============================================================
        SEZIONI SCURE — dopo "Chi Siamo" lo sfondo pagina diventa
-       marrone come il footer. Le card di Portfolio e Shop restano
-       sempre chiare grazie a --bg impostato esplicitamente su di
-       loro, quindi non serve toccarle.
+       marrone come il footer, senza interruzioni fino in fondo
+       (incluso il blocco donazioni). Le card di Portfolio e Shop
+       restano sempre chiare grazie a --bg impostato esplicitamente
+       su di loro, quindi non serve toccarle.
     ============================================================ */
-    #serv, #port, #mus, #shop, #cont {
+    #serv, #port, #mus, #shop, #cont, .donation-section {
       background: var(--m);
       color: var(--c);
     }
@@ -230,8 +231,8 @@
 
     .donation-section {
       max-width: 1100px;
-      margin: 0 auto 20px;
-      padding: 0 20px;
+      margin: 0 auto 0;
+      padding: 60px 20px;
     }
     .donation-box {
       background: #f5f1e8;
@@ -502,6 +503,8 @@
       opacity: 0;
       pointer-events: none;
       color: var(--m);
+      max-height: 80vh;
+      overflow-y: auto;
     }
     #sideNewsletter.side-nl-visible {
       transform: translate(0, -50%);
@@ -533,6 +536,22 @@
       padding: 8px 10px;
       font-size: .82rem;
       margin-bottom: 8px;
+    }
+    #sideNewsletter .privacy-details {
+      background: #fff;
+      border: 1px solid rgba(201,169,97,.5);
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      font-size: .7rem;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    #sideNewsletter .privacy-details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--o);
+      font-size: .74rem;
     }
     #sideNewsletter .btn {
       width: 100%;
@@ -871,9 +890,7 @@
     <h2>Shop</h2>
     <div class="g">
       <div class="card" data-aos="fade-up" data-aos-delay="60">
-        <div style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;">
-          <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:80%;height:80%;object-fit:contain;background:transparent" alt="A&R Shop">
-        </div>
+        <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="A&R Shop">
         <h3>A&R Shop</h3>
         <p>Abbigliamento e oggettistica varia!</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
@@ -1056,9 +1073,7 @@
         <h2>Shop</h2>
         <div class="g">
           <div class="card">
-            <div style="width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;">
-              <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:80%;height:80%;object-fit:contain;background:transparent" alt="A&R Shop">
-            </div>
+            <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="A&R Shop">
             <h3>A&R Shop</h3>
             <p>Abbigliamento e oggettistica varia!</p>
             <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
@@ -1346,6 +1361,12 @@
     <p>Nuovi servizi, musica e progetti direttamente nella tua email.</p>
     <form action="https://alan-e-rose-13.voxmail.it/user/register" accept-charset="UTF-8" method="post" onsubmit="return true;">
       <input type="email" name="mail" maxlength="250" placeholder="La tua email" required>
+      <details class="privacy-details">
+        <summary>Informativa Privacy (art. 13 GDPR)</summary>
+        <div class="privacy_policy">
+          Il Titolare del trattamento è Alfio Ragusa (A&R) - alanrose.13@yahoo.com. Dati usati solo per l'invio della newsletter, consenso revocabile in ogni momento. Informativa completa nella <a href="#" onclick="openPopup('privacyPopup');return false;">Privacy Policy</a>.
+        </div>
+      </details>
       <label style="display:flex;align-items:flex-start;gap:6px;font-size:.72rem;margin-bottom:10px;cursor:pointer;">
         <input type="checkbox" name="privacy" value="1" required style="margin-top:2px;flex-shrink:0;">
         <span>Acconsento al trattamento dei dati (GDPR) come da <a href="#" onclick="openPopup('privacyPopup');return false;" style="color:var(--o);">Privacy Policy</a>.</span>
