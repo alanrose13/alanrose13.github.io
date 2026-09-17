@@ -74,13 +74,13 @@
     nav {
       display: flex; flex-wrap: wrap; justify-content: center;
       gap: 12px; padding: 14px;
-      background: rgba(0,0,0,.72);
+      background: rgba(74, 59, 42, 0.88);
       position: sticky;
       top: 0;
       z-index: 500;
     }
     nav a {
-      color: #fff; text-decoration: none; font-weight: 600;
+      color: var(--c); text-decoration: none; font-weight: 600;
       padding: 6px 12px; border-radius: 5px; font-size: .95rem;
       cursor: pointer;
       transition: background-color .3s ease, color .3s ease;
@@ -104,6 +104,8 @@
     ============================================================ */
     #serv, #port, #mus, #shop, #cont, .donation-section {
       background: var(--m);
+      box-shadow: 0 0 0 100vw var(--m);
+      clip-path: inset(0 -100vw);
       color: var(--c);
     }
     #serv h2, #port h2, #mus h2, #shop h2, #cont h2 {
@@ -118,6 +120,7 @@
     }
     .card, .p-item, .cta-box, .transparent-box {
       background: var(--bg);
+      color: var(--m);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,.05);
       border: 1px solid transparent;
@@ -127,6 +130,7 @@
       background-clip: padding-box, border-box;
       transition: box-shadow .35s ease, border-color .35s ease;
     }
+    .card h3, .p-item h3, .p-c h3 { color: var(--m); }
     .card { padding: 22px; }
     .card:hover, .p-item:hover {
       box-shadow: 0 12px 32px rgba(201,169,97,0.2);
@@ -758,7 +762,6 @@
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
     </video>
     <nav data-aos="fade">
-      <a href="javascript:void(0)" onclick="openPopup('chiPopup')">Chi Siamo</a>
       <a href="javascript:void(0)" onclick="openPopup('servPopup')">Servizi</a>
       <a href="javascript:void(0)" onclick="openPopup('portPopup')">Portfolio</a>
       <a href="javascript:void(0)" onclick="openPopup('musPopup')">Musica</a>
@@ -890,7 +893,7 @@
     <h2>Shop</h2>
     <div class="g">
       <div class="card" data-aos="fade-up" data-aos-delay="60">
-        <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="A&R Shop">
+        <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:calc(100% + 44px);margin:-22px -22px 15px -22px;aspect-ratio:1/1;object-fit:contain;border-radius:12px 12px 0 0;display:block;background:var(--bg)" alt="A&R Shop">
         <h3>A&R Shop</h3>
         <p>Abbigliamento e oggettistica varia!</p>
         <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
@@ -1073,7 +1076,7 @@
         <h2>Shop</h2>
         <div class="g">
           <div class="card">
-            <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="A&R Shop">
+            <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:calc(100% + 44px);margin:-22px -22px 15px -22px;aspect-ratio:1/1;object-fit:contain;border-radius:12px 12px 0 0;display:block;background:var(--bg)" alt="A&R Shop">
             <h3>A&R Shop</h3>
             <p>Abbigliamento e oggettistica varia!</p>
             <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
