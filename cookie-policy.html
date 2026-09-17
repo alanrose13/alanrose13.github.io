@@ -292,9 +292,6 @@
       .ambient-layer { display: none !important; }
     }
 
-    /* --------------------------------------------------------------
-       LOGO FISSO IN ALTO A SINISTRA
-    -------------------------------------------------------------- */
     #arFixedLogo {
       position: fixed;
       top: 12px;
@@ -438,6 +435,16 @@
       return match ? match[1] : null;
     }
 
+    function loadGoogleTranslateScript() {
+      if (window.__arTranslateLoaded) return;
+      window.__arTranslateLoaded = true;
+      const s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.setAttribute('data-cookieconsent', 'preferences');
+      s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      document.body.appendChild(s);
+    }
+
     function changeLanguage(lang) {
       if (lang === 'it') {
         document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
@@ -454,6 +461,13 @@
       const defaultLang = (cookieLang && langMap[cookieLang]) ? cookieLang : detectBrowserLanguage();
       document.getElementById('languageSelect').value = defaultLang;
       setFlag(defaultLang);
+
+      // FIX: come nell'index, lo script Google Translate si carica SOLO
+      // se l'utente ha già scelto una lingua diversa dall'italiano
+      // (quindi ha già dato un'indicazione volontaria), invece che sempre.
+      if (cookieLang && cookieLang !== 'it') {
+        loadGoogleTranslateScript();
+      }
     });
   </script>
 
@@ -469,7 +483,6 @@
       }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" data-cookieconsent="preferences" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <header>
     <a href="index.html">← Torna al sito Alan & Rose</a>
@@ -477,7 +490,13 @@
 
   <main>
     <h1>🍪 Cookie Policy</h1>
-    <p><strong>Ultimo aggiornamento: 10 Settembre 2026</strong></p>
+    <p><strong>Ultimo aggiornamento: 18 Settembre 2026</strong></p>
+
+    <h2>Titolare del trattamento</h2>
+    <p>
+      <strong>Alfio Ragusa</strong>, operante con il nome commerciale "Alan & Rose" (A&R) —
+      Email: <a href="mailto:alanrose.13@yahoo.com" class="inline">alanrose.13@yahoo.com</a>
+    </p>
 
     <h2>Cosa sono i cookie</h2>
     <p>
@@ -492,7 +511,7 @@
     <ul>
       <li><strong>Cookie tecnici (necessari):</strong> essenziali per il funzionamento del sito. Consentono la navigazione e l'accesso alle funzionalità di base. Non richiedono il consenso dell'utente.</li>
       <li><strong>Cookie statistici:</strong> raccolgono informazioni in forma aggregata su come gli utenti utilizzano il sito (numero di visitatori, pagine visitate, ecc.), e sono legati anche al caricamento del modulo di richiesta servizio. Sono attivati solo previo consenso.</li>
-      <li><strong>Cookie di marketing:</strong> utilizzati per integrare contenuti multimediali di terze parti (YouTube, Spotify, SoundCloud) e per mostrare contenuti personalizzati. Sono attivati solo previo consenso.</li>
+      <li><strong>Cookie di marketing:</strong> utilizzati per integrare contenuti multimediali di terze parti (YouTube, Spotify, SoundCloud) e il chatbot del sito (BLESS, basato su Groq). Sono attivati solo previo consenso.</li>
     </ul>
 
     <h2>Cookie utilizzati su questo sito</h2>
@@ -541,12 +560,6 @@
     </ul>
     <p>Per esercitare questi diritti, contattaci a <a href="mailto:alanrose.13@yahoo.com" class="inline">alanrose.13@yahoo.com</a>.</p>
 
-    <h2>Titolare del trattamento</h2>
-    <p>
-      <strong>Alfio Ragusa</strong>, operante con il nome commerciale "Alan & Rose" (A&R) —
-      Email: <a href="mailto:alanrose.13@yahoo.com" class="inline">alanrose.13@yahoo.com</a>
-    </p>
-
     <h2>Modifiche alla Cookie Policy</h2>
     <p>
       La presente Cookie Policy può essere soggetta a modifiche. Ti invitiamo a consultarla periodicamente.
@@ -559,11 +572,20 @@
     © 2026 Tutti i diritti riservati
   </footer>
 
-  <!-- CHATBOT BLESS (script esterno) -->
-<script>
-  var s = document.createElement('script');
-  s.src = 'chatbot.js?v=' + Date.now();
-  document.body.appendChild(s);
-</script>
+  <!-- CHATBOT BLESS (script esterno) - bloccato da Cookiebot finché non c'è consenso "marketing" -->
+  <script
+    type="text/plain"
+    data-cookieconsent="marketing"
+    data-cookieblock-src="chatbot.js"
+    id="blessChatbotScript">
+  </script>
+  <script data-cookieconsent="ignore">
+    document.addEventListener('CookiebotOnConsentReady', function () {
+      var el = document.getElementById('blessChatbotScript');
+      if (el && el.getAttribute('data-cookieblock-src')) {
+        el.setAttribute('data-cookieblock-src', 'chatbot.js?v=' + Date.now());
+      }
+    });
+  </script>
 </body>
 </html>
