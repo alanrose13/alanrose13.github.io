@@ -60,7 +60,6 @@
       overflow-x: hidden;
       animation: pageDissolve 1s ease both;
     }
-    /* background-attachment:fixed solo su schermi grandi e con hardware presumibilmente più capace */
     @media (min-width: 1200px) {
       body { background-attachment: fixed; }
     }
@@ -95,13 +94,6 @@
       font-size: 1.8rem; font-weight: 600;
     }
 
-    /* ============================================================
-       SEZIONI SCURE — dopo "Chi Siamo" lo sfondo pagina diventa
-       marrone come il footer, senza interruzioni fino in fondo
-       (incluso il blocco donazioni). Le card di Portfolio e Shop
-       restano sempre chiare grazie a --bg impostato esplicitamente
-       su di loro, quindi non serve toccarle.
-    ============================================================ */
     #serv, #port, #mus, #shop, #cont, .donation-section {
       background: var(--m);
       box-shadow: 0 0 0 100vw var(--m);
@@ -275,16 +267,21 @@
       overflow-y: auto;
     }
     .popup-box {
-      background: #fff; max-width: 900px; width: 90%; max-height: 85vh;
+      background: var(--m); max-width: 900px; width: 90%; max-height: 85vh;
       overflow-y: auto; border-radius: 12px; padding: 30px 25px;
-      position: relative; color: #333;
+      position: relative; color: var(--c);
       animation: floatIn 0.4s ease both;
+      border: 1px solid rgba(201,169,97,.35);
     }
+    .popup-box h2 { color: var(--c); }
+    .popup-box p { color: var(--c); }
+    .popup-box a[href^="mailto"] { color: var(--o); }
     @keyframes floatIn {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .popup-close { position: absolute; top: 10px; right: 15px; font-size: 30px; color: #555; cursor: pointer; z-index: 5; }
+    .popup-close { position: absolute; top: 10px; right: 15px; font-size: 30px; color: var(--c); cursor: pointer; z-index: 5; opacity: .8; }
+    .popup-close:hover { opacity: 1; color: var(--o); }
     #CookieDeclaration { margin-top: 20px; }
 
     @media (max-width: 768px) {
@@ -313,11 +310,6 @@
       .transparent-box.form-box { height: 440px; }
     }
 
-    /* ============================================================
-       MOTORE DI RIVELAZIONE ALLO SCROLL — solo opacità + piccolo
-       spostamento verticale, nessun blur, durata uniforme e più
-       breve per restare fluido su qualunque GPU/CPU.
-    ============================================================ */
     [data-aos] {
       opacity: 0;
       transform: translateY(16px);
@@ -339,7 +331,6 @@
       .ambient-layer { display: none !important; }
     }
 
-    /* LOGO FISSO */
     #arFixedLogo {
       position: fixed;
       top: 12px;
@@ -428,11 +419,6 @@
     .social-title { color: #B8962E; }
     .donation-box p { color: #3A2B1A; }
 
-    /* ============================================================
-       AMBIENT LAYER — SOLO DISSOLVENZA (nessun filter:blur, nessuno
-       scale). Gradiente già sfumato in partenza, animata solo
-       l'opacità: costo GPU minimo, uguale su ogni dispositivo.
-    ============================================================ */
     .ambient-layer {
       position: fixed;
       inset: 0;
@@ -474,7 +460,6 @@
       .ambient-blob.b1, .ambient-blob.b2, .ambient-blob.b3 { width: 260px; height: 260px; }
       .ambient-blob.b4 { width: 200px; height: 200px; }
     }
-    /* su schermi molto grandi il layer resta comunque leggero: niente disattivazione necessaria */
 
     #CybotCookiebotDialogPoweredByText,
     .CookiebotWidget,
@@ -487,9 +472,6 @@
       z-index: 9998 !important;
     }
 
-    /* ============================================================
-       SIDE NEWSLETTER — appare lateralmente durante lo scroll
-    ============================================================ */
     #sideNewsletter {
       position: fixed;
       left: 0;
@@ -1181,10 +1163,10 @@
   <div id="privacyPopup" class="popup-overlay" onclick="closePopup('privacyPopup')">
     <div class="popup-box" onclick="event.stopPropagation()">
       <span class="popup-close" onclick="closePopup('privacyPopup')">×</span>
-      <h2 style="color:#4A3B2A;border-bottom:2px solid #C9A961;padding-bottom:10px;">Informativa sulla privacy</h2>
-      <p style="font-size:0.85rem;color:#666;margin-bottom:20px;"><strong>Data di entrata in vigore:</strong> 10/09/2026</p>
+      <h2 style="color:var(--c);border-bottom:2px solid #C9A961;padding-bottom:10px;">Informativa sulla privacy</h2>
+      <p style="font-size:0.85rem;color:var(--c);opacity:.8;margin-bottom:20px;"><strong>Data di entrata in vigore:</strong> 18/09/2026</p>
 
-      <div style="font-size:0.9rem;line-height:1.7;color:#333;">
+      <div style="font-size:0.9rem;line-height:1.7;color:var(--c);">
 
         <h3 style="color:#C9A961;margin-top:20px;">Introduzione e informazioni sull'organizzazione</h3>
         <p>Noi di <strong>Alan &amp; Rose</strong>, ci impegniamo a servire i nostri clienti e contatti al meglio delle nostre possibilità. Parte del nostro impegno comporta la gestione responsabile delle informazioni personali raccolte attraverso i nostri siti web <strong>alanrose13.github.io</strong>, e le relative interazioni. I nostri obiettivi principali nell'elaborazione di queste informazioni sono:</p>
@@ -1195,7 +1177,10 @@
           <li>Svolgere le operazioni commerciali necessarie, come la fatturazione e la gestione degli account.</li>
         </ul>
         <p>La nostra politica è quella di trattare le informazioni personali con il massimo rispetto della privacy e della sicurezza. Aderiamo a tutte le normative e linee guida pertinenti per garantire che i dati che trattiamo siano protetti da accesso, divulgazione, alterazione e distruzione non autorizzati.</p>
-        <p>Non abbiamo un responsabile della protezione dei dati (DPO) designato, ma rimaniamo pienamente impegnati a rispondere alle vostre preoccupazioni sulla privacy. In caso di domande o ulteriori informazioni su come gestiamo i dati personali, non esitate a contattarci utilizzando i seguenti recapiti: <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
+        <p>Non è prevista la nomina di un Responsabile della Protezione dei Dati (DPO) ai sensi dell'art. 37 GDPR, in quanto l'attività non comporta un trattamento su larga scala né il trattamento di categorie particolari di dati o dati relativi a condanne penali. Restiamo comunque pienamente disponibili a rispondere alle vostre richieste in materia di privacy scrivendo a: <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
+
+        <h3 style="color:#C9A961;margin-top:25px;">Titolare del trattamento</h3>
+        <p>Il Titolare del trattamento dei dati personali è <strong>Alfio Ragusa</strong>, persona fisica operante con il nome commerciale "Alan &amp; Rose" (A&amp;R) nell'ambito di prestazioni occasionali ex art. 2222 c.c. Contatto: <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>. Non disponendo di una sede legale d'impresa (attività non esercitata in forma di impresa), il recapito di riferimento per l'esercizio dei diritti dell'interessato è l'indirizzo email sopra indicato.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Ambito e applicazione</h3>
         <p>La nostra politica sulla privacy è stata concepita per proteggere le informazioni personali di tutti i nostri interlocutori, compresi i visitatori del sito web, gli utenti registrati e i clienti. Sia che stiate semplicemente navigando sui nostri siti web <strong>alanrose13.github.io</strong>, sia che stiate utilizzando i nostri servizi come utenti registrati, sia che vi stiate impegnando con noi come clienti stimati, ci assicuriamo che i vostri dati personali siano trattati con i più alti standard di privacy e sicurezza.</p>
@@ -1212,20 +1197,52 @@
           <li>Sistema operativo e versione</li>
           <li>Posizione approssimativa basata sull'IP</li>
           <li>Log di interazione (ad esempio, clic, tempo trascorso sulle pagine)</li>
+          <li>Contenuto dei messaggi scambiati con l'assistente virtuale del sito (chatbot)</li>
         </ul>
         <p>Si prega di notare che trattiamo solo le informazioni essenziali per la fornitura dei nostri servizi, per adempiere agli obblighi di legge o per migliorare l'esperienza dell'utente.</p>
-        <p>Ecco i modi principali in cui utilizziamo le informazioni personali raccolte:</p>
-        <ul>
-          <li>Autenticazione e sicurezza</li>
-          <li>Distribuzione dei contenuti</li>
-          <li>Sforzi di comunicazione</li>
-          <li>Analisi e monitoraggio delle performance</li>
-          <li>Visualizzazione dei video</li>
-          <li>Conformità agli obblighi legali</li>
-          <li>Assistenza clienti</li>
-          <li>Coinvolgimento e fidelizzazione degli utenti</li>
-          <li>Feedback degli utenti e soddisfazione</li>
-        </ul>
+
+        <h3 style="color:#C9A961;margin-top:25px;">Finalità e basi giuridiche del trattamento</h3>
+        <p>Trattiamo i vostri dati personali solo quando esiste una base giuridica valida ai sensi dell'art. 6 GDPR. Ecco le finalità principali e la relativa base giuridica:</p>
+        <div style="overflow-x:auto;margin:15px 0;">
+          <table style="width:100%;border-collapse:collapse;font-size:0.78rem;border:1px solid rgba(201,169,97,.35);">
+            <thead style="background:rgba(201,169,97,.15);">
+              <tr>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Finalità</th>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Base giuridica (art. 6 GDPR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Gestione richieste di servizio / preventivi tramite form</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Misure precontrattuali su richiesta dell'interessato (art. 6.1.b)</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Invio newsletter</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Consenso (art. 6.1.a)</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Cookie statistici e caricamento form Google</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Consenso (art. 6.1.a)</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Contenuti multimediali di terze parti (Spotify, YouTube, SoundCloud)</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Consenso (art. 6.1.a)</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Chatbot AI (BLESS)</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Consenso (art. 6.1.a)</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Sicurezza del sito e prevenzione abusi</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Legittimo interesse (art. 6.1.f)</td>
+              </tr>
+              <tr>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Adempimenti fiscali/contabili sulle prestazioni</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Obbligo legale (art. 6.1.c)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <h3 style="color:#C9A961;margin-top:25px;">Archiviazione e protezione dei dati</h3>
         <p><strong>Archiviazione dei dati:</strong> Le informazioni personali sono conservate su server sicuri situati in: <strong>IT, US, DE, IE, NL</strong>. Per i servizi che richiedono il trasferimento internazionale dei dati, garantiamo che tali trasferimenti rispettino tutte le leggi applicabili e mantengano standard di protezione dei dati equivalenti a quelli della nostra sede principale.</p>
@@ -1241,73 +1258,80 @@
         <p><strong>Fornitori di servizi terzi</strong> - Possiamo condividere le vostre informazioni con fornitori di servizi terzi che svolgono servizi per nostro conto. Queste parti fidate possono avere accesso alle informazioni di identificazione personale in base alla necessità di sapere e saranno obbligate per contratto a mantenere riservate le vostre informazioni.</p>
 
         <div style="overflow-x:auto;margin:15px 0;">
-          <table style="width:100%;border-collapse:collapse;font-size:0.8rem;border:1px solid #ddd;">
-            <thead style="background:#F5F1E8;">
+          <table style="width:100%;border-collapse:collapse;font-size:0.8rem;border:1px solid rgba(201,169,97,.35);">
+            <thead style="background:rgba(201,169,97,.15);">
               <tr>
-                <th style="border:1px solid #ddd;padding:8px;text-align:left;">Servizio</th>
-                <th style="border:1px solid #ddd;padding:8px;text-align:left;">Fornitore</th>
-                <th style="border:1px solid #ddd;padding:8px;text-align:left;">Finalità</th>
-                <th style="border:1px solid #ddd;padding:8px;text-align:left;">Dati raccolti</th>
-                <th style="border:1px solid #ddd;padding:8px;text-align:left;">Privacy</th>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Servizio</th>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Fornitore</th>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Finalità</th>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Dati raccolti</th>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Sede / trasferimento extra-SEE</th>
+                <th style="border:1px solid rgba(201,169,97,.35);padding:8px;text-align:left;">Privacy</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>Google Forms</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">Google LLC</td>
-                <td style="border:1px solid #ddd;padding:8px;">Assistenza clienti, Comunicazione</td>
-                <td style="border:1px solid #ddd;padding:8px;">Nome, email</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://policies.google.com/privacy" target="_blank" style="color:#C9A961;">Link</a></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><strong>Google Forms</strong></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Google LLC</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Assistenza clienti, Comunicazione</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Nome, email</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">USA - SCC</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><a href="https://policies.google.com/privacy" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>Spotify</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">Spotify AB</td>
-                <td style="border:1px solid #ddd;padding:8px;">Distribuzione contenuti</td>
-                <td style="border:1px solid #ddd;padding:8px;">IP, interazioni, ID dispositivo</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://www.spotify.com/it/legal/privacy-policy/" target="_blank" style="color:#C9A961;">Link</a></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><strong>Spotify</strong></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Spotify AB</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Distribuzione contenuti</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">IP, interazioni, ID dispositivo</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">UE (Svezia) / USA - SCC</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><a href="https://www.spotify.com/it/legal/privacy-policy/" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>SoundCloud</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">SoundCloud Ltd.</td>
-                <td style="border:1px solid #ddd;padding:8px;">Distribuzione contenuti</td>
-                <td style="border:1px solid #ddd;padding:8px;">IP, interazioni, ID dispositivo</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://soundcloud.com/pages/privacy" target="_blank" style="color:#C9A961;">Link</a></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><strong>SoundCloud</strong></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">SoundCloud Ltd.</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Distribuzione contenuti</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">IP, interazioni, ID dispositivo</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">UE (Germania) / USA - SCC</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><a href="https://soundcloud.com/pages/privacy" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>Voxmail</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">Voxmail Srl</td>
-                <td style="border:1px solid #ddd;padding:8px;">Newsletter, Comunicazione</td>
-                <td style="border:1px solid #ddd;padding:8px;">Email</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://www.voxmail.it/privacy-policy" target="_blank" style="color:#C9A961;">Link</a></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><strong>Voxmail</strong></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Voxmail Srl</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Newsletter, Comunicazione</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Email</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Italia - nessun trasferimento extra-SEE</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><a href="https://www.voxmail.it/privacy-policy" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>YouTube</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">Google Ireland Limited</td>
-                <td style="border:1px solid #ddd;padding:8px;">Visualizzazione video</td>
-                <td style="border:1px solid #ddd;padding:8px;">IP, ID dispositivo, interazioni</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://business.safety.google/privacy/" target="_blank" style="color:#C9A961;">Link</a></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><strong>YouTube</strong></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Google Ireland Limited</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Visualizzazione video</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">IP, ID dispositivo, interazioni</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">UE (Irlanda) / USA - SCC</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><a href="https://business.safety.google/privacy/" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>GroqCloud</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">Groq Inc.</td>
-                <td style="border:1px solid #ddd;padding:8px;">Chatbot AI (BLESS)</td>
-                <td style="border:1px solid #ddd;padding:8px;">Messaggi in chat</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://groq.com/privacy-policy/" target="_blank" style="color:#C9A961;">Link</a></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><strong>GroqCloud</strong></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Groq Inc.</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Chatbot AI (BLESS)</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Messaggi in chat</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">USA - SCC</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><a href="https://groq.com/privacy-policy/" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
               <tr>
-                <td style="border:1px solid #ddd;padding:8px;"><strong>Google Fonts</strong></td>
-                <td style="border:1px solid #ddd;padding:8px;">Google Ireland Limited</td>
-                <td style="border:1px solid #ddd;padding:8px;">Font e personalizzazione</td>
-                <td style="border:1px solid #ddd;padding:8px;">IP, browser, lingua</td>
-                <td style="border:1px solid #ddd;padding:8px;"><a href="https://business.safety.google/privacy/" target="_blank" style="color:#C9A961;">Link</a></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><strong>Google Fonts</strong></td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Google Ireland Limited</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">Font e personalizzazione</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">IP, browser, lingua</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;">UE (Irlanda) / USA - SCC</td>
+                <td style="border:1px solid rgba(201,169,97,.35);padding:8px;"><a href="https://business.safety.google/privacy/" target="_blank" style="color:#C9A961;">Link</a></td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h3 style="color:#C9A961;margin-top:25px;">Trasferimenti internazionali di dati</h3>
-        <p>Potremmo trasferire i vostri dati personali in luoghi diversi dal vostro paese di residenza, anche in paesi che potrebbero avere leggi sulla protezione dei dati diverse da quelle della vostra giurisdizione (in particolare Stati Uniti, per servizi come Groq, Google/YouTube e Spotify). Desideriamo assicurarvi che tali trasferimenti sono condotti con la massima attenzione e in conformità con le normative vigenti in materia di protezione dei dati, compreso il GDPR.</p>
-        <p>Per i trasferimenti verso paesi extra-SEE che non beneficiano di una decisione di adeguatezza della Commissione Europea, ci basiamo sulle garanzie adottate direttamente dai fornitori terzi indicati in tabella, in particolare le <strong>Clausole Contrattuali Standard (SCC)</strong> approvate dalla Commissione Europea, integrate ove necessario da misure supplementari previste dai fornitori stessi. Potete richiedere maggiori informazioni su tali garanzie scrivendo a <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
+        <p>Come indicato nella tabella sopra, alcuni fornitori (Google/YouTube, Groq, Spotify, SoundCloud) trasferiscono i dati anche verso gli Stati Uniti. Tali trasferimenti sono condotti in conformità al GDPR, sulla base delle <strong>Clausole Contrattuali Standard (SCC)</strong> approvate dalla Commissione Europea e adottate direttamente dai singoli fornitori, integrate ove necessario da misure supplementari. Voxmail (newsletter) è invece un fornitore italiano e non comporta alcun trasferimento extra-SEE. Potete richiedere maggiori informazioni su tali garanzie scrivendo a <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Periodi di conservazione dei dati</h3>
         <p>Conserviamo i dati personali solo per il tempo necessario alle finalità per cui sono stati raccolti:</p>
@@ -1347,12 +1371,12 @@
         <p>Per informazioni più dettagliate sui cookie che utilizziamo, visitate la nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;">Cookie Policy</a>.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Aggiornamenti e modifiche delle politiche</h3>
-        <p>Potremmo aggiornare questa informativa sulla privacy di tanto in tanto. In caso di modifiche sostanziali, chiederemo il consenso esplicito dell'utente prima di attuare le modifiche. Data di entrata in vigore: <strong>10/09/2026</strong>.</p>
+        <p>Potremmo aggiornare questa informativa sulla privacy di tanto in tanto. In caso di modifiche sostanziali, chiederemo il consenso esplicito dell'utente prima di attuare le modifiche. Data di entrata in vigore: <strong>18/09/2026</strong>.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Contatti</h3>
         <p>In caso di domande o dubbi sulla nostra politica sulla privacy, non esitate a contattarci a <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
 
-        <p style="margin-top:30px;padding-top:15px;border-top:1px solid #ddd;font-size:0.8rem;color:#888;">© 2026 Alan &amp; Rose | Prestazione Occasionale art.2222 c.c.</p>
+        <p style="margin-top:30px;padding-top:15px;border-top:1px solid rgba(201,169,97,.35);font-size:0.8rem;color:var(--c);opacity:.7;">© 2026 Alan &amp; Rose | Prestazione Occasionale art.2222 c.c.</p>
 
       </div>
     </div>
@@ -1390,12 +1414,6 @@
 
   <script>
     (function () {
-      // ============================================================
-      // MOTORE DI RIVELAZIONE ALLO SCROLL (IntersectionObserver)
-      // gestione dinamica di will-change: aggiunto solo poco prima
-      // dell'animazione, rimosso subito dopo, per non tenere
-      // impegnata la GPU su elementi ormai fermi.
-      // ============================================================
       document.addEventListener('DOMContentLoaded', function () {
         var items = document.querySelectorAll('[data-aos]');
 
@@ -1477,12 +1495,24 @@
     })();
   </script>
 
-  <!-- CHATBOT BLESS (script esterno) -->
-<script>
-  var s = document.createElement('script');
-  s.src = 'chatbot.js?v=' + Date.now();
-  document.body.appendChild(s);
-</script>
+  <!-- CHATBOT BLESS (script esterno) - ora bloccato da Cookiebot finché non c'è consenso "marketing" -->
+  <script
+    type="text/plain"
+    data-cookieconsent="marketing"
+    data-cookieblock-src="chatbot.js"
+    id="blessChatbotScript">
+  </script>
+  <script data-cookieconsent="ignore">
+    // Cookiebot sostituisce automaticamente type="text/plain" con type="text/javascript"
+    // e attiva data-cookieblock-src solo dopo il consenso "marketing".
+    // Aggiungiamo un timestamp per evitare la cache quando lo script viene sbloccato.
+    document.addEventListener('CookiebotOnConsentReady', function () {
+      var el = document.getElementById('blessChatbotScript');
+      if (el && el.getAttribute('data-cookieblock-src')) {
+        el.setAttribute('data-cookieblock-src', 'chatbot.js?v=' + Date.now());
+      }
+    });
+  </script>
 
 </body>
 </html>
