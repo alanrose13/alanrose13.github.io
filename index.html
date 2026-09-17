@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Alan & Rose - Servizi Digitali, Creativi e Musicali</title>
-  <meta name="description" content="Alan & Rose - Portfolio creativo, musica gospel e progetti nati per passione.">
+  <title>Alan & Rose - Musica Gospel e Progetti Creativi</title>
+  <meta name="description" content="Alan & Rose - Musica gospel e progetti nati per passione, per condividere fede e ricerca di Dio.">
 
   <!-- GOOGLE CONSENT MODE v2 -->
   <script data-cookieconsent="ignore">
@@ -43,7 +43,6 @@
       --m: #4A3B2A;
       --c: #F5F1E8;
       --bg: rgba(245, 241, 232, 0.9);
-      /* durata unica di riferimento per le transizioni "reveal" */
       --reveal-duration: 900ms;
       --reveal-easing: cubic-bezier(0.23, 1, 0.32, 1);
     }
@@ -94,13 +93,13 @@
       font-size: 1.8rem; font-weight: 600;
     }
 
-    #serv, #port, #mus, #shop, #cont, .donation-section {
+    #mus, #cont, .donation-section {
       background: var(--m);
       box-shadow: 0 0 0 100vw var(--m);
       clip-path: inset(0 -100vw);
       color: var(--c);
     }
-    #serv h2, #port h2, #mus h2, #shop h2, #cont h2 {
+    #mus h2, #cont h2 {
       color: var(--c);
     }
     #cont a[href^="mailto"] { color: var(--o); }
@@ -562,9 +561,81 @@
         padding: 14px 12px 12px;
       }
     }
+
+    /* ============================================================
+       SPLASH MESSAGE INIZIALE
+       ============================================================ */
+    #arSplashOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      background: linear-gradient(160deg, #4A3B2A 0%, #3A2B1A 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 24px;
+      text-align: center;
+      cursor: pointer;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+    }
+    #arSplashOverlay.arSplashHidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #arSplashOverlay p {
+      color: #F5F1E8;
+      font-size: 1.5rem;
+      line-height: 1.6;
+      max-width: 680px;
+      font-weight: 300;
+      letter-spacing: .3px;
+      animation: arSplashIn 1.4s cubic-bezier(0.23,1,0.32,1) both;
+    }
+    #arSplashOverlay .arSplashHint {
+      display: block;
+      margin-top: 22px;
+      font-size: .8rem;
+      opacity: .55;
+      font-weight: 400;
+      letter-spacing: .5px;
+    }
+    @keyframes arSplashIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 600px) {
+      #arSplashOverlay p { font-size: 1.15rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #arSplashOverlay p { animation: none; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- SPLASH MESSAGE: appare all'apertura, si chiude al click o dopo qualche secondo -->
+  <div id="arSplashOverlay" onclick="arCloseSplash()">
+    <p>
+      Una passione comporta sacrifici, e se fatta per dare amore non pesa.
+      <span class="arSplashHint">Tocca per continuare</span>
+    </p>
+  </div>
+  <script>
+    (function () {
+      function arCloseSplashImpl() {
+        var el = document.getElementById('arSplashOverlay');
+        if (!el) return;
+        el.classList.add('arSplashHidden');
+        setTimeout(function () {
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+        }, 850);
+      }
+      window.arCloseSplash = arCloseSplashImpl;
+      // Chiusura automatica dopo alcuni secondi se l'utente non interagisce
+      setTimeout(arCloseSplashImpl, 4500);
+    })();
+  </script>
 
   <script>
     function resizeIframe(iframe) {
@@ -744,9 +815,7 @@
       <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Banner%20Gif.gif" alt="Banner">
     </video>
     <nav data-aos="fade">
-      <a href="javascript:void(0)" onclick="openPopup('portPopup')">Portfolio</a>
       <a href="javascript:void(0)" onclick="openPopup('musPopup')">Musica</a>
-      <a href="javascript:void(0)" onclick="openPopup('shopPopup')">Shop</a>
       <a href="javascript:void(0)" onclick="openPopup('newsletterPopup')">Iscriviti</a>
       <a href="javascript:void(0)" onclick="openPopup('contPopup')">Contatti</a>
       <a href="javascript:void(0)" onclick="openPopup('privacyPopup')">Privacy</a>
@@ -756,62 +825,8 @@
   <section id="chi" data-aos="fade-up">
     <h2>Chi Siamo</h2>
     <p style="text-align:center;max-width:750px;margin:auto;">
-      Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale, e questo spazio nasce per condividere per passione la nostra musica, i nostri progetti creativi e i lavori che abbiamo realizzato negli anni.
+      Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Questo spazio nasce per condividere per passione la nostra musica gospel, lodare Dio e accompagnare chi ci legge a cercare Dio, trovare la Sua pace e ritrovare il tempo per il proprio benessere, uscendo dagli schemi della monotonia quotidiana. È un progetto personale e artistico, senza scopo di lucro.
     </p>
-  </section>
-
-  <section id="port" data-aos="fade-up">
-    <h2>Portfolio</h2>
-    <div class="p-grid">
-      <div class="p-item" data-aos="fade-up" data-aos-delay="60">
-        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
-        <div class="p-c">
-          <h3>Dj Marcello Morf</h3>
-          <p>Un sito realizzato per un deejay che offre principalmente i suoi servizi in Campania tra le zone marittime di Portici (NA) ma che a volte va in trasferta per i suoi clienti. All'interno oltre il suo portfolio troverai una radio web attiva h24 con stanze di chat pubbliche e private, ma non solo! Tanto intrattenimento ti attende, cosa aspetti?</p>
-          <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
-        </div>
-      </div>
-      <div class="p-item" data-aos="fade-up" data-aos-delay="120">
-        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
-        <div class="p-c">
-          <h3>Donna Proverbiale</h3>
-          <p>Blog per donne e fede in Cristo...</p>
-          <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
-        </div>
-      </div>
-      <div class="p-item" data-aos="fade-up" data-aos-delay="180">
-        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
-        <div class="p-c">
-          <h3>Detercoop</h3>
-          <p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale, dedito ad attività, aziende e privati. Accedi al sito per trovare un'alternativa ai prodotti che usi quotidianamente risparmiando ed ottenendo materiali professionali.</p>
-          <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
-        </div>
-      </div>
-      <div class="p-item" data-aos="fade-up" data-aos-delay="240">
-        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
-        <div class="p-c">
-          <h3>3Fase</h3>
-          <p>Un sito realizzato per questo gruppo musicale dove si trovano canzoni molto carine e orecchiabili. Dentro troverete il repertorio di ogni artista quasi come fosse una playlist.</p>
-          <a href="https://3fase.github.io/" target="_blank" class="btn">Visita</a>
-        </div>
-      </div>
-      <div class="p-item" data-aos="fade-up" data-aos-delay="300">
-        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
-        <div class="p-c">
-          <h3>Colorlab</h3>
-          <p>Un sito realizzato per un laboratorio fotografico di stampa professionale e realizzazione di album. Troverete molte illustrazioni demo con modelli e la chat operatori per i professionisti del settore della fotografia.</p>
-          <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
-        </div>
-      </div>
-      <div class="p-item" data-aos="fade-up" data-aos-delay="360">
-        <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
-        <div class="p-c">
-          <h3>A Viso Scoperto</h3>
-          <p>Un Canale YouTube della Chiesa dove Alan guidato dalla forza dello Spirito Santo realizzò l'arrangiamento di questi cantici e ne partecipò in uno anche vocalmente (Via Verità e Vita) per innalzare il nome di Dio.</p>
-          <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
-        </div>
-      </div>
-    </div>
   </section>
 
   <section id="mus" data-aos="fade-up">
@@ -837,37 +852,6 @@
     </div>
   </section>
 
-  <section id="shop" data-aos="fade-up">
-    <h2>Shop</h2>
-    <p style="text-align:center;max-width:750px;margin:0 auto 30px;">
-      Questi progetti nascono per passione: grafiche e idee che amiamo realizzare nel tempo libero,
-      raccolte in piccole collezioni disponibili in stampa su richiesta tramite i nostri partner.
-    </p>
-    <div class="g">
-      <div class="card" data-aos="fade-up" data-aos-delay="60">
-        <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:calc(100% + 44px);margin:-22px -22px 15px -22px;aspect-ratio:1/1;object-fit:contain;border-radius:12px 12px 0 0;display:block;background:var(--bg)" alt="A&R Shop">
-        <h3>A&R Shop</h3>
-        <p>Abbigliamento e oggettistica varia!</p>
-        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
-      </div>
-      <div class="card" data-aos="fade-up" data-aos-delay="120">
-        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
-        <h3>J4You Shop</h3>
-        <p>J4You è un e-commerce Cristiano in dropshipping che offre capi e accessori con messaggi e simboli cristiani, realizzati in print on demand con grafiche originali per esprimere la propria fede con stile.</p>
-        <div class="embed">
-          <iframe loading="lazy" data-cookieconsent="marketing" height="250" data-cookieblock-src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
-        </div>
-        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288820&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a>
-      </div>
-      <div class="card" data-aos="fade-up" data-aos-delay="180">
-        <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
-        <h3>SicilStreet</h3>
-        <p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell'isola. Uno stile urban e contemporaneo che unisce l'amore per la terra siciliana con la libertà della moda streetwear.</p>
-        <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a>
-      </div>
-    </div>
-  </section>
-
   <section id="cont" data-aos="fade-up">
     <h2>Contatti</h2>
     <p style="text-align:center;margin-bottom:0;">
@@ -882,67 +866,8 @@
       <section>
         <h2>Chi Siamo</h2>
         <p style="text-align:center;max-width:750px;margin:auto;">
-          Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Siamo addentrati profondamente nel campo artistico e nel campo digitale, e questo spazio nasce per condividere per passione la nostra musica, i nostri progetti creativi e i lavori che abbiamo realizzato negli anni.
+          Il nostro nome "Alan & Rose" in abbreviativo A&R nasce dopo la nostra unione di coppia. Questo spazio nasce per condividere per passione la nostra musica gospel, lodare Dio e accompagnare chi ci legge a cercare Dio, trovare la Sua pace e ritrovare il tempo per il proprio benessere, uscendo dagli schemi della monotonia quotidiana. È un progetto personale e artistico, senza scopo di lucro.
         </p>
-      </section>
-    </div>
-  </div>
-
-  <div id="portPopup" class="popup-overlay" onclick="closePopup('portPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('portPopup')">×</span>
-      <section>
-        <h2>Portfolio</h2>
-        <div class="p-grid">
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Marcello%20Morf.png" alt="Dj Marcello Morf">
-            <div class="p-c">
-              <h3>Dj Marcello Morf</h3>
-              <p>Un sito realizzato per un deejay che offre principalmente i suoi servizi in Campania tra le zone marittime di Portici (NA) ma che a volte va in trasferta per i suoi clienti. All'interno oltre il suo portfolio troverai una radio web attiva h24 con stanze di chat pubbliche e private, ma non solo! Tanto intrattenimento ti attende, cosa aspetti?</p>
-              <a href="https://sites.google.com/view/djmarcellomorf" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/donna%20proverbiale.png" alt="Donna Proverbiale">
-            <div class="p-c">
-              <h3>Donna Proverbiale</h3>
-              <p>Blog per donne e fede in Cristo...</p>
-              <a href="https://sites.google.com/view/donnaproverbiale" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/Detercoop.png" style="object-fit:contain;background:transparent;padding:10px" alt="Detercoop">
-            <div class="p-c">
-              <h3>Detercoop</h3>
-              <p>Un sito realizzato per questi professionisti del settore igienico/sanitario, ambientale e personale, dedito ad attività, aziende e privati. Accedi al sito per trovare un'alternativa ai prodotti che usi quotidianamente risparmiando ed ottenendo materiali professionali.</p>
-              <a href="https://sites.google.com/view/detercoop" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/3fase.png" alt="3Fase">
-            <div class="p-c">
-              <h3>3Fase</h3>
-              <p>Un sito realizzato per questo gruppo musicale dove si trovano canzoni molto carine e orecchiabili. Dentro troverete il repertorio di ogni artista quasi come fosse una playlist.</p>
-              <a href="https://3fase.github.io/" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/colorlab.png" alt="Colorlab">
-            <div class="p-c">
-              <h3>Colorlab</h3>
-              <p>Un sito realizzato per un laboratorio fotografico di stampa professionale e realizzazione di album. Troverete molte illustrazioni demo con modelli e la chat operatori per i professionisti del settore della fotografia.</p>
-              <a href="https://www.colorlabalbum.com" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-          <div class="p-item">
-            <img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/a%20viso%20scoperto.png" alt="A Viso Scoperto">
-            <div class="p-c">
-              <h3>A Viso Scoperto</h3>
-              <p>Un Canale YouTube della Chiesa dove Alan guidato dalla forza dello Spirito Santo realizzò l'arrangiamento di questi cantici e ne partecipò in uno anche vocalmente (Via Verità e Vita) per innalzare il nome di Dio.</p>
-              <a href="https://www.youtube.com/@avisoscoperto332?sub_confirmation=1" target="_blank" class="btn">Visita</a>
-            </div>
-          </div>
-        </div>
       </section>
     </div>
   </div>
@@ -970,42 +895,6 @@
           <a href="https://www.tiktok.com/@alan.rose13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/tiktok_colored_dark_44dp.png" alt="TikTok"></a>
           <a href="https://www.threads.com/@alanrose.13" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/threads.png" alt="Threads"></a>
           <a href="https://linktr.ee/alan.rose" target="_blank"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/linktree.png" alt="Linktree"></a>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <div id="shopPopup" class="popup-overlay" onclick="closePopup('shopPopup')">
-    <div class="popup-box" onclick="event.stopPropagation()">
-      <span class="popup-close" onclick="closePopup('shopPopup')">×</span>
-      <section>
-        <h2>Shop</h2>
-        <p style="text-align:center;max-width:750px;margin:0 auto 30px;">
-          Questi progetti nascono per passione: grafiche e idee che amiamo realizzare nel tempo libero,
-          raccolte in piccole collezioni disponibili in stampa su richiesta tramite i nostri partner.
-        </p>
-        <div class="g">
-          <div class="card">
-            <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Logo%20Trasparent.png" style="width:calc(100% + 44px);margin:-22px -22px 15px -22px;aspect-ratio:1/1;object-fit:contain;border-radius:12px 12px 0 0;display:block;background:var(--bg)" alt="A&R Shop">
-            <h3>A&R Shop</h3>
-            <p>Abbigliamento e oggettistica varia!</p>
-            <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288754" target="_blank" class="btn">Entra</a>
-          </div>
-          <div class="card">
-            <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/j4you.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="J4You Shop">
-            <h3>J4You Shop</h3>
-            <p>J4You è un e-commerce Cristiano in dropshipping che offre capi e accessori con messaggi e simboli cristiani, realizzati in print on demand con grafiche originali per esprimere la propria fede con stile.</p>
-            <div class="embed">
-              <iframe loading="lazy" data-cookieconsent="marketing" height="250" data-cookieblock-src="https://www.youtube.com/embed/P_iVknuC9po"></iframe>
-            </div>
-            <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288820&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a>
-          </div>
-          <div class="card">
-            <img src="https://cdn.jsdelivr.net/gh/alanrose13/site@main/img/sicil%20street.png" style="width:100%;aspect-ratio:1/1;object-fit:contain" alt="SicilStreet">
-            <h3>SicilStreet</h3>
-            <p>Sicil Street è un e-commerce in dropshipping che celebra la bellezza autentica della Sicilia. Ogni prodotto è realizzato in print on demand, con grafiche originali che raffigurano i luoghi più iconici dell'isola. Uno stile urban e contemporaneo che unisce l'amore per la terra siciliana con la libertà della moda streetwear.</p>
-            <a href="https://www.redbubble.com/people/alan-rose/shop?artistUserName=alan-rose&collections=4288755&iaCode=all-departments&sortOrder=top%20selling" target="_blank" class="btn">Entra</a>
-          </div>
         </div>
       </section>
     </div>
@@ -1063,7 +952,7 @@
   <div class="donation-section" data-aos="fade-up">
     <div class="donation-box">
       <p>
-        Grazie per aver visitato il nostro sito web! Se vuoi, puoi lasciare una donazione, ci aiuterà a gestire i costi di spese, tempistiche e investimenti per un servizio sempre più professionale. Te ne saremo ugualmente grati indifferentemente dalla somma o dalla scelta di non proseguire. Grazie!
+        Grazie per aver visitato il nostro sito web! Se questo progetto ti ha fatto bene, puoi lasciare un'offerta libera per sostenere le spese di hosting e gestione: è del tutto facoltativa, non è legata a nessun servizio, e ti saremo comunque grati indipendentemente dalla somma o dalla scelta di non proseguire. Grazie!
       </p>
       <a href="https://www.paypal.com/donate/?hosted_button_id=GMWKF6839MTDE" target="_blank" title="Dona con PayPal">
         <img src="https://raw.githubusercontent.com/alanrose13/alanrose13.github.io/refs/heads/main/img/Dona%20ora%20PAypal.png" alt="Dona ora con PayPal">
@@ -1079,7 +968,7 @@
       <a href="javascript:Cookiebot.renew()">Impostazioni Cookie</a>
     </p>
     <p style="margin-top:10px">
-      <strong>Alan & Rose</strong> di Alfio Ragusa | Progetto personale e artistico<br>
+      <strong>Alan & Rose</strong> di Alfio Ragusa | Progetto personale, artistico e religioso, senza scopo di lucro<br>
       © 2026 Tutti i diritti riservati
     </p>
   </footer>
@@ -1093,24 +982,23 @@
       <div style="font-size:0.9rem;line-height:1.7;color:var(--c);">
 
         <h3 style="color:#C9A961;margin-top:20px;">Introduzione e informazioni sull'organizzazione</h3>
-        <p>Noi di <strong>Alan &amp; Rose</strong>, ci impegniamo a servire i nostri clienti e contatti al meglio delle nostre possibilità. Parte del nostro impegno comporta la gestione responsabile delle informazioni personali raccolte attraverso i nostri siti web <strong>alanrose13.github.io</strong>, e le relative interazioni. I nostri obiettivi principali nell'elaborazione di queste informazioni sono:</p>
+        <p>Noi di <strong>Alan &amp; Rose</strong>, ci impegniamo a servire i nostri visitatori e contatti al meglio delle nostre possibilità. Parte del nostro impegno comporta la gestione responsabile delle informazioni personali raccolte attraverso il nostro sito web <strong>alanrose13.github.io</strong>, e le relative interazioni. I nostri obiettivi principali nell'elaborazione di queste informazioni sono:</p>
         <ul>
-          <li>Migliorare l'esperienza dell'utente sulla nostra piattaforma comprendendo le esigenze e le preferenze dei clienti.</li>
-          <li>Fornire un'assistenza tempestiva e rispondere alle richieste di informazioni o di servizio.</li>
-          <li>Migliorare i nostri prodotti e servizi per soddisfare le esigenze in continua evoluzione dei nostri utenti.</li>
-          <li>Svolgere le operazioni commerciali necessarie, come la fatturazione e la gestione degli account.</li>
+          <li>Migliorare l'esperienza dell'utente sulla nostra piattaforma comprendendo le esigenze e le preferenze dei visitatori.</li>
+          <li>Fornire un'assistenza tempestiva e rispondere alle richieste di informazioni.</li>
+          <li>Migliorare i nostri contenuti per soddisfare le esigenze in continua evoluzione dei nostri utenti.</li>
         </ul>
         <p>La nostra politica è quella di trattare le informazioni personali con il massimo rispetto della privacy e della sicurezza. Aderiamo a tutte le normative e linee guida pertinenti per garantire che i dati che trattiamo siano protetti da accesso, divulgazione, alterazione e distruzione non autorizzati.</p>
         <p>Non è prevista la nomina di un Responsabile della Protezione dei Dati (DPO) ai sensi dell'art. 37 GDPR, in quanto l'attività non comporta un trattamento su larga scala né il trattamento di categorie particolari di dati o dati relativi a condanne penali. Restiamo comunque pienamente disponibili a rispondere alle vostre richieste in materia di privacy scrivendo a: <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Titolare del trattamento</h3>
-        <p>Il Titolare del trattamento dei dati personali è <strong>Alfio Ragusa</strong>, persona fisica, che gestisce questo sito a titolo personale con il nome "Alan &amp; Rose" (A&amp;R). Contatto: <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>. Non disponendo di una sede legale d'impresa, il recapito di riferimento per l'esercizio dei diritti dell'interessato è l'indirizzo email sopra indicato.</p>
+        <p>Il Titolare del trattamento dei dati personali è <strong>Alfio Ragusa</strong>, persona fisica, che gestisce questo sito a titolo personale con il nome "Alan &amp; Rose" (A&amp;R), come progetto personale, artistico e religioso senza scopo di lucro. Contatto: <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>. Non disponendo di una sede legale d'impresa, il recapito di riferimento per l'esercizio dei diritti dell'interessato è l'indirizzo email sopra indicato.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Ambito e applicazione</h3>
-        <p>La nostra politica sulla privacy è stata concepita per proteggere le informazioni personali di tutti i nostri interlocutori, compresi i visitatori del sito web, gli utenti registrati e i clienti. Sia che stiate semplicemente navigando sui nostri siti web <strong>alanrose13.github.io</strong>, sia che stiate utilizzando i nostri servizi come utenti registrati, sia che vi stiate impegnando con noi come clienti stimati, ci assicuriamo che i vostri dati personali siano trattati con i più alti standard di privacy e sicurezza.</p>
+        <p>La nostra politica sulla privacy è stata concepita per proteggere le informazioni personali di tutti i nostri interlocutori, compresi i visitatori del sito web e gli utenti registrati. Sia che stiate semplicemente navigando sul nostro sito web <strong>alanrose13.github.io</strong>, sia che stiate utilizzando i nostri servizi come utenti registrati, ci assicuriamo che i vostri dati personali siano trattati con i più alti standard di privacy e sicurezza.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Raccolta ed elaborazione dei dati</h3>
-        <p>Raccogliamo dati personali attraverso varie interazioni, tra cui, a titolo esemplificativo e non esaustivo, quando visitate il nostro portfolio, ascoltate la nostra musica, acquistate tramite i link ai nostri shop online di abbigliamento e oggettistica realizzati per passione (A&amp;R Shop, J4You, SicilStreet), vi iscrivete alla newsletter, interagite con l'assistente virtuale del sito, oppure ci contattate direttamente.</p>
+        <p>Raccogliamo dati personali attraverso varie interazioni, tra cui, a titolo esemplificativo e non esaustivo, quando ascoltate la nostra musica, vi iscrivete alla newsletter, interagite con l'assistente virtuale del sito, oppure ci contattate direttamente.</p>
         <p>Il seguente elenco illustra in dettaglio i tipi di dati personali che possiamo trattare:</p>
         <ul>
           <li>Nome e cognome</li>
@@ -1123,7 +1011,7 @@
           <li>Log di interazione (ad esempio, clic, tempo trascorso sulle pagine)</li>
           <li>Contenuto dei messaggi scambiati con l'assistente virtuale del sito (chatbot)</li>
         </ul>
-        <p>Si prega di notare che trattiamo solo le informazioni essenziali per la fornitura dei nostri servizi, per adempiere agli obblighi di legge o per migliorare l'esperienza dell'utente.</p>
+        <p>Si prega di notare che trattiamo solo le informazioni essenziali per la fornitura dei nostri contenuti, per adempiere agli obblighi di legge o per migliorare l'esperienza dell'utente.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Finalità e basi giuridiche del trattamento</h3>
         <p>Trattiamo i vostri dati personali solo quando esiste una base giuridica valida ai sensi dell'art. 6 GDPR. Ecco le finalità principali e la relativa base giuridica:</p>
@@ -1241,17 +1129,17 @@
         <p>Conserviamo i dati personali solo per il tempo necessario alle finalità per cui sono stati raccolti:</p>
         <ul>
           <li><strong>Iscritti alla newsletter:</strong> fino alla revoca del consenso o alla disiscrizione da parte dell'utente.</li>
-          <li><strong>Richieste di servizio / moduli di contatto:</strong> per il tempo necessario a gestire la richiesta e, successivamente, per un massimo di 24 mesi ai fini di eventuale assistenza post-vendita, salvo diverso obbligo di legge (es. fiscale/contabile).</li>
+          <li><strong>Richieste tramite modulo di contatto:</strong> per il tempo necessario a gestire la richiesta e, successivamente, per un massimo di 24 mesi, salvo diverso obbligo di legge.</li>
           <li><strong>Messaggi scambiati con il chatbot BLESS:</strong> conservati solo per la durata della sessione di conversazione, salvo diversamente indicato dal fornitore terzo (Groq) nella propria informativa.</li>
           <li><strong>Dati di navigazione e cookie:</strong> secondo le durate indicate nella nostra <a href="cookie-policy.html" target="_blank" style="color:#C9A961;">Cookie Policy</a>.</li>
         </ul>
         <p>Al termine del periodo di conservazione, i dati vengono cancellati o resi anonimi in modo permanente.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Privacy dei bambini</h3>
-        <p>I nostri servizi non sono destinati a bambini di età inferiore a <strong>14 anni</strong>. Non raccogliamo consapevolmente informazioni personali da bambini di età inferiore senza il consenso verificabile dei genitori. Se ritenete che abbiamo raccolto informazioni personali da un bambino di età inferiore a 14 senza il consenso dei genitori, vi preghiamo di contattarci immediatamente a <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
+        <p>I nostri contenuti non sono destinati a bambini di età inferiore a <strong>14 anni</strong>. Non raccogliamo consapevolmente informazioni personali da bambini di età inferiore senza il consenso verificabile dei genitori. Se ritenete che abbiamo raccolto informazioni personali da un bambino di età inferiore a 14 senza il consenso dei genitori, vi preghiamo di contattarci immediatamente a <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Marketing diretto e comunicazioni</h3>
-        <p>Possiamo utilizzare i vostri dati personali per inviarvi comunicazioni di marketing diretto. Otterremo il vostro consenso esplicito prima di inviarvi comunicazioni di marketing diretto. Ogni comunicazione di marketing diretto che inviamo includerà istruzioni chiare su come annullare l'iscrizione.</p>
+        <p>Possiamo utilizzare i vostri dati personali per inviarvi comunicazioni relative a nuove canzoni e progetti. Otterremo il vostro consenso esplicito prima di inviarvi tali comunicazioni. Ogni comunicazione che inviamo includerà istruzioni chiare su come annullare l'iscrizione.</p>
 
         <h3 style="color:#C9A961;margin-top:25px;">Procedure di notifica delle violazioni dei dati</h3>
         <p>In caso di violazione dei dati che metta a rischio i diritti e le libertà degli utenti, notificheremo la violazione alle autorità competenti per la protezione dei dati <strong>entro 72 ore</strong>. Se una violazione dei dati rappresenta un rischio significativo per i diritti e le libertà di privacy dell'utente, lo informeremo <strong>entro 72 ore</strong> tramite email o avviso sul sito web.</p>
@@ -1280,7 +1168,7 @@
         <h3 style="color:#C9A961;margin-top:25px;">Contatti</h3>
         <p>In caso di domande o dubbi sulla nostra politica sulla privacy, non esitate a contattarci a <a href="mailto:alanrose.13@yahoo.com" style="color:#C9A961;">alanrose.13@yahoo.com</a>.</p>
 
-        <p style="margin-top:30px;padding-top:15px;border-top:1px solid rgba(201,169,97,.35);font-size:0.8rem;color:var(--c);opacity:.7;">© 2026 Alan &amp; Rose | Progetto personale e artistico</p>
+        <p style="margin-top:30px;padding-top:15px;border-top:1px solid rgba(201,169,97,.35);font-size:0.8rem;color:var(--c);opacity:.7;">© 2026 Alan &amp; Rose | Progetto personale, artistico e religioso, senza scopo di lucro</p>
 
       </div>
     </div>
