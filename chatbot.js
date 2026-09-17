@@ -263,11 +263,15 @@
       border-radius: 10px;
     }
 
+    /* Overlay di consenso: copre l'INTERA finestra chat (header escluso),
+       così è sempre visibile e centrato su qualunque dispositivo, sia
+       all'apertura della chat sia se l'utente prova a scrivere/parlare
+       prima di aver dato il consenso. */
     #arConsentOverlay {
       position: absolute;
       inset: 0;
-      z-index: 20;
-      background: linear-gradient(160deg, rgba(245,241,232,0.98) 0%, rgba(245,241,232,0.94) 100%);
+      z-index: 9999;
+      background: linear-gradient(160deg, rgba(245,241,232,0.98) 0%, rgba(245,241,232,0.96) 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -275,6 +279,7 @@
       padding: 24px 20px;
       text-align: center;
       gap: 14px;
+      border-radius: 0 0 20px 20px;
     }
     #arConsentOverlay .consent-icon {
       width: 50px;
@@ -287,6 +292,7 @@
       justify-content: center;
       font-size: 22px;
       margin-bottom: 2px;
+      flex-shrink: 0;
     }
     #arConsentOverlay h4 { color: #4A3B2A; font-size: 0.98rem; font-weight: 700; }
     #arConsentOverlay p {
@@ -305,8 +311,10 @@
       border-radius: 10px;
       padding: 12px 14px;
       max-width: 300px;
+      width: 100%;
       text-align: left;
       box-shadow: 0 4px 12px rgba(0,0,0,.05);
+      box-sizing: border-box;
     }
     #arConsentOverlay .consent-check-row input[type="checkbox"] {
       margin-top: 3px; flex-shrink: 0; width: 16px; height: 16px; accent-color: #C9A961;
@@ -326,6 +334,14 @@
       transform: scale(1.03); box-shadow: 0 4px 15px rgba(201,169,97,0.35);
     }
     #arConsentOverlay.hidden { display: none; }
+    #arConsentOverlay.shake { animation: arConsentShake .4s ease-in-out; }
+    @keyframes arConsentShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
 
     .ar-msg {
       max-width: 85%;
@@ -489,6 +505,7 @@
     }
     #arVoiceOutBtn:hover { transform: scale(1.05); }
     #arVoiceOutBtn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    #arVoiceOutBtn.unavailable { border-color: #E24C4C; }
 
     #arChatFooterBar {
       padding: 8px 14px 12px;
@@ -581,6 +598,7 @@
       #arChatFooterBar .ar-privacy-note { font-size: .64rem; }
       #arChatFooterBar .ai-disclaimer { font-size: .6rem; }
       #arConsentOverlay .consent-check-row { font-size: .7rem; padding: 10px 12px; }
+      #arConsentOverlay { padding: 18px 14px; gap: 10px; }
     }
     @media (max-width: 360px) {
       #arChatHeader .header-left .chat-title .name { font-size: .78rem; }
@@ -623,19 +641,9 @@
         '</div>' +
       '</div>' +
       '<div id="arChatMessages" role="log" aria-live="polite" aria-relevant="additions">' +
-        '<div id="arConsentOverlay">' +
-          '<div class="consent-icon">🔒</div>' +
-          '<h4>Prima di iniziare</h4>' +
-          '<p>Per chattare con BLESS abbiamo bisogno del tuo consenso al trattamento dei dati che scriverai in questa conversazione.</p>' +
-          '<div class="consent-check-row">' +
-            '<input type="checkbox" id="arChatConsentCheck">' +
-            '<label for="arChatConsentCheck">Acconsento al trattamento dei dati che scrivo in questa chat, come da <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</label>' +
-          '</div>' +
-          '<button class="consent-accept-btn" id="arConsentAcceptBtn" onclick="arAcceptConsent()">Accetta e inizia a chattare</button>' +
-        '</div>' +
       '</div>' +
       '<div id="arChatInputRow">' +
-        '<textarea id="arChatInput" rows="1" maxlength="' + AR_MAX_MSG_LENGTH + '" placeholder="Scrivi o parla..." oninput="arUpdateMicSendIcon(); arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
+        '<textarea id="arChatInput" rows="1" maxlength="' + AR_MAX_MSG_LENGTH + '" placeholder="Scrivi o parla..." onfocus="arGuardConsent()" oninput="arUpdateMicSendIcon(); arAutoResizeInput(this);" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();arSendMessage();}"></textarea>' +
         '<button id="arChatMicSend" onclick="arMicSendClick()" title="Parla ora" aria-label="Registra audio o invia messaggio">' +
           '<svg id="arMicSendIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
             '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
@@ -661,6 +669,16 @@
         '<div class="ai-disclaimer">' +
           '🤖 BLESS è un assistente IA: le risposte potrebbero non essere sempre accurate, verifica sempre le informazioni importanti.' +
         '</div>' +
+      '</div>' +
+      '<div id="arConsentOverlay" class="hidden">' +
+        '<div class="consent-icon">🔒</div>' +
+        '<h4>Prima di iniziare</h4>' +
+        '<p>Per chattare con BLESS abbiamo bisogno del tuo consenso al trattamento dei dati che scriverai in questa conversazione.</p>' +
+        '<div class="consent-check-row">' +
+          '<input type="checkbox" id="arChatConsentCheck">' +
+          '<label for="arChatConsentCheck">Acconsento al trattamento dei dati che scrivo in questa chat, come da <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</label>' +
+        '</div>' +
+        '<button class="consent-accept-btn" id="arConsentAcceptBtn" onclick="arAcceptConsent()">Accetta e inizia a chattare</button>' +
       '</div>' +
     '</div>';
 
@@ -700,89 +718,14 @@
     window.visualViewport.addEventListener('scroll', arFixKeyboardOverlap);
   }
 
-  // SINTESI VOCALE — voce del browser (unica, fissa, sempre la stessa)
+  // SINTESI VOCALE — voce server-side, UNICA per tutti i dispositivi.
+  // Non esiste più un fallback alla voce robotica del browser: se il
+  // servizio TTS non risponde dopo i tentativi, semplicemente non viene
+  // riprodotto audio (il testo resta comunque visibile in chat), così la
+  // voce percepita dall'utente non cambia mai in base al dispositivo.
   var arVoiceEnabled = true;
-  var arVoicesLoaded = false;
-  var arItalianVoice = null;
-  var arVoiceLocked = false;
-  var arVoiceLoadAttempts = 0;
-
-  var arMaleVoiceNames = [
-    'diego', 'luca', 'giuseppe', 'benigno', 'calimero', 'cataldo',
-    'gianni', 'lisandro', 'palmiro', 'rinaldo', 'cosimo', 'marco',
-    'roberto', 'fabio', 'matteo', 'nicola', 'giorgio', 'mario',
-    'antonio', 'alessandro', 'valerio', 'riccardo', 'enrico',
-    'male', 'uomo', 'man'
-  ];
-
-  function arScoreVoice(v) {
-    var n = v.name.toLowerCase();
-    var score = 0;
-    var isMaleKnown = arMaleVoiceNames.some(function (name) { return n.includes(name); });
-    if (!isMaleKnown) return -1000;
-
-    if (n.includes('online (natural)') || n.includes('neural2') || n.includes('neural') || n.includes('wavenet')) score += 200;
-    if (n.includes('premium') || n.includes('enhanced') || n.includes('plus')) score += 60;
-    if (n.includes('compact')) score -= 100;
-    if (n.includes('standard') && !n.includes('online') && !n.includes('neural') && !n.includes('wavenet')) score -= 60;
-    if (v.lang === 'it-IT') score += 10;
-    if (v.localService === false) score += 30;
-    return score;
-  }
-
-  function arLoadVoices() {
-    if (!('speechSynthesis' in window)) return;
-    if (arVoiceLocked) return; // voce già scelta: non ricalcolare mai più
-    var voices = window.speechSynthesis.getVoices();
-    if (!voices || voices.length === 0) return;
-
-    var italianMale = voices.filter(function (v) {
-      return v.lang && v.lang.toLowerCase().startsWith('it') &&
-        arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
-    });
-
-    var chosen = null;
-    if (italianMale.length > 0) {
-      italianMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
-      chosen = italianMale[0];
-    } else {
-      var anyMale = voices.filter(function (v) {
-        return arMaleVoiceNames.some(function (name) { return v.name.toLowerCase().includes(name); });
-      });
-      anyMale.sort(function (a, b) { return arScoreVoice(b) - arScoreVoice(a); });
-      chosen = anyMale.length > 0 ? anyMale[0] : (voices[0] || null);
-    }
-
-    if (chosen) {
-      arItalianVoice = chosen;
-      arVoiceLocked = true; // blocca la scelta: la voce non cambierà più durante la sessione
-    }
-    arVoicesLoaded = true;
-  }
-
-  function arForceLoadVoices() {
-    arLoadVoices();
-    if (!arVoiceLocked && arVoiceLoadAttempts < 5) {
-      arVoiceLoadAttempts++;
-      setTimeout(arForceLoadVoices, 500 * arVoiceLoadAttempts);
-    }
-  }
-
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = function () { arLoadVoices(); };
-    setTimeout(arForceLoadVoices, 200);
-    setTimeout(arForceLoadVoices, 600);
-    setTimeout(arForceLoadVoices, 1200);
-    setTimeout(arForceLoadVoices, 2500);
-  }
-
-  function arSplitIntoSegments(text) {
-    var raw = text.split(/(?<=[.!?…])\s+/);
-    return raw.map(function (s) { return s.trim(); }).filter(Boolean);
-  }
 
   function arStopEdgeAudio() {
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     if (arCurrentServerAudio) {
       try { arCurrentServerAudio.pause(); } catch (e) {}
       arCurrentServerAudio = null;
@@ -814,14 +757,12 @@
 
   // --- VOCE SERVER-SIDE (TTS umano, unica per tutti i dispositivi) ------
   // Chiede al Worker un MP3 generato lato server: stessa identica voce
-  // maschile su qualunque browser/OS. È la voce PRIORITARIA e va usata
-  // sempre. La voce robotica del browser (arSpeakBrowser) scatta SOLO se
-  // questa chiamata fallisce davvero (rete offline, worker irraggiungibile,
-  // errore del servizio) — mai per un blocco silenzioso dell'autoplay,
-  // che viene gestito a parte con arUnlockAudioOnce().
+  // maschile su qualunque browser/OS. È l'UNICA fonte audio: se questa
+  // chiamata fallisce dopo i tentativi, non si riproduce alcun audio
+  // (niente più voce robotica del browser come fallback).
   var AR_TTS_URL = "https://ai.alanrose-13-1eb.workers.dev/tts";
-  var AR_TTS_TIMEOUT_MS = 8000;
-  var AR_TTS_MAX_RETRIES = 1;
+  var AR_TTS_TIMEOUT_MS = 15000;
+  var AR_TTS_MAX_RETRIES = 2;
   var arAudioCache = {};      // testo -> blob URL, valida per la sessione
   var arCurrentServerAudio = null;
 
@@ -833,7 +774,7 @@
     if (playPromise && playPromise.catch) {
       playPromise.catch(function (err) {
         // Riproduzione bloccata dal browser (autoplay): non è un errore del
-        // servizio TTS, quindi NON si passa alla voce robotica di fallback.
+        // servizio TTS, quindi non si segnala come audio non disponibile.
         console.warn('BLESS: riproduzione audio bloccata dal browser, in attesa di interazione utente.', err);
       });
     }
@@ -858,6 +799,21 @@
     return data.audio;
   }
 
+  // Mostra brevemente sul pulsante 🔊 un segnale che l'audio non è
+  // disponibile per questo messaggio, senza cambiare voce né disattivare
+  // permanentemente l'ascolto.
+  function arFlagVoiceUnavailable() {
+    var btn = document.getElementById('arVoiceOutBtn');
+    if (!btn) return;
+    btn.classList.add('unavailable');
+    var prevTitle = btn.title;
+    btn.title = 'Voce momentaneamente non disponibile';
+    setTimeout(function () {
+      btn.classList.remove('unavailable');
+      btn.title = prevTitle;
+    }, 4000);
+  }
+
   async function arPlayServerVoice(rawText) {
     if (!arVoiceEnabled) return;
     var text = String(rawText || '').replace(/<[^>]*>/g, '').trim();
@@ -879,51 +835,21 @@
         var url = URL.createObjectURL(blob);
         arAudioCache[text] = url;
         arPlayBlobUrl(url);
-        return; // successo: usciamo, niente fallback
+        return; // successo: usciamo
       } catch (err) {
         lastErr = err;
         // Solo un breve retry se il worker non ha risposto in tempo/è caduto
-        // una volta sola (es. cold start): niente attesa prima dell'ultimo
-        // tentativo fallito.
+        // (es. cold start): niente attesa prima dell'ultimo tentativo.
       }
     }
 
     // Il servizio TTS server-side non ha funzionato dopo i tentativi:
-    // qui, e SOLO qui, si passa alla voce del browser come ultima risorsa.
-    console.warn('BLESS: voce server non disponibile, uso la voce di riserva del browser.', lastErr);
-    arSpeakBrowser(text);
+    // NIENTE fallback alla voce del browser (evita voci diverse a seconda
+    // del dispositivo). Restiamo in silenzio, il testo è comunque leggibile.
+    console.warn('BLESS: voce server non disponibile dopo i tentativi, nessun audio riprodotto.', lastErr);
+    arFlagVoiceUnavailable();
   }
   window.arPlayServerVoice = arPlayServerVoice;
-
-  // Voce di riserva (solo se il TTS server-side non risponde dopo i
-  // tentativi): sempre la stessa voce del browser, stesso tono/velocità,
-  // nessuna variazione casuale.
-  function arSpeakBrowser(text) {
-    if (!arVoiceEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    var plainText = String(text || '').replace(/<[^>]*>/g, '').trim();
-    if (!plainText) return;
-
-    if (!arVoicesLoaded) arLoadVoices();
-
-    var segments = arSplitIntoSegments(plainText);
-    if (segments.length === 0) segments = [plainText];
-
-    segments.forEach(function (segment) {
-      var utterance = new SpeechSynthesisUtterance(segment);
-      if (arItalianVoice) {
-        utterance.voice = arItalianVoice;
-        utterance.lang = arItalianVoice.lang;
-      } else {
-        utterance.lang = 'it-IT';
-      }
-      utterance.rate = 0.97;
-      utterance.pitch = 0.93;
-      utterance.volume = 1.0;
-      window.speechSynthesis.speak(utterance);
-    });
-  }
 
   function arToggleVoiceOutput() {
     arVoiceEnabled = !arVoiceEnabled;
@@ -968,6 +894,7 @@
   window.arUpdateMicSendIcon = arUpdateMicSendIcon;
 
   function arMicSendClick() {
+    if (!arGuardConsent()) return;
     var input = document.getElementById('arChatInput');
     if (arIsRecording) { arStopRecording(); return; }
     if (input && input.value.trim().length > 0) {
@@ -1103,6 +1030,32 @@
     try { localStorage.setItem('arChatConsentGiven', val ? '1' : '0'); } catch (e) {}
   }
 
+  // Mostra l'overlay di consenso a copertura dell'intera finestra chat.
+  function arShowConsentOverlay() {
+    var overlay = document.getElementById('arConsentOverlay');
+    if (overlay) overlay.classList.remove('hidden');
+    arSetInputEnabled(false);
+  }
+
+  // Chiamata da input/microfono/invio: se il consenso non è ancora stato
+  // dato, mostra (o richiama l'attenzione su) il popup di consenso e blocca
+  // l'azione corrente. Restituisce true se si può procedere.
+  function arGuardConsent() {
+    if (getConsentGiven()) return true;
+    var overlay = document.getElementById('arConsentOverlay');
+    if (overlay) {
+      overlay.classList.remove('hidden');
+      overlay.classList.remove('shake');
+      // forza un reflow per poter far ripartire l'animazione ad ogni tentativo
+      void overlay.offsetWidth;
+      overlay.classList.add('shake');
+    }
+    var input = document.getElementById('arChatInput');
+    if (input) input.blur();
+    return false;
+  }
+  window.arGuardConsent = arGuardConsent;
+
   function arAcceptConsent() {
     var check = document.getElementById('arChatConsentCheck');
     if (!check || !check.checked) return;
@@ -1111,6 +1064,8 @@
     if (overlay) overlay.classList.add('hidden');
     arSetInputEnabled(true);
     arShowWelcomeIfNeeded();
+    var input = document.getElementById('arChatInput');
+    if (input) input.focus();
   }
   window.arAcceptConsent = arAcceptConsent;
 
@@ -1118,9 +1073,7 @@
   function arClearChat() {
     try { localStorage.removeItem('arChatHistory'); } catch (e) {}
     var box = document.getElementById('arChatMessages');
-    Array.prototype.slice.call(box.children).forEach(function (child) {
-      if (child.id !== 'arConsentOverlay') child.remove();
-    });
+    box.innerHTML = '';
     if (getConsentGiven()) arShowWelcomeIfNeeded(true);
     box.scrollTop = 0;
   }
@@ -1203,22 +1156,21 @@
   }
 
   function loadChatHistory() {
-    var overlay = document.getElementById('arConsentOverlay');
     var consentGiven = getConsentGiven();
 
     if (!consentGiven) {
-      if (overlay) overlay.classList.remove('hidden');
-      arSetInputEnabled(false);
+      arShowConsentOverlay();
+      var box0 = document.getElementById('arChatMessages');
+      box0.innerHTML = '';
       return;
     }
 
+    var overlay = document.getElementById('arConsentOverlay');
     if (overlay) overlay.classList.add('hidden');
     arSetInputEnabled(true);
 
     var box = document.getElementById('arChatMessages');
-    Array.prototype.slice.call(box.children).forEach(function (child) {
-      if (child.id !== 'arConsentOverlay') child.remove();
-    });
+    box.innerHTML = '';
 
     arShowWelcomeIfNeeded();
   }
@@ -1252,6 +1204,7 @@
   }
 
   function arHandleAction(action) {
+    if (!arGuardConsent()) return;
     switch (action) {
       case 'mostraServizi':
         arAddMessage('I nostri servizi principali sono: <strong>Grafica & Web</strong>, <strong>Musica & Produzione</strong>, <strong>Consulenza & Altro</strong>. Vuoi sapere più dettagli su uno di questi?', 'bot');
@@ -1581,6 +1534,8 @@
   window.arRemoveTyping = arRemoveTyping;
 
   async function arSendMessage() {
+    if (!arGuardConsent()) return;
+
     var input = document.getElementById('arChatInput');
     var msg = input.value.trim();
     if (!msg) return;
@@ -1679,6 +1634,5 @@
   window.arDismissTooltip = arDismissTooltip;
   window.arHideBadge = arHideBadge;
   window.arToggleVoiceRecording = arToggleVoiceRecording;
-  window.arSpeakBrowser = arSpeakBrowser;
 
 })();
