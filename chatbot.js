@@ -658,10 +658,8 @@
       '</div>' +
       '<div id="arChatFooterBar">' +
         '<div class="ar-quick-actions">' +
-          '<button onclick="arHandleAction(\'mostraServizi\')">📋 Servizi</button>' +
           '<button onclick="arHandleAction(\'mostraMusica\')">🎵 Musica</button>' +
           '<button onclick="arHandleAction(\'mostraContatti\')">📧 Contatti</button>' +
-          '<button onclick="arHandleAction(\'mostraFormRichiesta\')">📝 Richiedi Servizio</button>' +
         '</div>' +
         '<div class="ar-privacy-note">' +
           '🔒 I dati che mi scrivi restano salvati solo sul tuo dispositivo e vengono elaborati da un servizio IA esterno per generare le risposte, secondo la nostra <a href="cookie-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.' +
@@ -719,10 +717,6 @@
   }
 
   // SINTESI VOCALE — voce server-side, UNICA per tutti i dispositivi.
-  // Non esiste più un fallback alla voce robotica del browser: se il
-  // servizio TTS non risponde dopo i tentativi, semplicemente non viene
-  // riprodotto audio (il testo resta comunque visibile in chat), così la
-  // voce percepita dall'utente non cambia mai in base al dispositivo.
   var arVoiceEnabled = true;
 
   function arStopEdgeAudio() {
@@ -733,12 +727,6 @@
   }
   window.arStopEdgeAudio = arStopEdgeAudio;
 
-  // --- SBLOCCO AUTOPLAY AUDIO -------------------------------------------
-  // Molti browser (specialmente in modalità incognito/ospite) bloccano
-  // silenziosamente audio.play() se non parte da un'interazione diretta
-  // dell'utente. Qui "sblocchiamo" l'elemento audio al primo tocco/click
-  // sulla pagina, riproducendo un suono silenzioso: da quel momento in poi
-  // anche le riproduzioni innescate dopo una fetch (asincrone) funzionano.
   var arAudioUnlocked = false;
   function arUnlockAudioOnce() {
     if (arAudioUnlocked) return;
@@ -755,15 +743,10 @@
   document.addEventListener('click', arUnlockAudioOnce, { once: true });
   document.addEventListener('touchstart', arUnlockAudioOnce, { once: true });
 
-  // --- VOCE SERVER-SIDE (TTS umano, unica per tutti i dispositivi) ------
-  // Chiede al Worker un MP3 generato lato server: stessa identica voce
-  // maschile su qualunque browser/OS. È l'UNICA fonte audio: se questa
-  // chiamata fallisce dopo i tentativi, non si riproduce alcun audio
-  // (niente più voce robotica del browser come fallback).
   var AR_TTS_URL = "https://ai.alanrose-13-1eb.workers.dev/tts";
   var AR_TTS_TIMEOUT_MS = 15000;
   var AR_TTS_MAX_RETRIES = 2;
-  var arAudioCache = {};      // testo -> blob URL, valida per la sessione
+  var arAudioCache = {};
   var arCurrentServerAudio = null;
 
   function arPlayBlobUrl(url) {
@@ -773,8 +756,6 @@
     var playPromise = audio.play();
     if (playPromise && playPromise.catch) {
       playPromise.catch(function (err) {
-        // Riproduzione bloccata dal browser (autoplay): non è un errore del
-        // servizio TTS, quindi non si segnala come audio non disponibile.
         console.warn('BLESS: riproduzione audio bloccata dal browser, in attesa di interazione utente.', err);
       });
     }
@@ -799,9 +780,6 @@
     return data.audio;
   }
 
-  // Mostra brevemente sul pulsante 🔊 un segnale che l'audio non è
-  // disponibile per questo messaggio, senza cambiare voce né disattivare
-  // permanentemente l'ascolto.
   function arFlagVoiceUnavailable() {
     var btn = document.getElementById('arVoiceOutBtn');
     if (!btn) return;
@@ -835,17 +813,12 @@
         var url = URL.createObjectURL(blob);
         arAudioCache[text] = url;
         arPlayBlobUrl(url);
-        return; // successo: usciamo
+        return;
       } catch (err) {
         lastErr = err;
-        // Solo un breve retry se il worker non ha risposto in tempo/è caduto
-        // (es. cold start): niente attesa prima dell'ultimo tentativo.
       }
     }
 
-    // Il servizio TTS server-side non ha funzionato dopo i tentativi:
-    // NIENTE fallback alla voce del browser (evita voci diverse a seconda
-    // del dispositivo). Restiamo in silenzio, il testo è comunque leggibile.
     console.warn('BLESS: voce server non disponibile dopo i tentativi, nessun audio riprodotto.', lastErr);
     arFlagVoiceUnavailable();
   }
@@ -863,14 +836,12 @@
   }
   window.arToggleVoiceOutput = arToggleVoiceOutput;
 
-  // AUTO-RESIZE TEXTAREA
   function arAutoResizeInput(el) {
     el.style.height = 'auto';
     el.style.height = Math.min(el.scrollHeight, 100) + 'px';
   }
   window.arAutoResizeInput = arAutoResizeInput;
 
-  // MICROFONO / INVIO
   var arMicSvg = '<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
   var arSendSvg = '<path d="M4 12 20 4l-6.5 16-2.5-7-7-2.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
 
@@ -905,7 +876,6 @@
   }
   window.arMicSendClick = arMicSendClick;
 
-  // TRASCRIZIONE VOCALE (riconoscimento vocale nativo del browser, gratuito, nessuna chiamata a Groq)
   var arRecognition = null;
   var arIsRecording = false;
   var arFinalTranscript = '';
@@ -995,7 +965,6 @@
   }
   window.arToggleVoiceRecording = arToggleVoiceRecording;
 
-  // CRONOLOGIA CHAT - localStorage
   function getChatHistory() {
     try {
       var data = localStorage.getItem('arChatHistory');
@@ -1022,7 +991,6 @@
     if (history) { history.userName = name; saveChatHistory(history); }
   }
 
-  // CONSENSO PRIVACY
   function getConsentGiven() {
     try { return localStorage.getItem('arChatConsentGiven') === '1'; } catch (e) { return false; }
   }
@@ -1030,23 +998,18 @@
     try { localStorage.setItem('arChatConsentGiven', val ? '1' : '0'); } catch (e) {}
   }
 
-  // Mostra l'overlay di consenso a copertura dell'intera finestra chat.
   function arShowConsentOverlay() {
     var overlay = document.getElementById('arConsentOverlay');
     if (overlay) overlay.classList.remove('hidden');
     arSetInputEnabled(false);
   }
 
-  // Chiamata da input/microfono/invio: se il consenso non è ancora stato
-  // dato, mostra (o richiama l'attenzione su) il popup di consenso e blocca
-  // l'azione corrente. Restituisce true se si può procedere.
   function arGuardConsent() {
     if (getConsentGiven()) return true;
     var overlay = document.getElementById('arConsentOverlay');
     if (overlay) {
       overlay.classList.remove('hidden');
       overlay.classList.remove('shake');
-      // forza un reflow per poter far ripartire l'animazione ad ogni tentativo
       void overlay.offsetWidth;
       overlay.classList.add('shake');
     }
@@ -1069,7 +1032,6 @@
   }
   window.arAcceptConsent = arAcceptConsent;
 
-  // SVUOTA CHAT
   function arClearChat() {
     try { localStorage.removeItem('arChatHistory'); } catch (e) {}
     var box = document.getElementById('arChatMessages');
@@ -1079,7 +1041,6 @@
   }
   window.arClearChat = arClearChat;
 
-  // FUNZIONI DI BASE CHAT
   var AR_WORKER_URL = "https://ai.alanrose-13-1eb.workers.dev";
   var typingInterval = null;
   var isBotTyping = false;
@@ -1147,7 +1108,7 @@
       welcomeDiv2.innerHTML =
         '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">' +
         '👋 Ciao! Sono <strong>BLESS</strong>, l\'assistente virtuale di <strong>Alan &amp; Rose</strong>.<br><br>' +
-        'Posso aiutarti a conoscere i nostri servizi, il portfolio, la musica e lo shop.<br><br>' +
+        'Posso raccontarti del nostro progetto musicale gospel, farti ascoltare i nostri brani e parlare con te di fede, Bibbia e ricerca di Dio.<br><br>' +
         'Come ti chiami? Così possiamo darti un trattamento personalizzato.' +
         '</div>';
       box.appendChild(welcomeDiv2);
@@ -1189,7 +1150,6 @@
     }
   });
 
-  // PULSANTI INTERATTIVI
   function arAddActionButtons(buttons) {
     var box = document.getElementById('arChatMessages');
     var div = document.createElement('div');
@@ -1206,31 +1166,11 @@
   function arHandleAction(action) {
     if (!arGuardConsent()) return;
     switch (action) {
-      case 'mostraServizi':
-        arAddMessage('I nostri servizi principali sono: <strong>Grafica & Web</strong>, <strong>Musica & Produzione</strong>, <strong>Consulenza & Altro</strong>. Vuoi sapere più dettagli su uno di questi?', 'bot');
-        arAddActionButtons([
-          { label: '🖥️ Grafica & Web', action: 'dettaglioGrafica' },
-          { label: '🎵 Musica & Produzione', action: 'dettaglioMusica' },
-          { label: '📋 Consulenza', action: 'dettaglioConsulenza' }
-        ]);
-        break;
-      case 'dettaglioGrafica':
-        arAddMessage('🖥️ <strong>Grafica & Web</strong>:\n• Creazione Loghi, Banner, Locandine (Photoshop/Illustrator)\n• Siti Web Vetrina ed E-Commerce Dropshipping\n• Gestione Social per amplificazione follower\n• Editore (pubblicazione digital store, copyright, royalties)', 'bot');
-        break;
-      case 'dettaglioMusica':
-        arAddMessage('🎵 <strong>Musica & Produzione</strong>:\n• Produzione Musicale, Testi, Recording (Solo Gospel)\n• Mixing / Mastering\n• Foto e Video Editing 3D (Hitfilm, Photoshop)\n• Assistenza software PC/Tablet/Smartphone', 'bot');
-        break;
-      case 'dettaglioConsulenza':
-        arAddMessage('📋 <strong>Consulenza & Altro</strong>:\n• Receptionist, fogli di calcolo, Word, PDF\n• Creazione SPID, pratiche INPS, punti patente\n• Speaker e creatore web radio e DJ', 'bot');
-        break;
       case 'mostraMusica':
         arAddMessage('🎵 Puoi ascoltarci su:\n• <a href="https://open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV" target="_blank">Spotify</a>\n• <a href="https://soundcloud.com/alanrose-13" target="_blank">SoundCloud</a>\n• <a href="https://www.youtube.com/@Alan_e_Rose" target="_blank">YouTube</a>\n\nI nostri brani: El es el rey (2026), Mai Solo (2025), Sopra Un\'Isola (2025), Ali D\'Aquila (2025), In Ginocchio Da Te (2025), La Tua Anima (2024), Tu Vedrai (2024), Tu Mi Fai Vivere (2024)', 'bot');
         break;
       case 'mostraContatti':
-        arAddMessage('📧 Puoi contattarci via email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>\n\nOppure compila il <a href="https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform" target="_blank">modulo di richiesta servizio</a>', 'bot');
-        break;
-      case 'mostraFormRichiesta':
-        arShowFormInChat('https://docs.google.com/forms/d/e/1FAIpQLSci8HSZW6hvoRY83LhUYn0DeUCmuCJawR23FxgiN_T5FJvG_w/viewform?embedded=true');
+        arAddMessage('📧 Puoi contattarci via email: <a href="mailto:alanrose.13@yahoo.com">alanrose.13@yahoo.com</a>', 'bot');
         break;
       default:
         arAddMessage('Funzionalità in sviluppo! 😊', 'bot');
@@ -1238,81 +1178,30 @@
   }
   window.arHandleAction = arHandleAction;
 
-  function arShowFormInChat(formUrl) {
-    var box = document.getElementById('arChatMessages');
-    var div = document.createElement('div');
-    div.className = 'ar-msg bot';
-    div.innerHTML =
-      '<img class="bot-avatar" src="' + AR_LOGO_URL + '" alt="BLESS"><div class="bot-content">' +
-      '<div style="margin-bottom:6px;font-weight:600;">📝 Compila il modulo qui sotto:</div>' +
-      '<div class="ar-inline-form"><iframe src="' + formUrl + '"></iframe></div>' +
-      '<div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔒 I tuoi dati sono trattati secondo la nostra Privacy Policy.</div>' +
-      '</div>';
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
-  }
-  window.arShowFormInChat = arShowFormInChat;
-
   // --- FILTRO BESTEMMIE / BLASFEMIE (multilingua) -----------------------
-  // Sostituisce ogni bestemmia/blasfemia con una frase di incoraggiamento.
-  // Include italiano, tutti i principali dialetti italiani e le lingue straniere.
-  // NB: le parole religiose "neutre" (es. "santissimo", "sacramento", "ostia
-  // santa/consacrata") NON vengono più filtrate da sole: scattano solo se
-  // abbinate a un termine chiaramente offensivo, per non censurare BLESS
-  // quando parla di teologia/Bibbia (vedi regola 8 del system prompt).
   var AR_BLESSED_REPLACEMENT =
     'Evita di dire brutte parole. Dio ti ama, e ama che il tuo parlare pulito non sia un obbligo ma un\'opportunità per essere davanti agli altri uno splendore di Dio, così chiunque ti vede ti imita come un esempio da seguire e sarai amato/a.';
 
   var AR_BLASPHEMY_PATTERNS = [
-    // ============ ITALIANO STANDARD ============
     /\b(?:dio|d10|ddio)\s+(?:bono|bon[ou]|can[e]?|porc[oa]|maiale|boia|ladro|bestia|serpente|impiccat[oa]|strozzat[oa]|santo\s+no)\b/gi,
     /\b(?:porco|porca)\s+(?:dio|ddio|d10|madonna|maronna|giuda|giuda\s+no)\b/gi,
     /\b(?:madonna|madò|mado|maronna|maronn|mariàng|mariang)\s+(?:santa|puttana|porca|cane|cagna|boia|ladra|impiccata|strozzata|bestia|maiala|serpente|delle\s+grazie\s+no|lurda|becera)\b/gi,
     /\b(?:gesù|gesu|gesù\s+cristo|gesu\s+cristo|cristo)\s+(?:porco|cane|boia|ladro|impiccato|strozzato|bestia|maiale|serpente)\b/gi,
     /\b(?:ostia)\s+(?:porca|cane|boia|ladra|impiccata|strozzata)\b/gi,
-
-    // ============ DIALETTO VENETO / FRIULANO ============
     /\b(?:dio\s+can|dio\s+cane|dio\s+boia|dio\s+porco|dio\s+maiale|dio\s+bestia|dio\s+serpente|dio\s+impicà|dio\s+strozzà|dio\s+ladro|dio\s+santo\s+no|madonna\s+santa\s+no|madonna\s+puttana|madonna\s+lurda|madonna\s+cagna|madonna\s+becera|porco\s+dio|porca\s+madonna|porco\s+can|porca\s+maronna|porca\s+lurda|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
-
-    // ============ DIALETTO NAPOLETANO / CAMPANO ============
     /\b(?:dio\s+ca|dio\s+cane|dio\s+can|dio\s+putt|dio\s+boia|dio\s+ladro|dio\s+mpicciat|dio\s+mpicc|dio\s+strozz|dio\s+serpente|dio\s+bestia|dio\s+maiale|maronna\s+santa|maronna\s+putt|maronna\s+cane|maronna\s+boia|maronna\s+ladra|maronna\s+mpicciat|maronna\s+strozz|maronna\s+bestia|maronna\s+maiala|maronna\s+serpente|porco\s+ddio|porca\s+maronna|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
-
-    // ============ DIALETTO SICILIANO ============
     /\b(?:dio\s+can|dio\s+cani|dio\s+boia|dio\s+ladru|dio\s+mpiccatu|dio\s+strozzatu|dio\s+serpenti|dio\s+bestia|dio\s+maiali|matri\s+santa|matri\s+putt|matri\s+cani|matri\s+boia|matri\s+ladra|matri\s+mpiccata|matri\s+strozzata|matri\s+bestia|matri\s+maiala|matri\s+serpenti|porcu\s+diu|porca\s+matri|porcu\s+dio|porca\s+madonna|porcu\s+giuda|porcu\s+giuda\s+no)\b/gi,
-
-    // ============ DIALETTO ROMANO / LAZIALE ============
     /\b(?:dio\s+cane|dio\s+can|dio\s+boia|dio\s+ladro|dio\s+impiccato|dio\s+strozzato|dio\s+serpente|dio\s+bestia|dio\s+maiale|madonna\s+santa\s+putt|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpente|porco\s+ddio|porca\s+madonna|porco\s+dio|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
-
-    // ============ DIALETTO TOSCANO ============
     /\b(?:dio\s+cane|dio\s+can|dio\s+boia|dio\s+ladro|dio\s+impiccato|dio\s+strozzato|dio\s+serpente|dio\s+bestia|dio\s+maiale|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpente|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
-
-    // ============ DIALETTO PIEMONTESE / LOMBARDO ============
     /\b(?:dio\s+can|dio\s+cane|dio\s+boia|dio\s+ladru|dio\s+impicà|dio\s+strozzà|dio\s+serpent|dio\s+bestia|dio\s+maial|madonna\s+puttana|madonna\s+cagna|madonna\s+boia|madonna\s+ladra|madonna\s+impiccata|madonna\s+strozzata|madonna\s+bestia|madonna\s+maiala|madonna\s+serpent|porco\s+dio|porca\s+madonna|porco\s+giuda|porco\s+giuda\s+no)\b/gi,
-
-    // ============ INGLESE ============
     /\b(?:god\s*damn|goddamn|goddam|god\s*damn\s*it|jesus\s*f+u+c*k+i+n+g*\s*christ|christ\s*almighty|holy\s*shit|holy\s*f+u+c*k*|bloody\s*hell|f+u+c*k+|sh[i1]t|b[i1]tch|asshole|motherf+u+c*k+er)\b/gi,
-
-    // ============ FRANCESE ============
     /\b(?:merde\s*alors|putain\s*de\s*merde|putain|bordel\s*de\s*merde|bordel|merde|salope|encul[ée]|connard|connasse|fils\s*de\s*pute|nique\s*ta\s*m[èe]re|nom\s*de\s*dieu|bon\s*dieu|pute)\b/gi,
-
-    // ============ SPAGNOLO ============
     /\b(?:puta\s*madre|me\s*cago\s*en\s*dios|hostia\s*puta|hostia\s*de\s*dios|joder|co[ñn]o|carajo|mierda|puta|puto|gilipollas|cabron|cabr[óo]n|hijo\s*de\s*puta|la\s*puta\s*madre|a\s*la\s*puta\s*madre)\b/gi,
-
-    // ============ TEDESCO ============
     /\b(?:gott\s*verdammt|gottesl[äa]sterung|verdammt|schei[ßs]+e|scheisse|scheiss|arschloch|fick|ficken|hurensohn|wichser|himmel\s*herrgott|herrgott\s*sakrament|kreuz\s*donnerwetter|kreuzdonnerwetter)\b/gi,
-
-    // ============ PORTOGHESE ============
     /\b(?:porra|caralho|foda[- ]?se|filho\s*da\s*puta|puta\s*que\s*pariu|puta\s*merda|bosta|vai\s*para\s*o\s*caralho|arrombado)\b/gi,
-
-    // ============ ALTRE LINGUE EUROPEE + INSULTI ============
     /\b(?:verdomme|godverdomme|klootzak|kut|neuken|cazzo|stronzo|stronza|vaffanculo|fanculo|coglione|cogliona|minchia|minchione|zoccola|troia|puttana|mignotta|bagascia|squaldrina|bastardo|bastarda|idiota|imbecille|deficiente|ritardato|handicappato|negro|negra|frocio|finocchio|ricchione|terrone|zingaro\s*di\s*merda|sporco\s*negro)\b/gi
   ];
 
-  // --- FIX #1: confini \b Unicode-safe -----------------------------------
-  // \b in JavaScript riconosce come "di parola" solo [A-Za-z0-9_], quindi le
-  // lettere accentate (ò, è, à, ì...) rompono il matching e molti pattern
-  // dialettali sopra non scattavano mai. Questa funzione converte i \b in
-  // lookaround che considerano anche le lettere accentate (flag 'u').
   function arFixBoundary(re) {
     var src = re.source;
     if (src.slice(0, 2) === '\\b') src = '(?<![\\p{L}\\p{N}_])' + src.slice(2);
@@ -1321,7 +1210,6 @@
   }
   var AR_BLASPHEMY_PATTERNS_FIXED = AR_BLASPHEMY_PATTERNS.map(arFixBoundary);
 
-  // Sostituisce le bestemmie con la frase di incoraggiamento.
   function arFilterBlasphemy(text) {
     if (!text) return text;
     var out = String(text);
@@ -1332,7 +1220,6 @@
   }
   window.arFilterBlasphemy = arFilterBlasphemy;
 
-  // --- SICUREZZA: sanitizzazione HTML -----------------------------------
   function arEscapeHtml(str) {
     var div = document.createElement('div');
     div.textContent = String(str == null ? '' : str);
@@ -1426,7 +1313,7 @@
             if (lastBot.textContent.includes('Come ti chiami')) lastBot.remove();
           }
           setTimeout(function () {
-            arAddMessage('Piacere di conoscerti <strong>' + arEscapeHtml(name) + '</strong>! Sono qui per aiutarti. Cosa ti serve? Trovi Servizi, Musica e le altre scorciatoie appena sotto il campo di scrittura.', 'bot', false);
+            arAddMessage('Piacere di conoscerti <strong>' + arEscapeHtml(name) + '</strong>! Sono qui per aiutarti. Cosa ti serve? Trovi Musica e Contatti appena sotto il campo di scrittura.', 'bot', false);
           }, 300);
         }
       }
@@ -1453,7 +1340,6 @@
     }
   }, 1200);
 
-  // INVIO MESSAGGIO CON INTERRUZIONE
   function arStopTyping() {
     if (typingInterval) { clearInterval(typingInterval); typingInterval = null; }
     isBotTyping = false;
@@ -1553,8 +1439,6 @@
     input.disabled = true;
     document.getElementById('arChatMicSend').disabled = true;
 
-    // Il messaggio dell'utente viene mostrato/salvato così com'è;
-    // il filtro bestemmie si applica solo a ciò che BLESS scrive.
     arAddMessage(msg, 'user');
     input.value = '';
     arAutoResizeInput(input);
@@ -1586,7 +1470,7 @@
           messages: [
             {
               role: 'system',
-              content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R).\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI. Non elencare mai i servizi in risposta a un saluto.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **RICHIESTE DI SERVIZIO O QUALSIASI ALTRA RICHIESTA**: quando un utente chiede un servizio, un preventivo, informazioni commerciali o qualunque richiesta che necessiti un seguito, NON raccogliere dati sensibili aggiuntivi in chat (numeri di carte, documenti, ecc.): accompagna invece la persona a scrivere direttamente una email a alanrose.13@yahoo.com, suggerendole in breve cosa includere (es. il tipo di servizio desiderato e una breve descrizione della richiesta), cosi Alan & Rose potranno risponderle e conservare la richiesta correttamente.\n5. **PRIVACY**: se l\'utente chiede dove finiscono i suoi messaggi, spiega con chiarezza che la conversazione resta salvata solo sul suo dispositivo (nel browser) per poterla ritrovare più tardi, e che ogni messaggio viene elaborato da un servizio esterno di intelligenza artificiale per generare le risposte. Rimanda alla Privacy Policy del sito per i dettagli. Non dire mai che "la conversazione non viene conservata da nessuna parte".\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruito al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n10. **CONTESTO**: nei messaggi precedenti di questa conversazione (se presenti) trovi lo storico recente della chat: usalo per ricordare cosa l\'utente ti ha già detto (nome, richieste, preferenze) invece di richiederlo di nuovo.\n\nServizi: Grafica & Web, Musica & Produzione, Consulenza.\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".\n\n**IMPORTANTE: Tutti i tuoi messaggi devono essere al MASCHILE.** Non usare mai "pronta", "sono pronta", "disponibile" al femminile. Usa sempre "pronto", "sono pronto", "disponibile" al maschile.\n\n**IMPORTANTE SUL LINGUAGGIO**: Non usare MAI bestemmie, blasfemie, parolacce o insulti, in nessuna lingua e in nessun dialetto. Se l\'utente ne usa, ricorda con dolcezza che il parlare pulito è un\'opportunità per essere davanti agli altri uno splendore di Dio, e invitalo a esprimersi con rispetto e amore.'
+              content: 'Sei l\'assistente virtuale "BLESS" di "Alan & Rose" (A&R), un progetto personale e artistico, senza scopo di lucro, di due sposi che condividono la loro musica gospel e accompagnano le persone a cercare Dio, trovare pace e uscire dalla monotonia quotidiana.\n\nREGOLE FISSE (rispettale sempre):\n1. **LINGUA**: Rispondi SEMPRE nella stessa lingua in cui l\'utente scrive.\n2. **SALUTI BREVI**: Ai saluti come "ciao", "hello", "hola", "hey", "salve" rispondi con un saluto breve di MASSIMO 2 FRASI.\n3. **NON MOSTRARE MAI IL TUO RAGIONAMENTO**: Non includere mai il tuo processo di pensiero nella risposta. Rispondi solo con il messaggio finale destinato all\'utente.\n4. **NIENTE SERVIZI O RICHIESTE COMMERCIALI**: Alan & Rose non offrono servizi professionali a pagamento tramite questo sito: non proporre mai preventivi, servizi di grafica/consulenza o raccolta di richieste commerciali. Se qualcuno chiede un lavoro/servizio, spiega gentilmente che questo non è più un progetto che offre servizi, ma solo la loro musica e i loro contenuti gratuiti, e che per qualunque altra domanda personale può scrivere a alanrose.13@yahoo.com.\n5. **PRIVACY**: se l\'utente chiede dove finiscono i suoi messaggi, spiega con chiarezza che la conversazione resta salvata solo sul suo dispositivo (nel browser) per poterla ritrovare più tardi, e che ogni messaggio viene elaborato da un servizio esterno di intelligenza artificiale per generare le risposte. Rimanda alla Privacy Policy del sito per i dettagli. Non dire mai che "la conversazione non viene conservata da nessuna parte".\n6. Se chiedono che canzoni/brani abbiamo, rispondi con l\'elenco qui sotto (non inventare altri titoli) e invita ad ascoltarli su Spotify/SoundCloud/YouTube.\n7. **CONOSCENZA GENERALE AMPIA**: sei istruito al massimo su ogni argomento possibile. Se un utente fa una domanda che esce dal contesto del sito (scienza, storia, attualita, vita quotidiana, cultura generale, ecc.) rispondi comunque con competenza, naturalezza e precisione, come farebbe una persona colta e curiosa, senza mai dire che l\'argomento "non e di tua competenza".\n8. **CONOSCENZA BIBLICA, SPIRITUALE E ARCHEOLOGICA PROFONDA**: hai una conoscenza approfondita, teologica, storica e archeologica di tutte le tradizioni bibliche e delle loro traduzioni/canoni (Tanakh ebraico, Settanta greca, Vulgata latina, Bibbie cattoliche, ortodosse, protestanti ed evangeliche, testi apocrifi/deuterocanonici), dei manoscritti antichi (es. rotoli del Mar Morto, codici e papiri), del contesto storico-archeologico del Vicino Oriente antico e del mondo greco-romano, e delle principali correnti teologiche cristiane ed ebraiche nel tempo. Quando la conversazione lo richiede, aiuta la persona a cogliere il filo conduttore comune tra le diverse tradizioni e confessioni, mostrando come, pur con parole, culture, epoche e sensibilita diverse, esse parlino spesso della stessa ricerca di senso e dello stesso Dio, e come le religioni siano in fondo interpretazioni umane diverse di quella ricerca. Il tuo scopo in questi discorsi non e promuovere una denominazione o un\'istituzione specifica, ma aiutare la persona ad avvicinarsi a Dio stesso, oltre le etichette religiose, con rispetto profondo per ogni fede, tradizione e persona, senza mai sminuire o giudicare nessuna interpretazione.\n9. Se un argomento religioso o spirituale e delicato o personale, mantieni sempre un tono empatico, rispettoso e mai giudicante, lasciando alla persona la liberta di trarre le proprie conclusioni.\n10. **CONTESTO**: nei messaggi precedenti di questa conversazione (se presenti) trovi lo storico recente della chat: usalo per ricordare cosa l\'utente ti ha già detto (nome, richieste, preferenze) invece di richiederlo di nuovo.\n\nTeam: Alan (Alfio Ragusa) e Rose. Genere musicale: gospel/cristiano.\nSito: alanrose13.github.io | Email: alanrose.13@yahoo.com\n\nBrani pubblicati (titolo - anno):\n- El es el rey - 2026\n- Mai Solo - 2025\n- Sopra Un\'Isola - 2025\n- Ali D\'Aquila - 2025\n- In Ginocchio Da Te - 2025\n- La Tua Anima - 2024\n- Tu Vedrai - 2024\n- Tu Mi Fai Vivere - 2024\n\nAscolto: Spotify (open.spotify.com/intl-it/artist/4ZvjO3hNZdxsMZmRadwqoV), SoundCloud (soundcloud.com/alanrose-13), YouTube (youtube.com/@Alan_e_Rose).\n\nTono: professionale, amichevole, caloroso, e spiritualmente maturo quando il discorso lo richiede. Usa "noi" e "ti capiamo".\n\n**IMPORTANTE: Tutti i tuoi messaggi devono essere al MASCHILE.** Non usare mai "pronta", "sono pronta", "disponibile" al femminile. Usa sempre "pronto", "sono pronto", "disponibile" al maschile.\n\n**IMPORTANTE SUL LINGUAGGIO**: Non usare MAI bestemmie, blasfemie, parolacce o insulti, in nessuna lingua e in nessun dialetto. Se l\'utente ne usa, ricorda con dolcezza che il parlare pulito è un\'opportunità per essere davanti agli altri uno splendore di Dio, e invitalo a esprimersi con rispetto e amore.'
             }
           ].concat(contextMessages, [{ role: 'user', content: msg }]),
           stream: false,
@@ -1613,8 +1497,6 @@
       reply = cleanBotResponse(reply);
       reply = reply.replace(/sono pronta/gi, 'sono pronto');
 
-      // Avvia subito la voce (in parallelo alla digitazione), così non c'è
-      // più il ritardo di prima: prima parlava solo a testo già scritto.
       arPlayServerVoice(arFilterBlasphemy(reply));
       await arTypeMessage(reply, 'bot', 20);
 
